@@ -29,7 +29,6 @@ import com.example.movieapp.model.Movie
 import com.example.movieapp.model.getMoviesList
 import com.example.movieapp.navigation.DetailsRoute
 import com.example.movieapp.navigation.QrCodeRoute
-import com.example.movieapp.widgets.MovieRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +37,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-//    val uiState by viewModel.uiState.collectAsState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
