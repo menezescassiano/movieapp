@@ -8,10 +8,9 @@ plugins {
 }
 
 android {
+
     namespace = "com.example.movieapp"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.movieapp"
