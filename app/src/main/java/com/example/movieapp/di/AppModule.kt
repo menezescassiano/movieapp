@@ -1,29 +1,59 @@
 package com.example.movieapp.di
 
-import com.example.movieapp.data.MovieRepositoryImpl
+import com.example.movieapp.BuildConfig
+import com.example.movieapp.data.remote.MovieApiService
 import com.example.movieapp.domain.GetMovieByIdUseCase
 import com.example.movieapp.domain.GetMoviesUseCase
+import com.example.movieapp.data.MovieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+
+
     @Provides
     @Singleton
-    fun provideMovieRepository(): MovieRepositoryImpl = MovieRepositoryImpl()
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
 
     @Provides
-    fun provideGetMoviesUseCase(
-        repository: MovieRepositoryImpl
-    ): GetMoviesUseCase = GetMoviesUseCase(repository)
+    @Singleton
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
 
     @Provides
-    fun provideGetMovieByIdUseCase(
-        repository: MovieRepositoryImpl
-    ): GetMovieByIdUseCase = GetMovieByIdUseCase(repository)
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideMovieApiService(retrofit: Retrofit): MovieApiService =
+        retrofit.create(MovieApiService::class.java)
+
+    @Provides
+    fun provideGetMoviesUseCase(repository: MovieRepository): GetMoviesUseCase =
+        GetMoviesUseCase(repository)
+
+    @Provides
+    fun provideGetMovieByIdUseCase(repository: MovieRepository): GetMovieByIdUseCase =
+        GetMovieByIdUseCase(repository)
 }
