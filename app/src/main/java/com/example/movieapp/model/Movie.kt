@@ -1,15 +1,18 @@
 package com.example.movieapp.model
 
-data class Movie(val id: String,
-                 val title: String,
-                 val year: String,
-                 val genre: String,
-                 val director: String,
-                 val actors: String,
-                 val description: String,
-                 val poster: String,
-                 val images: List<String>,
-                 val rating: String)
+data class Movie(
+    val id: String,
+    val title: String,
+    val year: String,
+    val genre: String,
+    val director: String,
+    val actors: String,
+    val description: String,
+    val poster: String,
+    val images: List<String>,
+    val rating: String,
+    val favorite: Boolean = false
+)
 
 fun getMoviesList(): List<Movie> {
     return listOf(

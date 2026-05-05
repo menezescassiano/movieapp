@@ -2,7 +2,9 @@ package com.example.movieapp.screens.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movieapp.domain.GetFavoriteMovieUseCase
 import com.example.movieapp.domain.GetMovieByIdUseCase
+import com.example.movieapp.domain.UnfavoriteMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
-    private val getMovieByIdUseCase: GetMovieByIdUseCase
+    private val getMovieByIdUseCase: GetMovieByIdUseCase,
+    private val favoriteMovieUseCase: GetFavoriteMovieUseCase,
+    private val unfavoriteMovieUseCase: UnfavoriteMovieUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailsUiState(isLoading = false))
@@ -20,14 +24,31 @@ class DetailsViewModel @Inject constructor(
 
     fun loadMovie(movieId: String) {
         viewModelScope.launch {
-            _uiState.value = DetailsUiState(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true)
             try {
                 val movie = getMovieByIdUseCase(movieId)
-                _uiState.value = DetailsUiState(movie = movie)
+                _uiState.value = _uiState.value.copy(isLoading = false, movie = movie)
             } catch (e: Exception) {
-                _uiState.value = DetailsUiState(errorMessage = e.message)
+                _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
             }
         }
     }
 
+    fun toggleFavorite(movieId: String) {
+        val isFavorite = _uiState.value.movie?.favorite == true
+        _uiState.value = _uiState.value.copy(
+            movie = _uiState.value.movie?.copy(favorite = !isFavorite)
+        )
+        viewModelScope.launch {
+            try {
+                if (isFavorite) unfavoriteMovieUseCase(movieId)
+                else favoriteMovieUseCase(movieId)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    movie = _uiState.value.movie?.copy(favorite = isFavorite),
+                    errorMessage = e.message
+                )
+            }
+        }
+    }
 }

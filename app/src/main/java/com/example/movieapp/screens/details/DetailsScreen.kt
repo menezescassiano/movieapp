@@ -10,14 +10,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -41,10 +45,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.movieapp.R
+import com.example.movieapp.model.getMoviesList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,12 +58,27 @@ fun DetailsScreen(
     viewModel: DetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val isPreview = LocalInspectionMode.current
-    var selectedImageUrl by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(movieId) {
         movieId?.let { viewModel.loadMovie(it) }
     }
+
+    DetailsScreenContent(
+        uiState = uiState,
+        onBackClick = { navController.popBackStack() },
+        onFavoriteClick = { movieId?.let { viewModel.toggleFavorite(it) } }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetailsScreenContent(
+    uiState: DetailsUiState,
+    onBackClick: () -> Unit = {},
+    onFavoriteClick: () -> Unit = {}
+) {
+    val isPreview = LocalInspectionMode.current
+    var selectedImageUrl by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -68,7 +87,7 @@ fun DetailsScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        modifier = Modifier.clickable { navController.popBackStack() },
+                        modifier = Modifier.clickable { onBackClick() },
                         tint = Color.Black
                     )
                 },
@@ -98,7 +117,7 @@ fun DetailsScreen(
                     Text("Error: ${uiState.errorMessage}")
                 }
 
-                uiState.movie != null -> {
+                else -> {
                     uiState.movie?.let { movie ->
                         Column(
                             Modifier
@@ -107,11 +126,21 @@ fun DetailsScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Top
                         ) {
-                            Text(
-                                text = movie.title,
-                                style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = movie.title,
+                                    style = MaterialTheme.typography.headlineMedium
+                                )
+                                IconButton(onClick = onFavoriteClick) {
+                                    Icon(
+                                        imageVector = if (movie.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                        contentDescription = "Favorite",
+                                        tint = if (movie.favorite) Color.Red else Color.Gray
+                                    )
+                                }
+                            }
                             Spacer(modifier = Modifier.padding(8.dp))
                             LazyRow {
                                 items(movie.images.size) { index ->
@@ -173,8 +202,9 @@ fun DetailsScreen(
 @Preview(showBackground = true)
 @Composable
 fun DetailsScreenPreview() {
-    DetailsScreen(
-        navController = rememberNavController(),
-        movieId = "tt0499549"
+    DetailsScreenContent(
+        uiState = DetailsUiState(
+            movie = getMoviesList().first()
+        )
     )
 }
