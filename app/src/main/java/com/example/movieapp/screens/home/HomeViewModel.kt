@@ -4,13 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movieapp.domain.GetMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,23 +15,23 @@ class HomeViewModel @Inject constructor(
     private val getMoviesUseCase: GetMoviesUseCase
 ) : ViewModel() {
 
-    val uiState: StateFlow<HomeUiState> =
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    init {
         loadMovies()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = HomeUiState()
-            )
-
-    fun loadMovies(): Flow<HomeUiState> = flow {
-        emit(HomeUiState(isLoading = true, errorMessage = ""))
-
-        try {
-            val movies = getMoviesUseCase()
-            emit(HomeUiState(isLoading = false, movies = movies))
-        } catch (e: Exception) {
-            emit(HomeUiState(isLoading = false, errorMessage = e.message))
-        }
     }
 
+    fun loadMovies() {
+        viewModelScope.launch {
+            _uiState.value = HomeUiState(isLoading = true, errorMessage = null)
+
+            try {
+                val movies = getMoviesUseCase()
+                _uiState.value = HomeUiState(isLoading = false, movies = movies)
+            } catch (e: Exception) {
+                _uiState.value = HomeUiState(isLoading = false, errorMessage = e.message)
+            }
+        }
+    }
 }

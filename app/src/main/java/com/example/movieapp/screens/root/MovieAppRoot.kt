@@ -6,6 +6,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -19,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import com.example.movieapp.navigation.FavoritesRoute
 import com.example.movieapp.navigation.HomeRoute
 import com.example.movieapp.navigation.MovieNavigation
@@ -31,13 +36,14 @@ fun MovieAppRoot() {
     data class BottomNavItem(
         val route: Any,
         val label: String,
-        val icon: ImageVector
+        val selectedIcon: ImageVector,
+        val unselectedIcon: ImageVector
     )
 
     val bottomItems = listOf(
-        BottomNavItem(HomeRoute, "Home", Icons.Default.Home),
-        BottomNavItem(FavoritesRoute, "Favorites", Icons.Default.Favorite),
-        BottomNavItem(ProfileRoute, "Profile", Icons.Default.Person)
+        BottomNavItem(HomeRoute, "Home", Icons.Filled.Home, Icons.Outlined.Home),
+        BottomNavItem(FavoritesRoute, "Favorites", Icons.Filled.Favorite, Icons.Outlined.FavoriteBorder),
+        BottomNavItem(ProfileRoute, "Profile", Icons.Filled.Person, Icons.Outlined.Person)
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -47,7 +53,7 @@ fun MovieAppRoot() {
         bottomBar = {
             NavigationBar(modifier = Modifier.height(100.dp)) {
                 bottomItems.forEach { item ->
-                    val selected = currentDestination?.route == item.route
+                    val selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
                     NavigationBarItem(
                         selected = selected,
                         onClick = {
@@ -63,7 +69,7 @@ fun MovieAppRoot() {
                         },
                         icon = {
                             Icon(
-                                item.icon,
+                                imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
                                 contentDescription = item.label,
                                 modifier = Modifier.height(16.dp)
                             )
@@ -76,6 +82,7 @@ fun MovieAppRoot() {
     ) { innerPadding ->
         MovieNavigation(
             navController = navController,
-            modifier = Modifier.padding(innerPadding))
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }

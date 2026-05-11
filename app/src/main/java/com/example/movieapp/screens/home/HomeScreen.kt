@@ -70,7 +70,10 @@ fun HomeScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = uiState.errorMessage ?: "Unknown error")
-                            Button(onClick = { viewModel.loadMovies() }) {
+                            Button(
+                                onClick = {
+                                    viewModel.loadMovies()
+                                }) {
                                 Text("Retry")
                             }
                         }

@@ -39,7 +39,7 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
         }
 
         composable<FavoritesRoute> {
-            FavoritesScreen()
+            FavoritesScreen(navController = navController)
         }
 
         composable<ProfileRoute> {
