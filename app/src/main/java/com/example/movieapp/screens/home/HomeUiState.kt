@@ -4,6 +4,7 @@ import com.example.movieapp.model.Movie
 
 data class HomeUiState(
     val isLoading: Boolean = true,
+    val isRefreshing: Boolean = false,
     val movies: List<Movie> = emptyList(),
     val errorMessage: String? = null
 )

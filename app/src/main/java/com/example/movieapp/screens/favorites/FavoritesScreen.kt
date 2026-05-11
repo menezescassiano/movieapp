@@ -1,5 +1,6 @@
 package com.example.movieapp.screens.favorites
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.movieapp.ui.theme.AppBackground
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,12 +55,16 @@ fun FavoritesScreenContent(
     onMovieClick: (Movie) -> Unit = {},
     onRetry: () -> Unit = {}
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppBackground)
+    ) {
         CenterAlignedTopAppBar(
-            title = { Text("Favorites") },
+            title = { Text("Favorites", color = Color.White) },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
-                titleContentColor = Color.Black
+                titleContentColor = Color.White
             )
         )
 

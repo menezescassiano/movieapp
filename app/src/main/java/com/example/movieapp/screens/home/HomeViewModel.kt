@@ -34,4 +34,17 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isRefreshing = true, errorMessage = null)
+
+            try {
+                val movies = getMoviesUseCase()
+                _uiState.value = _uiState.value.copy(isRefreshing = false, movies = movies)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isRefreshing = false, errorMessage = e.message)
+            }
+        }
+    }
 }

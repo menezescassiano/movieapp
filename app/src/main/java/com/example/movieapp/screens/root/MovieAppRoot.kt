@@ -1,7 +1,12 @@
 package com.example.movieapp.screens.root
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -12,22 +17,31 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.navigation.FavoritesRoute
 import com.example.movieapp.navigation.HomeRoute
 import com.example.movieapp.navigation.MovieNavigation
 import com.example.movieapp.navigation.ProfileRoute
+import com.example.movieapp.ui.theme.AccentPurple
+import com.example.movieapp.ui.theme.AppBackground
+import com.example.movieapp.ui.theme.NavUnselected
 
 @Composable
 fun MovieAppRoot() {
@@ -49,40 +63,68 @@ fun MovieAppRoot() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    Scaffold(
-        bottomBar = {
-            NavigationBar(modifier = Modifier.height(100.dp)) {
-                bottomItems.forEach { item ->
-                    val selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = {
-                            if (!selected) {
-                                navController.navigate(item.route) {
-                                    popUpTo(navController.graph.startDestinationId) {
-                                        saveState = true
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            bottomBar = {
+                NavigationBar(
+                    modifier = Modifier.height(100.dp),
+                    containerColor = AppBackground,
+                    tonalElevation = 0.dp
+                ) {
+                    bottomItems.forEach { item ->
+                        val selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
+                        NavigationBarItem(
+                            selected = selected,
+                            onClick = {
+                                if (!selected) {
+                                    navController.navigate(item.route) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
                                 }
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = item.label,
-                                modifier = Modifier.height(16.dp)
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
+                                    contentDescription = item.label,
+                                    modifier = Modifier.height(22.dp)
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = item.label,
+                                    fontSize = 11.sp,
+                                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
+                                )
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = AccentPurple,
+                                selectedTextColor = AccentPurple,
+                                unselectedIconColor = NavUnselected,
+                                unselectedTextColor = NavUnselected,
+                                indicatorColor = AccentPurple.copy(alpha = 0.15f)
                             )
-                        },
-                        label = { Text(item.label, fontSize = 12.sp) }
-                    )
+                        )
+                    }
                 }
             }
+        ) { innerPadding ->
+            MovieNavigation(
+                navController = navController,
+                modifier = Modifier.padding(innerPadding)
+            )
         }
-    ) { innerPadding ->
-        MovieNavigation(
-            navController = navController,
-            modifier = Modifier.padding(innerPadding)
+
+        // Status bar overlay
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsTopHeight(WindowInsets.statusBars)
+                .background(AppBackground)
+                .align(Alignment.TopCenter)
         )
     }
 }
