@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movieapp.domain.GetUserUseCase
+import com.example.movieapp.domain.UpdateUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,15 +14,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val getUserUseCase: GetUserUseCase
+    private val getUserUseCase: GetUserUseCase,
+    private val updateUserUseCase: UpdateUserUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
-
-    init {
-        loadProfile()
-    }
 
     fun loadProfile() {
         viewModelScope.launch {
@@ -38,6 +36,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    // Avatar
     fun onAvatarClick() {
         _uiState.value = _uiState.value.copy(showAvatarPicker = true)
     }
@@ -52,5 +51,50 @@ class ProfileViewModel @Inject constructor(
 
     fun onImagePicked(uri: Uri) {
         _uiState.value = _uiState.value.copy(avatarUri = uri, showAvatarPicker = false)
+    }
+
+    // Edit field
+    fun onEditField(field: EditableField) {
+        _uiState.value = _uiState.value.copy(editingField = field)
+    }
+
+    fun onEditFieldDismiss() {
+        _uiState.value = _uiState.value.copy(editingField = null)
+    }
+
+    fun onEditFieldConfirm(field: EditableField, newValue: String) {
+        val current = _uiState.value.user ?: return
+        val updated = when (field) {
+            EditableField.NAME  -> current.copy(name = newValue)
+            EditableField.EMAIL -> current.copy(email = newValue)
+            EditableField.CITY  -> current.copy(city = newValue)
+        }
+        _uiState.value = _uiState.value.copy(user = updated, editingField = null)
+        saveProfile(updated.name, updated.email, updated.city, updated.profilePictureUrl)
+    }
+
+    private fun saveProfile(
+        name: String,
+        email: String,
+        city: String,
+        profilePictureUrl: String,
+    ) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
+            try {
+                val updated = updateUserUseCase(
+                    name = name,
+                    email = email,
+                    city = city,
+                    profilePictureUrl = profilePictureUrl,
+                )
+                _uiState.value = _uiState.value.copy(isSaving = false, user = updated)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isSaving = false,
+                    errorMessage = e.message ?: "Failed to save profile"
+                )
+            }
+        }
     }
 }

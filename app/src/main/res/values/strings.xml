@@ -19,6 +19,12 @@
     <string name="search_bar_placeholder">Search…</string>
     <string name="search_bar_clear">Clear search</string>
 
+    <!-- Edit Field Sheet -->
+    <string name="edit_field_save">Save</string>
+    <string name="edit_field_title_name">Edit name</string>
+    <string name="edit_field_title_email">Edit email</string>
+    <string name="edit_field_title_city">Edit city</string>
+
     <!-- Profile Screen -->
     <string name="profile_picture_description">Profile picture</string>
     <string name="profile_subtitle">Movie enthusiast</string>

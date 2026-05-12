@@ -8,6 +8,7 @@ data class UserDto(
     @SerializedName("name") val name: String?,
     @SerializedName("email") val email: String?,
     @SerializedName("city") val city: String?,
+    @SerializedName("profilePictureUrl") val profilePictureUrl: String?,
 )
 
 fun UserDto.toDomain() = User(
@@ -15,4 +16,12 @@ fun UserDto.toDomain() = User(
     name = name.orEmpty(),
     email = email.orEmpty(),
     city = city.orEmpty(),
+    profilePictureUrl = profilePictureUrl.orEmpty(),
+)
+
+data class UpdateUserRequest(
+    @SerializedName("name") val name: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("city") val city: String,
+    @SerializedName("profilePictureUrl") val profilePictureUrl: String,
 )

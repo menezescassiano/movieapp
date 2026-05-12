@@ -38,9 +38,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +64,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.movieapp.R
+import com.example.movieapp.ui.components.EditFieldSheet
 import com.example.movieapp.model.User
 import com.example.movieapp.ui.theme.AccentPurple
 import com.example.movieapp.ui.theme.AppBackground
@@ -70,6 +77,10 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.loadProfile()
+    }
 
     val context = LocalContext.current
 
@@ -92,7 +103,10 @@ fun ProfileScreen(
         onDismissPicker = viewModel::onAvatarPickerDismiss,
         onTakePhoto = { cameraLauncher.launch(cameraImageUri) },
         onPickFromGallery = { galleryLauncher.launch("image/*") },
-        onRetry = viewModel::loadProfile
+        onRetry = viewModel::loadProfile,
+        onEditField = viewModel::onEditField,
+        onEditFieldDismiss = viewModel::onEditFieldDismiss,
+        onEditFieldConfirm = viewModel::onEditFieldConfirm
     )
 }
 
@@ -104,7 +118,10 @@ private fun ProfileContent(
     onDismissPicker: () -> Unit,
     onTakePhoto: () -> Unit,
     onPickFromGallery: () -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onEditField: (EditableField) -> Unit,
+    onEditFieldDismiss: () -> Unit,
+    onEditFieldConfirm: (EditableField, String) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -112,41 +129,74 @@ private fun ProfileContent(
         modifier = Modifier
             .fillMaxSize()
             .background(AppBackground)
-            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        when {
-            uiState.isLoading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = AccentPurple
-                )
-            }
-
-            uiState.errorMessage != null -> {
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = uiState.errorMessage,
-                        color = Color.White.copy(alpha = 0.7f),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = onRetry) {
-                        Text(stringResource(R.string.profile_retry))
+        AnimatedContent(
+            targetState = uiState,
+            transitionSpec = { fadeIn() togetherWith fadeOut() },
+            contentKey = { it.isLoading || it.errorMessage != null },
+            label = "ProfileScreenTransition"
+        ) { state ->
+            when {
+                state.isLoading -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = AccentPurple
+                        )
                     }
                 }
-            }
 
-            uiState.user != null -> {
-                ProfileLoaded(
-                    user = uiState.user,
-                    avatarUri = uiState.avatarUri,
-                    onAvatarClick = onAvatarClick
-                )
+                state.errorMessage != null -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = state.errorMessage,
+                                color = Color.White.copy(alpha = 0.7f),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(onClick = onRetry) {
+                                Text(stringResource(R.string.profile_retry))
+                            }
+                        }
+                    }
+                }
+
+                state.user != null -> {
+                    ProfileLoaded(
+                        user = state.user,
+                        avatarUri = state.avatarUri,
+                        onAvatarClick = onAvatarClick,
+                        onEditField = onEditField,
+                        topPadding = WindowInsets.statusBars
+                    )
+                }
             }
         }
+    }
+
+    val user = uiState.user
+    if (uiState.editingField != null && user != null) {
+        val field = uiState.editingField
+        val title = when (field) {
+            EditableField.NAME -> stringResource(R.string.edit_field_title_name)
+            EditableField.EMAIL -> stringResource(R.string.edit_field_title_email)
+            EditableField.CITY -> stringResource(R.string.edit_field_title_city)
+        }
+        val currentValue = when (field) {
+            EditableField.NAME -> user.name
+            EditableField.EMAIL -> user.email
+            EditableField.CITY -> user.city
+        }
+        EditFieldSheet(
+            title = title,
+            currentValue = currentValue,
+            onConfirm = { newValue -> onEditFieldConfirm(field, newValue) },
+            onDismiss = onEditFieldDismiss
+        )
     }
 
     if (uiState.showAvatarPicker) {
@@ -168,12 +218,15 @@ private fun ProfileContent(
 private fun ProfileLoaded(
     user: User,
     avatarUri: Uri?,
-    onAvatarClick: () -> Unit
+    onAvatarClick: () -> Unit,
+    onEditField: (EditableField) -> Unit,
+    topPadding: WindowInsets = WindowInsets(0)
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .windowInsetsPadding(topPadding)
             .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -234,7 +287,8 @@ private fun ProfileLoaded(
             ProfileInfoRow(
                 icon = Icons.Default.Person,
                 label = stringResource(R.string.profile_label_name),
-                value = user.name
+                value = user.name,
+                onClick = { onEditField(EditableField.NAME) }
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -243,7 +297,8 @@ private fun ProfileLoaded(
             ProfileInfoRow(
                 icon = Icons.Default.Email,
                 label = stringResource(R.string.profile_label_email),
-                value = user.email
+                value = user.email,
+                onClick = { onEditField(EditableField.EMAIL) }
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -252,7 +307,8 @@ private fun ProfileLoaded(
             ProfileInfoRow(
                 icon = Icons.Default.LocationOn,
                 label = stringResource(R.string.profile_label_city),
-                value = user.city
+                value = user.city,
+                onClick = { onEditField(EditableField.CITY) }
             )
         }
 
@@ -337,11 +393,13 @@ private fun AvatarPickerOption(
 private fun ProfileInfoRow(
     icon: ImageVector,
     label: String,
-    value: String
+    value: String,
+    onClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
@@ -393,6 +451,9 @@ fun ProfileScreenPreview() {
         onDismissPicker = {},
         onTakePhoto = {},
         onPickFromGallery = {},
-        onRetry = {}
+        onRetry = {},
+        onEditField = {},
+        onEditFieldDismiss = {},
+        onEditFieldConfirm = { _, _ -> }
     )
 }
