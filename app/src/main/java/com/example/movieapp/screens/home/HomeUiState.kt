@@ -6,5 +6,6 @@ data class HomeUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val movies: List<Movie> = emptyList(),
+    val searchQuery: String = "",
     val errorMessage: String? = null
 )

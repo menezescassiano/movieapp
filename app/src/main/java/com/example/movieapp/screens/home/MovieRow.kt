@@ -54,20 +54,19 @@ import com.example.movieapp.ui.theme.YearBadgeBg
 // ---------------------------------------------------------------------------
 
 @Composable
-fun MovieRow(movie: Movie, onItemClick: () -> Unit) {
+fun MovieRow(movie: Movie, onItemClick: () -> Unit, modifier: Modifier = Modifier) {
 
     var expanded by remember {
         mutableStateOf(false)
     }
     Card(
-        modifier = Modifier
+        modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .clickable {
-                onItemClick()
-            },
+            .clickable { onItemClick() },
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        colors = CardDefaults.cardColors(containerColor = CardDark),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -86,25 +85,36 @@ fun MovieRow(movie: Movie, onItemClick: () -> Unit) {
                     .clip(RoundedCornerShape(8.dp))
             )
             Column(modifier = Modifier.padding(4.dp)) {
-                Text(movie.title, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    movie.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White
+                )
                 Text(
                     stringResource(R.string.movie_row_director, movie.director),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White
                 )
                 Text(
                     stringResource(R.string.movie_row_released, movie.year),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White
                 )
 
                 AnimatedVisibility(visible = expanded) {
                     Column {
-                        Text(movie.description, style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            movie.description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
                     }
                 }
 
                 Icon(
                     imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                     contentDescription = stringResource(R.string.movie_row_see_more),
+                    tint = Color.White,
                     modifier = Modifier
                         .size(25.dp)
                         .clickable { expanded = !expanded }
@@ -119,9 +129,9 @@ fun MovieRow(movie: Movie, onItemClick: () -> Unit) {
 // ---------------------------------------------------------------------------
 
 @Composable
-fun MovieCard(movie: Movie, onItemClick: () -> Unit) {
+fun MovieCard(movie: Movie, onItemClick: () -> Unit, modifier: Modifier = Modifier) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onItemClick() },
         shape = RoundedCornerShape(16.dp),
@@ -208,7 +218,7 @@ fun MovieCard(movie: Movie, onItemClick: () -> Unit) {
     }
 }
 
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFF12121A)
 @Composable
 fun MovieRowPreview() {
     MovieRow(

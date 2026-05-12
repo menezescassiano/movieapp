@@ -8,6 +8,17 @@
     <string name="movie_row_released">Released: %1$s</string>
     <string name="movie_row_see_more">See More</string>
 
+    <!-- Home Screen -->
+    <string name="home_title">Discover great films.</string>
+    <string name="home_subtitle">A handpicked selection of must-watch classics — tap any poster to dive in.</string>
+    <string name="home_search_placeholder">Search by title, genre or director…</string>
+    <string name="home_search_no_results">No movies found for \"%1$s\"</string>
+    <string name="home_retry">Retry</string>
+
+    <!-- Search Bar -->
+    <string name="search_bar_placeholder">Search…</string>
+    <string name="search_bar_clear">Clear search</string>
+
     <!-- Details Screen -->
     <string name="details_title">Movie\'s details</string>
     <string name="details_back">Back</string>

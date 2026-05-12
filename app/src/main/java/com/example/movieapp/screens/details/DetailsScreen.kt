@@ -28,11 +28,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -150,11 +155,25 @@ fun DetailsScreenContent(
                                         style = MaterialTheme.typography.headlineMedium,
                                         color = Color.White
                                     )
+                                    val starColor by animateColorAsState(
+                                        targetValue = if (movie.favorite) StarGold else Color.White,
+                                        animationSpec = tween(durationMillis = 300),
+                                        label = "starColor"
+                                    )
+                                    val starScale by animateFloatAsState(
+                                        targetValue = if (movie.favorite) 1f else 0.85f,
+                                        animationSpec = spring(
+                                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                                            stiffness = Spring.StiffnessMedium
+                                        ),
+                                        label = "starScale"
+                                    )
                                     IconButton(onClick = onFavoriteClick) {
                                         Icon(
                                             imageVector = if (movie.favorite) Icons.Filled.Star else Icons.Outlined.StarOutline,
                                             contentDescription = stringResource(R.string.details_favorite),
-                                            tint = if (movie.favorite) StarGold else Color.White
+                                            tint = starColor,
+                                            modifier = Modifier.scale(starScale)
                                         )
                                     }
                                 }

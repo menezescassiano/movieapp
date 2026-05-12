@@ -13,6 +13,9 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getMovies(): List<Movie> =
         apiService.getMovies()
 
+    override suspend fun searchMovies(query: String): List<Movie> =
+        apiService.searchMovies(query)
+
     override suspend fun getMovieById(movieId: String): Movie? =
         apiService.getMovieById(movieId)
 
@@ -26,5 +29,4 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getFavoriteMovies(): List<Movie> =
         apiService.getFavoriteMovies()
-    
 }

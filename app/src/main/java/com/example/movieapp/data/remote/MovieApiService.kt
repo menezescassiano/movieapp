@@ -5,11 +5,15 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MovieApiService {
 
     @GET("movies")
     suspend fun getMovies(): List<Movie>
+
+    @GET("movies/search")
+    suspend fun searchMovies(@Query("q") query: String): List<Movie>
 
     @GET("movies/{id}")
     suspend fun getMovieById(@Path("id") movieId: String): Movie

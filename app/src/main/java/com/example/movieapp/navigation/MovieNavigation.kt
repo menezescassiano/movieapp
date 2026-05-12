@@ -1,5 +1,7 @@
 package com.example.movieapp.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +18,14 @@ import com.example.movieapp.screens.qrcode.QrCodeReaderScreen
 @Composable
 fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
 
-    NavHost(navController = navController, startDestination = HomeRoute) {
+    NavHost(
+        navController = navController,
+        startDestination = HomeRoute,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
+    ) {
 
         composable<HomeRoute> {
             HomeScreen(navController = navController, modifier = modifier.fillMaxSize())

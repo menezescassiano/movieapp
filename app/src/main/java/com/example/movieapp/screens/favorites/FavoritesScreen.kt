@@ -1,5 +1,9 @@
 package com.example.movieapp.screens.favorites
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -68,39 +72,48 @@ fun FavoritesScreenContent(
             )
         )
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            when {
-                uiState.errorMessage != null -> {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(uiState.errorMessage)
-                        Button(onClick = onRetry) { Text("Retry") }
+        AnimatedContent(
+            targetState = uiState,
+            transitionSpec = { fadeIn() togetherWith fadeOut() },
+            contentKey = { it.isLoading || it.errorMessage != null || it.movies.isEmpty() },
+            label = "FavoritesTransition"
+        ) { state ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                when {
+                    state.errorMessage != null -> {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(state.errorMessage, color = Color.White)
+                            Button(onClick = onRetry) { Text("Retry") }
+                        }
                     }
-                }
 
-                uiState.movies.isEmpty() && !uiState.isLoading -> {
-                    Text(
-                        text = "No favorites yet",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+                    state.movies.isEmpty() && !state.isLoading -> {
+                        Text(
+                            text = "No favorites yet",
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
 
-                else -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(items = uiState.movies) { movie ->
-                            MovieRow(
-                                movie = movie,
-                                onItemClick = { onMovieClick(movie) }
-                            )
+                    else -> {
+                        LazyColumn(modifier = Modifier.fillMaxSize()) {
+                            items(items = state.movies, key = { it.id }) { movie ->
+                                MovieRow(
+                                    movie = movie,
+                                    onItemClick = { onMovieClick(movie) },
+                                    modifier = Modifier.animateItem()
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            if (uiState.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                if (state.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
             }
         }
     }
