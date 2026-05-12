@@ -19,6 +19,17 @@
     <string name="search_bar_placeholder">Search…</string>
     <string name="search_bar_clear">Clear search</string>
 
+    <!-- Profile Screen -->
+    <string name="profile_picture_description">Profile picture</string>
+    <string name="profile_subtitle">Movie enthusiast</string>
+    <string name="profile_label_name">Name</string>
+    <string name="profile_label_email">Email</string>
+    <string name="profile_label_city">City</string>
+    <string name="profile_retry">Retry</string>
+    <string name="profile_avatar_picker_title">Profile photo</string>
+    <string name="profile_avatar_take_photo">Take a photo</string>
+    <string name="profile_avatar_choose_gallery">Choose from gallery</string>
+
     <!-- Details Screen -->
     <string name="details_title">Movie\'s details</string>
     <string name="details_back">Back</string>

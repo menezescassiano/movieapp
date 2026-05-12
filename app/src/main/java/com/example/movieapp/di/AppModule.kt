@@ -2,6 +2,7 @@ package com.example.movieapp.di
 
 import com.example.movieapp.BuildConfig
 import com.example.movieapp.data.remote.MovieApiService
+import com.example.movieapp.data.remote.UserApiService
 import com.example.movieapp.domain.GetMovieByIdUseCase
 import com.example.movieapp.domain.GetMoviesUseCase
 import com.example.movieapp.data.MovieRepository
@@ -18,8 +19,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-
 
     @Provides
     @Singleton
@@ -48,6 +47,11 @@ object AppModule {
     @Singleton
     fun provideMovieApiService(retrofit: Retrofit): MovieApiService =
         retrofit.create(MovieApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserApiService(retrofit: Retrofit): UserApiService =
+        retrofit.create(UserApiService::class.java)
 
     @Provides
     fun provideGetMoviesUseCase(repository: MovieRepository): GetMoviesUseCase =
