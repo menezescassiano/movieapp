@@ -33,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.movieapp.model.Movie
-import com.example.movieapp.model.getMoviesList
 import com.example.movieapp.navigation.DetailsRoute
 import com.example.movieapp.navigation.QrCodeRoute
 import com.example.movieapp.ui.theme.AccentPurple
@@ -110,7 +109,7 @@ fun HomeScreen(
 @Composable
 fun MainContent(
     navController: NavController,
-    moviesList: List<Movie> = getMoviesList()
+    moviesList: List<Movie>
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),

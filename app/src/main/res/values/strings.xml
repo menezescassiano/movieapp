@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Movie App</string>
+
+    <!-- Movie Row / Movie Card -->
+    <string name="movie_row_poster_description">Movie Poster</string>
+    <string name="movie_row_favorited_description">Favorited</string>
+    <string name="movie_row_director">Director: %1$s</string>
+    <string name="movie_row_released">Released: %1$s</string>
+    <string name="movie_row_see_more">See More</string>
+
+    <!-- Details Screen -->
+    <string name="details_title">Movie\'s details</string>
+    <string name="details_back">Back</string>
+    <string name="details_error">Error: %1$s</string>
+    <string name="details_favorite">Favorite</string>
+    <string name="details_movie_image">Movie Image %1$d</string>
+    <string name="details_casting">Casting: %1$s</string>
 </resources>

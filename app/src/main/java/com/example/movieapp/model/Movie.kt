@@ -16,7 +16,7 @@ data class Movie(
 
 fun getMoviesList(): List<Movie> {
     return listOf(
-        Movie(id = "tt0499549",
+        Movie(id = "1",
             title = "Avatar",
             year = "2009",
             genre = "Action, Adventure, Fantasy",
@@ -32,7 +32,7 @@ fun getMoviesList(): List<Movie> {
             rating = "7.9",
             favorite = true),
 
-        Movie(id = "tt0416449",
+        Movie(id = "2",
             title = "300",
             year = "2006",
             genre = "Action, Drama, Fantasy",
@@ -47,7 +47,7 @@ fun getMoviesList(): List<Movie> {
             ),
             rating = "7.7"),
 
-        Movie(id = "tt0848228",
+        Movie(id = "3",
             title = "The Avengers",
             year = "2012",
             genre = "Action, Sci-Fi, Thriller",
@@ -62,7 +62,7 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTc3MzQ3NjA5N15BMl5BanBnXkFtZTcwMzY5OTY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg"),
             rating = "8.1"),
 
-        Movie(id = "tt0993846",
+        Movie(id = "4",
             title = "The Wolf of Wall Street",
             year = "2013",
             genre = "Biography, Comedy, Crime",
@@ -77,7 +77,7 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgzMTg4MDI0Ml5BMl5BanBnXkFtZTgwOTY0MzQ4MDE@._V1_SY1000_CR0,0,1553,1000_AL_.jpg"),
             rating = "8.2"),
 
-        Movie(id = "tt0816692",
+        Movie(id = "5",
             title = "Interstellar",
             year = "2014",
             genre = "Adventure, Drama, Sci-Fi",
@@ -91,7 +91,7 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMzE3MTM0MTc3Ml5BMl5BanBnXkFtZTgwMDIyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BNjYzNjE2NDk3N15BMl5BanBnXkFtZTgwNzEyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
             rating = "8.6"),
-        Movie(id = "tt0944947",
+        Movie(id = "6",
             title = "Game of Thrones",
             year = "2011 - 2018",
             genre = "Adventure, Drama, Fantasy",
@@ -107,7 +107,7 @@ fun getMoviesList(): List<Movie> {
             rating = "9.5"),
 
 
-        Movie(id = "tt2306299",
+        Movie(id = "7",
             title = "Vikings",
             year = "2013–2020",
             genre = "Action, Drama, History",
@@ -122,7 +122,7 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTcxOTQ3NTA5N15BMl5BanBnXkFtZTgwMzExMDUxODE@._V1_SY1000_SX1500_AL_.jpg"),
             rating = "9.5"),
 
-        Movie(id = "tt0903747",
+        Movie(id = "8",
             title = "Breaking Bad",
             year = "2008–2013",
             genre = "Crime, Drama, Thriller",
@@ -137,7 +137,7 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMjA5MTE3MTgwMF5BMl5BanBnXkFtZTgwOTQxMjUzMDE@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
             rating = "9.5"),
 
-        Movie(id = "tt2707408",
+        Movie(id = "9",
             title = "Narcos",
             year = "2015-",
             genre = "Biography, Crime, Drama",

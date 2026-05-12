@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,7 +22,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,15 +33,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.movieapp.R
 import com.example.movieapp.model.Movie
 import com.example.movieapp.model.getMoviesList
 import com.example.movieapp.ui.theme.CardDark
@@ -74,29 +73,28 @@ fun MovieRow(movie: Movie, onItemClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            Surface(
-                modifier = Modifier.padding(12.dp),
-                shape = RectangleShape,
-                tonalElevation = 4.dp,
-                color = Color.Transparent
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(movie.images.first())
-                        .crossfade(true)
-                        .size(400)
-                        .build(),
-                    contentDescription = "Movie Poster",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(96.dp)
-                        .clip(CircleShape)
-                )
-            }
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(movie.poster.replace("http://", "https://"))
+                    .crossfade(true)
+                    .build(),
+                contentDescription = stringResource(R.string.movie_row_poster_description),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .padding(12.dp)
+                    .size(width = 60.dp, height = 85.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
             Column(modifier = Modifier.padding(4.dp)) {
                 Text(movie.title, style = MaterialTheme.typography.titleMedium)
-                Text("Director: ${movie.director}", style = MaterialTheme.typography.bodyMedium)
-                Text("Released: ${movie.year}", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    stringResource(R.string.movie_row_director, movie.director),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    stringResource(R.string.movie_row_released, movie.year),
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
                 AnimatedVisibility(visible = expanded) {
                     Column {
@@ -106,7 +104,7 @@ fun MovieRow(movie: Movie, onItemClick: () -> Unit) {
 
                 Icon(
                     imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = "See More",
+                    contentDescription = stringResource(R.string.movie_row_see_more),
                     modifier = Modifier
                         .size(25.dp)
                         .clickable { expanded = !expanded }
@@ -119,7 +117,6 @@ fun MovieRow(movie: Movie, onItemClick: () -> Unit) {
 // ---------------------------------------------------------------------------
 // New poster card — used in the HomeScreen grid
 // ---------------------------------------------------------------------------
-
 
 @Composable
 fun MovieCard(movie: Movie, onItemClick: () -> Unit) {
@@ -174,7 +171,7 @@ fun MovieCard(movie: Movie, onItemClick: () -> Unit) {
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Star,
-                            contentDescription = "Favorited",
+                            contentDescription = stringResource(R.string.movie_row_favorited_description),
                             tint = StarGold,
                             modifier = Modifier.size(14.dp)
                         )

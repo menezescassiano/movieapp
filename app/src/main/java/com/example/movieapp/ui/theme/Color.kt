@@ -18,3 +18,5 @@ val NavUnselected  = Color(0xFF6B6B80)   // unselected nav items
 val CardDark       = Color(0xFF1E1E2E)   // movie card background
 val YearBadgeBg    = Color(0xFF2A2A3C)   // year badge background
 val StarGold       = Color(0xFFFFC940)   // favorite star
+val ShimmerBase    = Color(0xFF2A2A2A)   // skeleton shimmer base
+val ShimmerHighlight = Color(0xFF3D3D3D) // skeleton shimmer highlight
