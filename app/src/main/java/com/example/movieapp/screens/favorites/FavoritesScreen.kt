@@ -31,7 +31,7 @@ import androidx.navigation.NavController
 import com.example.movieapp.model.Movie
 import com.example.movieapp.model.getMoviesList
 import com.example.movieapp.navigation.DetailsRoute
-import com.example.movieapp.screens.home.MovieRow
+import com.example.movieapp.ui.components.MovieRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

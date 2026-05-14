@@ -62,6 +62,7 @@ import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.movieapp.model.getMoviesList
+import com.example.movieapp.ui.components.BodyText
 import com.example.movieapp.ui.theme.AppBackground
 import com.example.movieapp.ui.theme.ShimmerBase
 import com.example.movieapp.ui.theme.ShimmerHighlight
@@ -208,20 +209,14 @@ fun DetailsScreenContent(
                                     }
                                 }
                                 Spacer(modifier = Modifier.padding(8.dp))
-                                Text(
-                                    text = movie.description,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier,
-                                    color = Color.White.copy(alpha = 0.8f)
-                                )
+                                BodyText(text = movie.description)
                                 Spacer(modifier = Modifier.padding(8.dp))
-                                Text(
-                                    text = stringResource(R.string.details_casting, movie.actors),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier,
-                                    color = Color.White.copy(alpha = 0.8f)
+                                BodyText(
+                                    text = stringResource(
+                                        R.string.details_casting,
+                                        movie.actors
+                                    )
                                 )
-
                             }
                         }
 

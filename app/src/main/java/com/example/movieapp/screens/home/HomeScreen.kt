@@ -43,7 +43,10 @@ import com.example.movieapp.model.Movie
 import com.example.movieapp.R
 import com.example.movieapp.navigation.DetailsRoute
 import com.example.movieapp.navigation.QrCodeRoute
+import com.example.movieapp.ui.components.BodyText
+import com.example.movieapp.ui.components.MovieCard
 import com.example.movieapp.ui.components.MovieSearchBar
+import com.example.movieapp.ui.components.TitleText
 import com.example.movieapp.ui.theme.AccentPurple
 import com.example.movieapp.ui.theme.AppBackground
 
@@ -153,14 +156,9 @@ fun MainContent(
                     .padding(top = 24.dp, bottom = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.home_title),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White
-                )
-                Text(
+                TitleText(stringResource(R.string.home_title))
+                BodyText(
                     text = stringResource(R.string.home_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.55f)
                 )
                 MovieSearchBar(
