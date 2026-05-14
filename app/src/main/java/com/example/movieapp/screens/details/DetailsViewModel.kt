@@ -27,7 +27,7 @@ class DetailsViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
                 val movie = getMovieByIdUseCase(movieId)
-                _uiState.value = _uiState.value.copy(isLoading = false, movie = movie)
+                _uiState.value = _uiState.value.copy(isLoading = false, movie = movie, errorMessage = null)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
             }
@@ -43,6 +43,7 @@ class DetailsViewModel @Inject constructor(
             try {
                 if (isFavorite) unfavoriteMovieUseCase(movieId)
                 else favoriteMovieUseCase(movieId)
+                _uiState.value = _uiState.value.copy(errorMessage = null)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     movie = _uiState.value.movie?.copy(favorite = isFavorite),

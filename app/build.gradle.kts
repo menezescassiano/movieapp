@@ -1,9 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
 }
 
@@ -24,7 +23,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
+            buildConfigField("String", "BASE_URL", "\"http://192.168.0.212:8080/\"")
         }
         release {
             isMinifyEnabled = false
@@ -38,9 +37,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -66,12 +62,12 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.mlkit.vision)
-    // Hilt com kapt
+
+    // Hilt with KSP
     implementation(libs.hilt.android)
     implementation(libs.play.services.mlkit.barcode.scanning)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
-
 
     // Retrofit + OkHttp
     implementation(libs.retrofit)
@@ -80,6 +76,8 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
