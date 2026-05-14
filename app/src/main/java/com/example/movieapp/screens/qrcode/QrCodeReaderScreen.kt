@@ -19,10 +19,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.foundation.background
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.movieapp.ui.theme.AccentPurple
+import com.example.movieapp.ui.theme.AppBackground
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -140,17 +145,23 @@ fun QrCodeReaderScreen(
     }
 
     Scaffold(
+        containerColor = AppBackground,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Scan QR code") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = AppBackground,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         }
     ) { innerPadding ->
@@ -182,21 +193,24 @@ fun QrCodeReaderScreen(
                     }
                 )
                 // Overlay de guia do QR
-                QrScannerOverlay(modifier = Modifier.fillMaxSize())
+                QrScannerOverlay(
+                    modifier = Modifier.fillMaxSize(),
+                    borderColor = AccentPurple
+                )
 
                 Box(
                     modifier = Modifier.align(Alignment.Center)
                 ) {
                     if (showCheck) {
                         StatusBubble(
-                            backgroundColor = Color(0xFF4CAF50),
+                            backgroundColor = AccentPurple,
                             icon = Icons.Default.Check,
                             contentDescription = "QR code read successfully",
                             message = "Success"
                         )
                     } else if (showError) {
                         StatusBubble(
-                            backgroundColor = Color(0xFFFF0000),
+                            backgroundColor = Color(0xFFCF6679),
                             icon = Icons.Default.Error,
                             contentDescription = "QR code not found",
                             message = "Not Found"
@@ -215,16 +229,23 @@ private fun PermissionRationale(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.background(AppBackground),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Camera permission is required to scan QR codes.",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.White
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRequestAgain) {
+        Button(
+            onClick = onRequestAgain,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AccentPurple,
+                contentColor = Color.White
+            )
+        ) {
             Text("Grant permission")
         }
     }
