@@ -1,19 +1,22 @@
-package com.example.movieapp.ui.components
+package com.example.movieapp.ui.components.text
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun BodyText(
+fun TitleText(
     text: String,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
-    color: Color = Color.White.copy(alpha = 0.8f)
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.headlineMedium,
+    color: Color = Color.White,
 ) {
     Text(
+        modifier = modifier,
         text = text,
         style = style,
         color = color
@@ -22,6 +25,6 @@ fun BodyText(
 
 @Preview
 @Composable
-fun BodyTextPreview() {
-    BodyText(text = "This is a body text")
+fun TitleTextPreview() {
+    TitleText(text = "Breaking Bad")
 }

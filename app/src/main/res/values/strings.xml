@@ -43,4 +43,7 @@
     <string name="details_favorite">Favorite</string>
     <string name="details_movie_image">Movie Image %1$d</string>
     <string name="details_casting">Casting: %1$s</string>
+    <string name="details_synopsis">SYNOPSIS</string>
+    <string name="details_director">DIRECTOR</string>
+    <string name="details_cast">CAST</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.movieapp.ui.components
+package com.example.movieapp.ui.components.text
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -8,10 +8,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TitleText(
+fun BodyText(
     text: String,
-    style: TextStyle = MaterialTheme.typography.headlineMedium,
-    color: Color = Color.White
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    color: Color = Color.White.copy(alpha = 0.8f)
 ) {
     Text(
         text = text,
@@ -22,6 +22,6 @@ fun TitleText(
 
 @Preview
 @Composable
-fun TitleTextPreview() {
-    TitleText(text = "Breaking Bad")
+fun BodyTextPreview() {
+    BodyText(text = "This is a body text")
 }

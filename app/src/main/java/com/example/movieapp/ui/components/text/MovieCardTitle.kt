@@ -1,4 +1,4 @@
-package com.example.movieapp.ui.components
+package com.example.movieapp.ui.components.text
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme

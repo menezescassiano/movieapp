@@ -5,13 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
@@ -38,6 +38,9 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,6 +57,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import com.example.movieapp.R
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,8 +66,12 @@ import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.movieapp.model.getMoviesList
-import com.example.movieapp.ui.components.BodyText
+import com.example.movieapp.ui.components.FavoriteButton
+import com.example.movieapp.ui.components.badge.GenreChip
+import com.example.movieapp.ui.components.text.BodyText
+import com.example.movieapp.ui.components.text.TitleText
 import com.example.movieapp.ui.theme.AppBackground
+import com.example.movieapp.ui.theme.CardDark
 import com.example.movieapp.ui.theme.ShimmerBase
 import com.example.movieapp.ui.theme.ShimmerHighlight
 import com.example.movieapp.ui.theme.StarGold
@@ -124,7 +132,6 @@ fun DetailsScreenContent(
                     .padding(innerPadding),
                 color = AppBackground
             ) {
-
                 when {
                     uiState.isLoading -> {
                         Box(
@@ -142,54 +149,70 @@ fun DetailsScreenContent(
                     else -> {
                         uiState.movie?.let { movie ->
                             Column(
-                                Modifier
+                                modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
                                 verticalArrangement = Arrangement.Top
                             ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
+                                // Title + Favorite button
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    TitleText(
                                         text = movie.title,
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = Color.White
+                                        modifier = Modifier.weight(1f)
                                     )
-                                    val starColor by animateColorAsState(
-                                        targetValue = if (movie.favorite) StarGold else Color.White,
-                                        animationSpec = tween(durationMillis = 300),
-                                        label = "starColor"
+                                    FavoriteButton(
+                                        movie = movie,
+                                        onFavoriteClick = onFavoriteClick
                                     )
-                                    val starScale by animateFloatAsState(
-                                        targetValue = if (movie.favorite) 1f else 0.85f,
-                                        animationSpec = spring(
-                                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                                            stiffness = Spring.StiffnessMedium
-                                        ),
-                                        label = "starScale"
+                                }
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                // Rating + Year row
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Star,
+                                        contentDescription = null,
+                                        tint = StarGold,
+                                        modifier = Modifier
+                                            .width(16.dp)
+                                            .height(16.dp)
                                     )
-                                    IconButton(onClick = onFavoriteClick) {
-                                        Icon(
-                                            imageVector = if (movie.favorite) Icons.Filled.Star else Icons.Outlined.StarOutline,
-                                            contentDescription = stringResource(R.string.details_favorite),
-                                            tint = starColor,
-                                            modifier = Modifier.scale(starScale)
-                                        )
+                                    BodyText(
+                                        text = movie.rating,
+                                        color = StarGold
+                                    )
+                                    BodyText(
+                                        text = movie.year,
+                                        color = Color.White.copy(alpha = 0.6f)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // Genre chips
+                                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    val genres = movie.genre.split(",").map { it.trim() }
+                                    items(genres.size) { index ->
+                                        GenreChip(label = genres[index])
                                     }
                                 }
-                                Spacer(modifier = Modifier.padding(8.dp))
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Image gallery
                                 LazyRow {
                                     items(movie.images.size) { index ->
                                         Card(
                                             modifier = Modifier
-                                                .padding(4.dp)
+                                                .padding(end = 8.dp)
                                                 .width(300.dp)
-                                                .height(240.dp),
+                                                .height(200.dp),
                                             elevation = CardDefaults.cardElevation(),
-                                            onClick = {
-                                                selectedImageUrl = movie.images[index]
-                                            }
+                                            onClick = { selectedImageUrl = movie.images[index] }
                                         ) {
                                             SubcomposeAsyncImage(
                                                 model = ImageRequest.Builder(LocalContext.current)
@@ -208,18 +231,29 @@ fun DetailsScreenContent(
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.padding(8.dp))
-                                BodyText(text = movie.description)
-                                Spacer(modifier = Modifier.padding(8.dp))
-                                BodyText(
-                                    text = stringResource(
-                                        R.string.details_casting,
-                                        movie.actors
-                                    )
-                                )
+
+                                Spacer(modifier = Modifier.height(20.dp))
+
+                                // Synopsis
+                                DetailSection(label = stringResource(R.string.details_synopsis)) {
+                                    BodyText(text = movie.description)
+                                }
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Director
+                                DetailSection(label = stringResource(R.string.details_director)) {
+                                    BodyText(text = movie.director)
+                                }
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Cast
+                                DetailSection(label = stringResource(R.string.details_cast)) {
+                                    BodyText(text = movie.actors)
+                                }
                             }
                         }
-
                     }
                 }
             }
@@ -233,6 +267,19 @@ fun DetailsScreenContent(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun DetailSection(label: String, content: @Composable () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.White.copy(alpha = 0.45f),
+            letterSpacing = 1.5.sp
+        )
+        content()
     }
 }
 

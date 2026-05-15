@@ -34,9 +34,11 @@ class QrCodeReaderViewModel @Inject constructor(
         // Evita processar várias vezes o mesmo QR em sequência
         if (_scanResult.value is QrCodeReaderUiState.Loading) return
 
-        viewModelScope.launch {
-            _scanResult.value = QrCodeReaderUiState.Loading
+        // Definido de forma síncrona para que chamadas consecutivas sejam ignoradas
+        // pelo guard acima antes mesmo da coroutine ser executada
+        _scanResult.value = QrCodeReaderUiState.Loading
 
+        viewModelScope.launch {
             val found = useCase().any { it.id == qrContent }
 
             if (found) {

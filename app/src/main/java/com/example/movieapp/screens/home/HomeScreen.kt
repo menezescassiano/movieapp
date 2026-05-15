@@ -43,10 +43,10 @@ import com.example.movieapp.model.Movie
 import com.example.movieapp.R
 import com.example.movieapp.navigation.DetailsRoute
 import com.example.movieapp.navigation.QrCodeRoute
-import com.example.movieapp.ui.components.BodyText
+import com.example.movieapp.ui.components.text.BodyText
 import com.example.movieapp.ui.components.MovieCard
 import com.example.movieapp.ui.components.MovieSearchBar
-import com.example.movieapp.ui.components.TitleText
+import com.example.movieapp.ui.components.text.TitleText
 import com.example.movieapp.ui.theme.AccentPurple
 import com.example.movieapp.ui.theme.AppBackground
 
