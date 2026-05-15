@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movieapp.domain.GetUserUseCase
 import com.example.movieapp.domain.UpdateUserUseCase
+import com.example.movieapp.domain.UploadProfilePictureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
+    private val uploadProfilePictureUseCase: UploadProfilePictureUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -46,11 +48,33 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onPhotoTaken(uri: Uri) {
-        _uiState.value = _uiState.value.copy(avatarUri = uri, showAvatarPicker = false)
+        _uiState.value = _uiState.value.copy(showAvatarPicker = false)
+        uploadAvatar(uri)
     }
 
     fun onImagePicked(uri: Uri) {
-        _uiState.value = _uiState.value.copy(avatarUri = uri, showAvatarPicker = false)
+        _uiState.value = _uiState.value.copy(showAvatarPicker = false)
+        uploadAvatar(uri)
+    }
+
+    private fun uploadAvatar(uri: Uri) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
+            try {
+                val updatedUser = uploadProfilePictureUseCase(uri)
+                // Keep the local URI for immediate display; the remote URL is now in updatedUser
+                _uiState.value = _uiState.value.copy(
+                    isSaving = false,
+                    avatarUri = uri,
+                    user = updatedUser
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isSaving = false,
+                    errorMessage = e.message ?: "Failed to upload picture"
+                )
+            }
+        }
     }
 
     // Edit field

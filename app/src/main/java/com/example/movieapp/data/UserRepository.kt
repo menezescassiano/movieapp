@@ -1,5 +1,6 @@
 package com.example.movieapp.data
 
+import android.net.Uri
 import com.example.movieapp.model.User
 
 interface UserRepository {
@@ -10,4 +11,5 @@ interface UserRepository {
         city: String,
         profilePictureUrl: String,
     ): User
+    suspend fun uploadProfilePicture(uri: Uri): User
 }

@@ -22,6 +22,5 @@ fun UserDto.toDomain() = User(
 data class UpdateUserRequest(
     @SerializedName("name") val name: String,
     @SerializedName("email") val email: String,
-    @SerializedName("city") val city: String,
-    @SerializedName("profilePictureUrl") val profilePictureUrl: String,
+    @SerializedName("city") val city: String
 )

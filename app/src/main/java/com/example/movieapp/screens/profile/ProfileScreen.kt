@@ -241,9 +241,10 @@ private fun ProfileLoaded(
                 .clickable { onAvatarClick() },
             contentAlignment = Alignment.Center
         ) {
-            if (avatarUri != null) {
+            val avatarModel: Any? = avatarUri ?: user.profilePictureUrl.ifBlank { null }
+            if (avatarModel != null) {
                 AsyncImage(
-                    model = avatarUri,
+                    model = avatarModel,
                     contentDescription = stringResource(R.string.profile_picture_description),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()

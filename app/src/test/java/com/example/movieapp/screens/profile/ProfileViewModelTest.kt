@@ -3,6 +3,7 @@ package com.example.movieapp.screens.profile
 import android.net.Uri
 import com.example.movieapp.domain.GetUserUseCase
 import com.example.movieapp.domain.UpdateUserUseCase
+import com.example.movieapp.domain.UploadProfilePictureUseCase
 import com.example.movieapp.model.User
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,6 +30,7 @@ class ProfileViewModelTest {
 
     private lateinit var getUserUseCase: GetUserUseCase
     private lateinit var updateUserUseCase: UpdateUserUseCase
+    private lateinit var uploadProfilePictureUseCase: UploadProfilePictureUseCase
     private lateinit var viewModel: ProfileViewModel
 
     private val fakeUser = User(
@@ -44,7 +46,8 @@ class ProfileViewModelTest {
         Dispatchers.setMain(testDispatcher)
         getUserUseCase = mockk()
         updateUserUseCase = mockk()
-        viewModel = ProfileViewModel(getUserUseCase, updateUserUseCase)
+        uploadProfilePictureUseCase = mockk()
+        viewModel = ProfileViewModel(getUserUseCase, updateUserUseCase, uploadProfilePictureUseCase)
     }
 
     @After
@@ -140,25 +143,83 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `onPhotoTaken updates avatarUri and hides picker`() {
+    fun `onPhotoTaken hides picker and triggers upload`() = runTest {
         val uri = mockk<Uri>()
+        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
+
         viewModel.onAvatarClick()
         viewModel.onPhotoTaken(uri)
+        advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(uri, state.avatarUri)
         assertFalse(state.showAvatarPicker)
+        assertEquals(uri, state.avatarUri)
+        assertEquals(fakeUser, state.user)
+        assertFalse(state.isSaving)
     }
 
     @Test
-    fun `onImagePicked updates avatarUri and hides picker`() {
+    fun `onImagePicked hides picker and triggers upload`() = runTest {
         val uri = mockk<Uri>()
+        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
+
         viewModel.onAvatarClick()
         viewModel.onImagePicked(uri)
+        advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(uri, state.avatarUri)
         assertFalse(state.showAvatarPicker)
+        assertEquals(uri, state.avatarUri)
+        assertEquals(fakeUser, state.user)
+        assertFalse(state.isSaving)
+    }
+
+    @Test
+    fun `upload success updates profilePictureUrl from server response`() = runTest {
+        val uri = mockk<Uri>()
+        val userWithNewUrl = fakeUser.copy(profilePictureUrl = "https://cdn.example.com/new.jpg")
+        coEvery { uploadProfilePictureUseCase(uri) } returns userWithNewUrl
+
+        viewModel.onPhotoTaken(uri)
+        advanceUntilIdle()
+
+        assertEquals("https://cdn.example.com/new.jpg", viewModel.uiState.value.user?.profilePictureUrl)
+    }
+
+    @Test
+    fun `upload failure sets errorMessage and clears isSaving`() = runTest {
+        val uri = mockk<Uri>()
+        coEvery { uploadProfilePictureUseCase(uri) } throws RuntimeException("Upload failed")
+
+        viewModel.onPhotoTaken(uri)
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals("Upload failed", state.errorMessage)
+        assertFalse(state.isSaving)
+        assertNull(state.avatarUri)
+    }
+
+    @Test
+    fun `upload failure with no message sets generic error`() = runTest {
+        val uri = mockk<Uri>()
+        coEvery { uploadProfilePictureUseCase(uri) } throws RuntimeException()
+
+        viewModel.onPhotoTaken(uri)
+        advanceUntilIdle()
+
+        assertEquals("Failed to upload picture", viewModel.uiState.value.errorMessage)
+    }
+
+    @Test
+    fun `upload calls use case with correct uri`() = runTest {
+        val uri = mockk<Uri>()
+        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
+
+        viewModel.onImagePicked(uri)
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { uploadProfilePictureUseCase(uri) }
     }
 
     // ── edit field ───────────────────────────────────────────────────────
