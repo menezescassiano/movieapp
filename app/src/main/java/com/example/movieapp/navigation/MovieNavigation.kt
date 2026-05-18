@@ -13,6 +13,8 @@ import com.example.movieapp.screens.details.DetailsScreen
 import com.example.movieapp.screens.favorites.FavoritesScreen
 import com.example.movieapp.screens.home.HomeScreen
 import com.example.movieapp.screens.profile.ProfileScreen
+import com.example.movieapp.screens.login.LoginScreen
+import com.example.movieapp.screens.splash.SplashScreen
 import com.example.movieapp.screens.qrcode.QrCodeReaderScreen
 
 @Composable
@@ -20,12 +22,37 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = HomeRoute,
+        startDestination = SplashRoute,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
+
+        composable<SplashRoute> {
+            SplashScreen(
+                onNavigateToHome = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo(SplashRoute) { inclusive = true }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.navigate(LoginRoute) {
+                        popUpTo(SplashRoute) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<LoginRoute> {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo(LoginRoute) { inclusive = true }
+                    }
+                }
+            )
+        }
 
         composable<HomeRoute> {
             HomeScreen(navController = navController, modifier = modifier.fillMaxSize())

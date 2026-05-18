@@ -2,10 +2,12 @@ package com.example.movieapp.screens.root
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -21,6 +23,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,23 +32,35 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBars
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.navigation.FavoritesRoute
 import com.example.movieapp.navigation.HomeRoute
+import com.example.movieapp.navigation.LoginRoute
 import com.example.movieapp.navigation.MovieNavigation
 import com.example.movieapp.navigation.ProfileRoute
+import com.example.movieapp.navigation.SplashRoute
 import com.example.movieapp.ui.theme.AccentPurple
 import com.example.movieapp.ui.theme.AppBackground
 import com.example.movieapp.ui.theme.NavUnselected
 
 @Composable
-fun MovieAppRoot() {
+fun MovieAppRoot(
+    viewModel: RootViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
+
+    // Logout triggered by TokenAuthenticator when refresh fails
+    LaunchedEffect(Unit) {
+        viewModel.logoutEvent.collect {
+            navController.navigate(LoginRoute) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
 
     data class BottomNavItem(
         val route: Any,
@@ -62,11 +77,14 @@ fun MovieAppRoot() {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val showBottomBar = currentDestination?.hierarchy?.none {
+        it.hasRoute(LoginRoute::class) || it.hasRoute(SplashRoute::class)
+    } == true
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             bottomBar = {
-                NavigationBar(
+                if (showBottomBar) NavigationBar(
                     modifier = Modifier.height(100.dp),
                     containerColor = AppBackground,
                     tonalElevation = 0.dp

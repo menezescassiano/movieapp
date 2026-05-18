@@ -3,6 +3,8 @@ package com.example.movieapp.screens.profile
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movieapp.data.SessionManager
+import com.example.movieapp.data.TokenStore
 import com.example.movieapp.domain.GetUserUseCase
 import com.example.movieapp.domain.UpdateUserUseCase
 import com.example.movieapp.domain.UploadProfilePictureUseCase
@@ -18,6 +20,8 @@ class ProfileViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
     private val uploadProfilePictureUseCase: UploadProfilePictureUseCase,
+    private val tokenStore: TokenStore,
+    private val sessionManager: SessionManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -95,6 +99,11 @@ class ProfileViewModel @Inject constructor(
         }
         _uiState.value = _uiState.value.copy(user = updated, editingField = null)
         saveProfile(updated.name, updated.email, updated.city, updated.profilePictureUrl)
+    }
+
+    fun logout() {
+        tokenStore.clear()
+        sessionManager.logout()
     }
 
     private fun saveProfile(

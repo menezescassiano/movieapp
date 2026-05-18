@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material3.Button
@@ -106,7 +107,8 @@ fun ProfileScreen(
         onRetry = viewModel::loadProfile,
         onEditField = viewModel::onEditField,
         onEditFieldDismiss = viewModel::onEditFieldDismiss,
-        onEditFieldConfirm = viewModel::onEditFieldConfirm
+        onEditFieldConfirm = viewModel::onEditFieldConfirm,
+        onLogout = viewModel::logout
     )
 }
 
@@ -121,7 +123,8 @@ private fun ProfileContent(
     onRetry: () -> Unit,
     onEditField: (EditableField) -> Unit,
     onEditFieldDismiss: () -> Unit,
-    onEditFieldConfirm: (EditableField, String) -> Unit
+    onEditFieldConfirm: (EditableField, String) -> Unit,
+    onLogout: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -171,6 +174,7 @@ private fun ProfileContent(
                         avatarUri = state.avatarUri,
                         onAvatarClick = onAvatarClick,
                         onEditField = onEditField,
+                        onLogout = onLogout,
                         topPadding = WindowInsets.statusBars
                     )
                 }
@@ -220,6 +224,7 @@ private fun ProfileLoaded(
     avatarUri: Uri?,
     onAvatarClick: () -> Unit,
     onEditField: (EditableField) -> Unit,
+    onLogout: () -> Unit,
     topPadding: WindowInsets = WindowInsets(0)
 ) {
     Column(
@@ -310,6 +315,40 @@ private fun ProfileLoaded(
                 label = stringResource(R.string.profile_label_city),
                 value = user.city,
                 onClick = { onEditField(EditableField.CITY) }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0xFF2A1A1A))
+                .clickable { onLogout() }
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color(0xFFE53935).copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = null,
+                    tint = Color(0xFFE53935),
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = stringResource(R.string.profile_logout),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFFE53935)
             )
         }
 
@@ -455,6 +494,7 @@ fun ProfileScreenPreview() {
         onRetry = {},
         onEditField = {},
         onEditFieldDismiss = {},
-        onEditFieldConfirm = { _, _ -> }
+        onEditFieldConfirm = { _, _ -> },
+        onLogout = {}
     )
 }

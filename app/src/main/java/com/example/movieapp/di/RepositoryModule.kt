@@ -1,5 +1,7 @@
 package com.example.movieapp.di
 
+import com.example.movieapp.data.AuthRepository
+import com.example.movieapp.data.AuthRepositoryImpl
 import com.example.movieapp.data.ContentResolverUriReader
 import com.example.movieapp.data.MovieRepository
 import com.example.movieapp.data.MovieRepositoryImpl
@@ -27,6 +29,12 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         impl: UserRepositoryImpl
     ): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        impl: AuthRepositoryImpl
+    ): AuthRepository
 
     @Binds
     @Singleton
