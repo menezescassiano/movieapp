@@ -103,7 +103,7 @@ fun FavoritesScreenContent(
                             items(items = state.movies, key = { it.id }) { movie ->
                                 MovieRow(
                                     movie = movie,
-                                    onItemClick = { onMovieClick(movie) },
+                                    onItemClick = { },
                                     modifier = Modifier.animateItem()
                                 )
                             }

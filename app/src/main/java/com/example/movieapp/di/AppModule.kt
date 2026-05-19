@@ -1,5 +1,7 @@
 package com.example.movieapp.di
 
+import android.content.Context
+import coil.ImageLoader
 import com.example.movieapp.BuildConfig
 import com.example.movieapp.data.remote.AuthApiService
 import com.example.movieapp.data.remote.AuthInterceptor
@@ -12,6 +14,7 @@ import com.example.movieapp.data.MovieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -94,6 +97,16 @@ object AppModule {
     @Singleton
     fun provideAuthApiService(retrofit: Retrofit): AuthApiService =
         retrofit.create(AuthApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideImageLoader(
+        @ApplicationContext context: Context,
+        okHttpClient: OkHttpClient
+    ): ImageLoader =
+        ImageLoader.Builder(context)
+            .okHttpClient(okHttpClient)
+            .build()
 
     @Provides
     fun provideGetMoviesUseCase(repository: MovieRepository): GetMoviesUseCase =

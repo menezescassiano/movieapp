@@ -1,6 +1,8 @@
 package com.example.movieapp.screens.profile
 
 import android.net.Uri
+import com.example.movieapp.data.SessionManager
+import com.example.movieapp.data.TokenStore
 import com.example.movieapp.domain.GetUserUseCase
 import com.example.movieapp.domain.UpdateUserUseCase
 import com.example.movieapp.domain.UploadProfilePictureUseCase
@@ -31,6 +33,8 @@ class ProfileViewModelTest {
     private lateinit var getUserUseCase: GetUserUseCase
     private lateinit var updateUserUseCase: UpdateUserUseCase
     private lateinit var uploadProfilePictureUseCase: UploadProfilePictureUseCase
+    private lateinit var tokenStore: TokenStore
+    private lateinit var sessionManager: SessionManager
     private lateinit var viewModel: ProfileViewModel
 
     private val fakeUser = User(
@@ -47,7 +51,9 @@ class ProfileViewModelTest {
         getUserUseCase = mockk()
         updateUserUseCase = mockk()
         uploadProfilePictureUseCase = mockk()
-        viewModel = ProfileViewModel(getUserUseCase, updateUserUseCase, uploadProfilePictureUseCase)
+        tokenStore = mockk(relaxed = true)
+        sessionManager = mockk(relaxed = true)
+        viewModel = ProfileViewModel(getUserUseCase, updateUserUseCase, uploadProfilePictureUseCase, tokenStore, sessionManager)
     }
 
     @After

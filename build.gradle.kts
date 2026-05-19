@@ -6,3 +6,21 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt.android) apply false
 }
+
+/**
+ * Runs all unit tests across every subproject.
+ *
+ * Usage:
+ *   ./gradlew testAll
+ *   ./gradlew testAll --continue          # keeps going even if a module fails
+ */
+tasks.register("testAll") {
+    group = "verification"
+    description = "Runs all unit tests across all subprojects."
+
+    dependsOn(
+        subprojects.mapNotNull { sub ->
+            sub.tasks.findByName("testDebugUnitTest")
+        }
+    )
+}
