@@ -14,6 +14,7 @@ import com.example.movieapp.screens.favorites.FavoritesScreen
 import com.example.movieapp.screens.home.HomeScreen
 import com.example.movieapp.screens.profile.ProfileScreen
 import com.example.movieapp.screens.login.LoginScreen
+import com.example.movieapp.screens.signup.SignUpScreen
 import com.example.movieapp.screens.splash.SplashScreen
 import com.example.movieapp.screens.qrcode.QrCodeReaderScreen
 import com.example.movieapp.screens.settings.SettingsScreen
@@ -51,6 +52,22 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
                     navController.navigate(HomeRoute) {
                         popUpTo(LoginRoute) { inclusive = true }
                     }
+                },
+                onSignUpClick = {
+                    navController.navigate(SignUpRoute)
+                }
+            )
+        }
+
+        composable<SignUpRoute> {
+            SignUpScreen(
+                onSignUpSuccess = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo(SignUpRoute) { inclusive = true }
+                    }
+                },
+                onLoginClick = {
+                    navController.navigateUp()
                 }
             )
         }

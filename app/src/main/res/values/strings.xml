@@ -51,6 +51,29 @@
     <string name="login_error_invalid_credentials">Incorrect email or password</string>
     <string name="login_error_no_network">No internet connection. Please try again.</string>
     <string name="login_error_generic">Something went wrong. Please try again.</string>
+    <string name="login_signup_prompt">Don\'t have an account?</string>
+    <string name="login_signup_action">Sign up</string>
+
+    <!-- Sign Up Screen -->
+    <string name="signup_title">Create account.</string>
+    <string name="signup_subtitle">Join us and start watching.</string>
+    <string name="signup_label_name">Name</string>
+    <string name="signup_label_email">Email</string>
+    <string name="signup_label_password">Password</string>
+    <string name="signup_label_confirm_password">Confirm password</string>
+    <string name="signup_placeholder_name">Your full name</string>
+    <string name="signup_placeholder_email">your@email.com</string>
+    <string name="signup_placeholder_password">At least 8 characters</string>
+    <string name="signup_placeholder_confirm_password">Repeat your password</string>
+    <string name="signup_button_create">Create account</string>
+    <string name="signup_login_prompt">Already have an account?</string>
+    <string name="signup_login_action">Sign in</string>
+    <string name="signup_error_empty_name">Name cannot be empty</string>
+    <string name="signup_error_invalid_email">Enter a valid email</string>
+    <string name="signup_error_short_password">Password must be at least 8 characters</string>
+    <string name="signup_error_password_mismatch">Passwords do not match</string>
+    <string name="signup_error_email_in_use">This email is already registered</string>
+    <string name="signup_error_generic">Something went wrong. Please try again.</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>

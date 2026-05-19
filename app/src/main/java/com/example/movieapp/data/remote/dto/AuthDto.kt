@@ -18,6 +18,12 @@ data class LoginRequest(
     @SerializedName("password") val password: String
 )
 
+data class RegisterRequest(
+    @SerializedName("name") val name: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("password") val password: String
+)
+
 data class LoginResponse(
     @SerializedName("tokens") val tokens: TokensDto,
     @SerializedName("user") val user: UserDto

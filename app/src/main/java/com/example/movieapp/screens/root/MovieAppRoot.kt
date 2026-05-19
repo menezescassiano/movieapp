@@ -42,6 +42,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.navigation.FavoritesRoute
 import com.example.movieapp.navigation.HomeRoute
 import com.example.movieapp.navigation.LoginRoute
+import com.example.movieapp.navigation.SignUpRoute
 import com.example.movieapp.navigation.MovieNavigation
 import com.example.movieapp.navigation.ProfileRoute
 import com.example.movieapp.navigation.SettingsRoute
@@ -82,7 +83,7 @@ fun MovieAppRoot(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val showBottomBar = currentDestination?.hierarchy?.none {
-        it.hasRoute(LoginRoute::class) || it.hasRoute(SplashRoute::class)
+        it.hasRoute(LoginRoute::class) || it.hasRoute(SplashRoute::class) || it.hasRoute(SignUpRoute::class)
     } == true
 
     Box(modifier = Modifier.fillMaxSize()) {

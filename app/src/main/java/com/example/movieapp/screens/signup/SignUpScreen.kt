@@ -1,10 +1,10 @@
-package com.example.movieapp.screens.login
+package com.example.movieapp.screens.signup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Snackbar
@@ -38,10 +40,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,56 +61,67 @@ import com.example.movieapp.ui.theme.CardDark
 import com.example.movieapp.ui.theme.NavUnselected
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit = {},
-    onSignUpClick: () -> Unit = {},
-    viewModel: LoginViewModel = hiltViewModel()
+fun SignUpScreen(
+    onSignUpSuccess: () -> Unit = {},
+    onLoginClick: () -> Unit = {},
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (uiState.loginSuccess) {
-        onLoginSuccess()
+    if (uiState.signUpSuccess) {
+        onSignUpSuccess()
         return
     }
 
-    val invalidEmailMsg = stringResource(R.string.login_error_invalid_email)
-    val emptyPasswordMsg = stringResource(R.string.login_error_empty_password)
-    val invalidCredsMsg = stringResource(R.string.login_error_invalid_credentials)
+    val emptyNameMsg = stringResource(R.string.signup_error_empty_name)
+    val invalidEmailMsg = stringResource(R.string.signup_error_invalid_email)
+    val shortPasswordMsg = stringResource(R.string.signup_error_short_password)
+    val passwordMismatchMsg = stringResource(R.string.signup_error_password_mismatch)
+    val emailInUseMsg = stringResource(R.string.signup_error_email_in_use)
     val noNetworkMsg = stringResource(R.string.login_error_no_network)
-    val genericErrorMsg = stringResource(R.string.login_error_generic)
+    val genericErrorMsg = stringResource(R.string.signup_error_generic)
 
     fun mapError(raw: String?): String? = when (raw) {
-        AuthException.InvalidCredentials.message -> invalidCredsMsg
-        AuthException.NoNetwork.message -> noNetworkMsg
-        null -> null
-        else -> genericErrorMsg
+        AuthException.EmailAlreadyInUse.message -> emailInUseMsg
+        AuthException.NoNetwork.message         -> noNetworkMsg
+        null                                    -> null
+        else                                    -> genericErrorMsg
     }
 
-    LoginContent(
+    SignUpContent(
         uiState = uiState,
         errorMessage = mapError(uiState.errorMessage),
+        onNameChange = viewModel::onNameChange,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
+        onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
         onTogglePasswordVisibility = viewModel::onTogglePasswordVisibility,
-        onContinueClick = {
-            viewModel.onContinueClick(invalidEmailMsg, emptyPasswordMsg)
+        onToggleConfirmPasswordVisibility = viewModel::onToggleConfirmPasswordVisibility,
+        onCreateAccountClick = {
+            viewModel.onSignUpClick(
+                emptyNameMsg,
+                invalidEmailMsg,
+                shortPasswordMsg,
+                passwordMismatchMsg
+            )
         },
-        onForgotPasswordClick = viewModel::onForgotPasswordClick,
-        onSignUpClick = onSignUpClick,
+        onLoginClick = onLoginClick,
         onErrorDismissed = viewModel::onErrorDismissed
     )
 }
 
 @Composable
-private fun LoginContent(
-    uiState: LoginUiState,
+private fun SignUpContent(
+    uiState: SignUpUiState,
     errorMessage: String?,
+    onNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
+    onConfirmPasswordChange: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
-    onContinueClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit,
-    onSignUpClick: () -> Unit,
+    onToggleConfirmPasswordVisibility: () -> Unit,
+    onCreateAccountClick: () -> Unit,
+    onLoginClick: () -> Unit,
     onErrorDismissed: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -139,12 +152,12 @@ private fun LoginContent(
 
             // ── Header ───────────────────────────────────────────────────
             TitleText(
-                text = stringResource(R.string.login_title),
+                text = stringResource(R.string.signup_title),
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
             BodyText(
-                text = stringResource(R.string.login_subtitle),
+                text = stringResource(R.string.signup_subtitle),
                 color = NavUnselected
             )
 
@@ -158,12 +171,29 @@ private fun LoginContent(
                     .padding(horizontal = 16.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                // Name
+                CustomTextField(
+                    label = stringResource(R.string.signup_label_name),
+                    value = uiState.name,
+                    onValueChange = onNameChange,
+                    placeholder = stringResource(R.string.signup_placeholder_name),
+                    leadingIcon = Icons.Default.Person,
+                    errorMessage = uiState.nameError,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    )
+                )
+
                 // Email
                 CustomTextField(
-                    label = stringResource(R.string.login_label_email),
+                    label = stringResource(R.string.signup_label_email),
                     value = uiState.email,
                     onValueChange = onEmailChange,
-                    placeholder = stringResource(R.string.login_email_placeholder),
+                    placeholder = stringResource(R.string.signup_placeholder_email),
                     leadingIcon = Icons.Default.Email,
                     errorMessage = uiState.emailError,
                     keyboardOptions = KeyboardOptions(
@@ -177,10 +207,10 @@ private fun LoginContent(
 
                 // Password
                 CustomTextField(
-                    label = stringResource(R.string.login_label_password),
+                    label = stringResource(R.string.signup_label_password),
                     value = uiState.password,
                     onValueChange = onPasswordChange,
-                    placeholder = stringResource(R.string.login_password_placeholder),
+                    placeholder = stringResource(R.string.signup_placeholder_password),
                     leadingIcon = Icons.Default.Lock,
                     trailingIcon = if (uiState.passwordVisible) Icons.Default.VisibilityOff
                     else Icons.Default.Visibility,
@@ -190,12 +220,34 @@ private fun LoginContent(
                     errorMessage = uiState.passwordError,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    )
+                )
+
+                // Confirm password
+                CustomTextField(
+                    label = stringResource(R.string.signup_label_confirm_password),
+                    value = uiState.confirmPassword,
+                    onValueChange = onConfirmPasswordChange,
+                    placeholder = stringResource(R.string.signup_placeholder_confirm_password),
+                    leadingIcon = Icons.Default.Lock,
+                    trailingIcon = if (uiState.confirmPasswordVisible) Icons.Default.VisibilityOff
+                    else Icons.Default.Visibility,
+                    onTrailingIconClick = onToggleConfirmPasswordVisibility,
+                    visualTransformation = if (uiState.confirmPasswordVisible) VisualTransformation.None
+                    else PasswordVisualTransformation(),
+                    errorMessage = uiState.confirmPasswordError,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
-                            onContinueClick()
+                            onCreateAccountClick()
                         }
                     )
                 )
@@ -203,36 +255,26 @@ private fun LoginContent(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // ── Continue button ──────────────────────────────────────────
+            // ── Create account button ────────────────────────────────────
             CustomButton(
-                text = stringResource(R.string.login_button_continue),
-                onClick = onContinueClick,
+                text = stringResource(R.string.signup_button_create),
+                onClick = onCreateAccountClick,
                 modifier = Modifier.fillMaxWidth(),
                 isLoading = uiState.isLoading
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // ── Forgot password ──────────────────────────────────────────
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                LinkButton(
-                    text = stringResource(R.string.login_button_forgot_password),
-                    onClick = onForgotPasswordClick
-                )
-            }
-
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ── Sign up ──────────────────────────────────────────────────
+            // ── Already have an account ──────────────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                BodyText(text = stringResource(R.string.login_signup_prompt))
+                BodyText(text = stringResource(R.string.signup_login_prompt))
                 LinkButton(
-                    text = stringResource(R.string.login_signup_action),
-                    onClick = onSignUpClick
+                    text = stringResource(R.string.signup_login_action),
+                    onClick = onLoginClick
                 )
             }
 
@@ -258,57 +300,69 @@ private fun LoginContent(
 
 @Preview(showBackground = true, backgroundColor = 0xFF12121A)
 @Composable
-private fun LoginScreenPreview() {
-    LoginContent(
-        uiState = LoginUiState(),
+private fun SignUpScreenPreview() {
+    SignUpContent(
+        uiState = SignUpUiState(),
         errorMessage = null,
+        onNameChange = {},
         onEmailChange = {},
         onPasswordChange = {},
+        onConfirmPasswordChange = {},
         onTogglePasswordVisibility = {},
-        onContinueClick = {},
-        onForgotPasswordClick = {},
-        onSignUpClick = {},
-        onErrorDismissed = {}
-    )
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF12121A, name = "Loading")
-@Composable
-private fun LoginScreenLoadingPreview() {
-    LoginContent(
-        uiState = LoginUiState(
-            email = "user@example.com",
-            password = "secret",
-            isLoading = true
-        ),
-        errorMessage = null,
-        onEmailChange = {},
-        onPasswordChange = {},
-        onTogglePasswordVisibility = {},
-        onContinueClick = {},
-        onForgotPasswordClick = {},
-        onSignUpClick = {},
+        onToggleConfirmPasswordVisibility = {},
+        onCreateAccountClick = {},
+        onLoginClick = {},
         onErrorDismissed = {}
     )
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFF12121A, name = "With errors")
 @Composable
-private fun LoginScreenErrorPreview() {
-    LoginContent(
-        uiState = LoginUiState(
+private fun SignUpScreenErrorPreview() {
+    SignUpContent(
+        uiState = SignUpUiState(
+            name = "",
+            nameError = "Name cannot be empty",
             email = "invalid",
             emailError = "Enter a valid email",
-            password = "",
-            passwordError = "Password cannot be empty"
+            password = "123",
+            passwordError = "Password must be at least 8 characters",
+            confirmPassword = "456",
+            confirmPasswordError = "Passwords do not match"
         ),
         errorMessage = null,
+        onNameChange = {},
         onEmailChange = {},
         onPasswordChange = {},
+        onConfirmPasswordChange = {},
         onTogglePasswordVisibility = {},
-        onContinueClick = {},
-        onForgotPasswordClick = {},
-        onSignUpClick = {},
+        onToggleConfirmPasswordVisibility = {},
+        onCreateAccountClick = {},
+        onLoginClick = {},
+        onErrorDismissed = {}
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF12121A, name = "Loading")
+@Composable
+private fun SignUpScreenLoadingPreview() {
+    SignUpContent(
+        uiState = SignUpUiState(
+            name = "Cassiano Menezes",
+            email = "cassiano@email.com",
+            password = "secret",
+            confirmPassword = "secret",
+            isLoading = true
+        ),
+        errorMessage = null,
+        onNameChange = {},
+        onEmailChange = {},
+        onPasswordChange = {},
+        onConfirmPasswordChange = {},
+        onTogglePasswordVisibility = {},
+        onToggleConfirmPasswordVisibility = {},
+        onCreateAccountClick = {},
+        onLoginClick = {},
         onErrorDismissed = {}
     )
 }
