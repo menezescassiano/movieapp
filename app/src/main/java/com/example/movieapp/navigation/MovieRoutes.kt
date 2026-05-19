@@ -22,3 +22,6 @@ object FavoritesRoute
 
 @Serializable
 object LoginRoute
+
+@Serializable
+object SettingsRoute

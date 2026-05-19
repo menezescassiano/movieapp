@@ -7,6 +7,12 @@ data class RefreshRequest(
     @SerializedName("refreshToken") val refreshToken: String
 )
 
+data class RefreshResponse(
+    @SerializedName("accessToken") val accessToken: String,
+    @SerializedName("refreshToken") val refreshToken: String,
+    @SerializedName("expiresIn") val expiresIn: Int
+)
+
 data class LoginRequest(
     @SerializedName("email") val email: String,
     @SerializedName("password") val password: String

@@ -38,13 +38,18 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun logout() {
+        tokenLocalDataSource.clear()
+        tokenStore.clear()
+    }
+
     override suspend fun restoreToken() {
         val token = tokenLocalDataSource.get() ?: return
         tokenStore.save(token)
     }
 
     override suspend fun hasSavedToken(): Boolean =
-        tokenLocalDataSource.get() != null
+        tokenLocalDataSource.getRefreshToken() != null
 
     override suspend fun getSavedCredentials(): SavedCredentials? =
         credentialsDataSource.get()

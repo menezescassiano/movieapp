@@ -3,9 +3,8 @@ package com.example.movieapp.screens.profile
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movieapp.data.SessionManager
-import com.example.movieapp.data.TokenStore
 import com.example.movieapp.domain.GetUserUseCase
+import com.example.movieapp.domain.LogoutUseCase
 import com.example.movieapp.domain.UpdateUserUseCase
 import com.example.movieapp.domain.UploadProfilePictureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +19,7 @@ class ProfileViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
     private val uploadProfilePictureUseCase: UploadProfilePictureUseCase,
-    private val tokenStore: TokenStore,
-    private val sessionManager: SessionManager,
+    private val logoutUseCase: LogoutUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -102,8 +100,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun logout() {
-        tokenStore.clear()
-        sessionManager.logout()
+        viewModelScope.launch { logoutUseCase() }
     }
 
     private fun saveProfile(

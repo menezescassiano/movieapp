@@ -35,8 +35,6 @@ class TokenAuthenticator @Inject constructor(
                 .build()
         }
 
-        // runBlocking is intentional: OkHttp calls authenticate() on a background
-        // thread, so blocking here is safe and avoids callback complexity.
         val refreshToken = runBlocking { tokenLocalDataSource.getRefreshToken() }
         if (refreshToken == null) {
             sessionManager.logout()
@@ -45,7 +43,7 @@ class TokenAuthenticator @Inject constructor(
 
         val newTokens = runBlocking {
             try {
-                authApiService.refresh(RefreshRequest(refreshToken)).tokens
+                authApiService.refresh(RefreshRequest(refreshToken))
             } catch (e: Exception) {
                 null
             }

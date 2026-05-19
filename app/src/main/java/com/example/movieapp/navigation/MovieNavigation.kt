@@ -16,6 +16,7 @@ import com.example.movieapp.screens.profile.ProfileScreen
 import com.example.movieapp.screens.login.LoginScreen
 import com.example.movieapp.screens.splash.SplashScreen
 import com.example.movieapp.screens.qrcode.QrCodeReaderScreen
+import com.example.movieapp.screens.settings.SettingsScreen
 
 @Composable
 fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
@@ -80,6 +81,13 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
 
         composable<ProfileRoute> {
             ProfileScreen()
+        }
+
+        composable<SettingsRoute> {
+            SettingsScreen(
+                modifier = modifier.fillMaxSize(),
+                onBack = { navController.navigateUp() }
+            )
         }
     }
 }

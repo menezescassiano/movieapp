@@ -52,6 +52,29 @@
     <string name="login_error_no_network">No internet connection. Please try again.</string>
     <string name="login_error_generic">Something went wrong. Please try again.</string>
 
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_back">Back</string>
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_notifications_enable">Enable notifications</string>
+    <string name="settings_notifications_enable_subtitle">Receive updates from the app</string>
+    <string name="settings_notifications_new_releases">New releases</string>
+    <string name="settings_notifications_new_releases_subtitle">Get notified when new movies arrive</string>
+    <string name="settings_notifications_recommendations">Recommendations</string>
+    <string name="settings_notifications_recommendations_subtitle">Personalized suggestions for you</string>
+    <string name="settings_section_biometrics">Security</string>
+    <string name="settings_biometric_enable">Biometric unlock</string>
+    <string name="settings_biometric_enable_subtitle">Use fingerprint or face to open the app</string>
+    <string name="settings_section_content">Content</string>
+    <string name="settings_content_language">Language</string>
+    <string name="settings_content_hide_watched">Hide watched movies</string>
+    <string name="settings_content_hide_watched_subtitle">Filter out movies you\'ve already seen</string>
+    <string name="settings_language_picker_title">Choose language</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_about_version">App version</string>
+    <string name="settings_about_privacy">Privacy policy</string>
+    <string name="settings_about_rate">Rate the app</string>
+
     <!-- Details Screen -->
     <string name="details_title">Movie\'s details</string>
     <string name="details_back">Back</string>

@@ -13,9 +13,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -42,6 +44,7 @@ import com.example.movieapp.navigation.HomeRoute
 import com.example.movieapp.navigation.LoginRoute
 import com.example.movieapp.navigation.MovieNavigation
 import com.example.movieapp.navigation.ProfileRoute
+import com.example.movieapp.navigation.SettingsRoute
 import com.example.movieapp.navigation.SplashRoute
 import com.example.movieapp.ui.theme.AccentPurple
 import com.example.movieapp.ui.theme.AppBackground
@@ -72,7 +75,8 @@ fun MovieAppRoot(
     val bottomItems = listOf(
         BottomNavItem(HomeRoute, "Home", Icons.Filled.Home, Icons.Outlined.Home),
         BottomNavItem(FavoritesRoute, "Favorites", Icons.Filled.Favorite, Icons.Outlined.FavoriteBorder),
-        BottomNavItem(ProfileRoute, "Profile", Icons.Filled.Person, Icons.Outlined.Person)
+        BottomNavItem(ProfileRoute, "Profile", Icons.Filled.Person, Icons.Outlined.Person),
+        BottomNavItem(SettingsRoute, "Settings", Icons.Filled.Settings, Icons.Outlined.Settings)
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
