@@ -78,7 +78,7 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
 
         composable<DetailsRoute> { backStackEntry ->
             val args = backStackEntry.toRoute<DetailsRoute>()
-            DetailsScreen(navController = navController, movieId = args.movieId)
+            DetailsScreen(navController = navController, movieId = args.movieId, modifier = modifier)
         }
 
         composable<QrCodeRoute> {

@@ -74,6 +74,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    // YouTube Player
+    implementation(libs.youtube.player)
+
     // Retrofit + OkHttp
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)

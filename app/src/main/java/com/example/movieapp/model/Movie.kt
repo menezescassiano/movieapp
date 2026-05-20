@@ -11,7 +11,8 @@ data class Movie(
     val poster: String,
     val images: List<String>,
     val rating: String,
-    val favorite: Boolean = false
+    val favorite: Boolean = false,
+    val trailerUrl: String? = null
 )
 
 fun getMoviesList(): List<Movie> {
@@ -30,7 +31,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTMxOTEwNDcxN15BMl5BanBnXkFtZTcwOTg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
             rating = "7.9",
-            favorite = true),
+            favorite = true,
+            trailerUrl = "https://www.youtube.com/watch?v=5PSNL1qE6VY"),
 
         Movie(id = "2",
             title = "300",
@@ -45,7 +47,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTc0MjQzOTEwMV5BMl5BanBnXkFtZTcwMzE2NTIyMw@@._V1_SX1777_CR0,0,1777,947_AL_.jpg"
 
             ),
-            rating = "7.7"),
+            rating = "7.7",
+            trailerUrl = "https://www.youtube.com/watch?v=oSxfHgCbCFk"),
 
         Movie(id = "3",
             title = "The Avengers",
@@ -60,7 +63,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMjMwMzM2MTg1M15BMl5BanBnXkFtZTcwNjM4ODY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTQ4NzM2Mjc5MV5BMl5BanBnXkFtZTcwMTkwOTY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTc3MzQ3NjA5N15BMl5BanBnXkFtZTcwMzY5OTY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg"),
-            rating = "8.1"),
+            rating = "8.1",
+            trailerUrl = "https://www.youtube.com/watch?v=eOrNdBpGMv8"),
 
         Movie(id = "4",
             title = "The Wolf of Wall Street",
@@ -75,7 +79,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTExMDk1MDE4NzVeQTJeQWpwZ15BbWU4MDM4NDM0ODAx._V1_SX1500_CR0,0,1500,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTg3MTY4NDk4Nl5BMl5BanBnXkFtZTgwNjc0MzQ4MDE@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgzMTg4MDI0Ml5BMl5BanBnXkFtZTgwOTY0MzQ4MDE@._V1_SY1000_CR0,0,1553,1000_AL_.jpg"),
-            rating = "8.2"),
+            rating = "8.2",
+            trailerUrl = "https://www.youtube.com/watch?v=iszwuX1AK6A"),
 
         Movie(id = "5",
             title = "Interstellar",
@@ -90,7 +95,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTg4Njk4MzY0Nl5BMl5BanBnXkFtZTgwMzIyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMzE3MTM0MTc3Ml5BMl5BanBnXkFtZTgwMDIyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BNjYzNjE2NDk3N15BMl5BanBnXkFtZTgwNzEyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
-            rating = "8.6"),
+            rating = "8.6",
+            trailerUrl = "https://www.youtube.com/watch?v=zSWdZVtXT7E"),
         Movie(id = "6",
             title = "Game of Thrones",
             year = "2011 - 2018",
@@ -104,7 +110,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMDk4Y2Y1MDAtNGVmMC00ZTlhLTlmMmQtYjcyN2VkNzUzZjg2XkEyXkFqcGdeQXVyNjUxNzgwNTE@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BNjZjNWIzMzQtZWZjYy00ZTkwLWJiMTYtOWRkZDBhNWJhY2JmXkEyXkFqcGdeQXVyMjk3NTUyOTc@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BNTMyMTRjZWEtM2UxMS00ZjU5LWIxMTYtZDA5YmJhZmRjYTc4XkEyXkFqcGdeQXVyMjk3NTUyOTc@._V1_SX1777_CR0,0,1777,999_AL_.jpg"),
-            rating = "9.5"),
+            rating = "9.5",
+            trailerUrl = "https://www.youtube.com/watch?v=KPLWWIOCOOQ"),
 
 
         Movie(id = "7",
@@ -120,7 +127,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMjMzMzIzOTU2M15BMl5BanBnXkFtZTgwODMzMTkyODE@._V1_SY1000_SX1500_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTQ2NTQ2MDA3NF5BMl5BanBnXkFtZTgwODkxMDUxODE@._V1_SY1000_SX1500_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTcxOTQ3NTA5N15BMl5BanBnXkFtZTgwMzExMDUxODE@._V1_SY1000_SX1500_AL_.jpg"),
-            rating = "9.5"),
+            rating = "9.5",
+            trailerUrl = "https://www.youtube.com/watch?v=2IUzpHbCFZs"),
 
         Movie(id = "8",
             title = "Breaking Bad",
@@ -135,7 +143,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTM4NDcyNDMzMF5BMl5BanBnXkFtZTgwOTI0MTI2MDE@._V1_SY1000_CR0,0,1495,1000_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTAzMTczMjM3NjFeQTJeQWpwZ15BbWU4MDc1MTI1MzAx._V1_SY1000_CR0,0,1495,1000_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMjA5MTE3MTgwMF5BMl5BanBnXkFtZTgwOTQxMjUzMDE@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
-            rating = "9.5"),
+            rating = "9.5",
+            trailerUrl = "https://www.youtube.com/watch?v=U7elNhHwgBU"),
 
         Movie(id = "9",
             title = "Narcos",
@@ -150,7 +159,8 @@ fun getMoviesList(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMjA2NDUwMTU2NV5BMl5BanBnXkFtZTgwNTI1Mzc3OTE@._V1_SY1000_CR0,0,1499,1000_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BODA1NjAyMTQ3Ml5BMl5BanBnXkFtZTgwNjI1Mzc3OTE@._V1_SY1000_CR0,0,1499,1000_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTU0NzQ0OTAwNl5BMl5BanBnXkFtZTgwMDAyMzA1OTE@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
-            rating = "9.5"),
+            rating = "9.5",
+            trailerUrl = "https://www.youtube.com/watch?v=s_V0aFMqGRM"),
 
         )
 }

@@ -108,4 +108,5 @@
     <string name="details_synopsis">SYNOPSIS</string>
     <string name="details_director">DIRECTOR</string>
     <string name="details_cast">CAST</string>
+    <string name="details_trailer">TRAILER</string>
 </resources>
