@@ -27,8 +27,8 @@ fun SplashScreen(
         }
     }
 
-    // Tela transparente — a splash visual já foi mostrada pelo sistema.
-    // Só segura o frame enquanto o Room responde.
+    // Transparent screen — the visual splash has already been shown by the system.
+    // Just holds the frame until Room responds.
     Box(
         modifier = Modifier
             .fillMaxSize()

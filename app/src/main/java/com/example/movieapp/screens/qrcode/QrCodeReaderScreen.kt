@@ -192,7 +192,7 @@ fun QrCodeReaderScreen(
                         preview.controller = controller
                     }
                 )
-                // Overlay de guia do QR
+                // QR guide overlay
                 QrScannerOverlay(
                     modifier = Modifier.fillMaxSize(),
                     borderColor = AccentPurple

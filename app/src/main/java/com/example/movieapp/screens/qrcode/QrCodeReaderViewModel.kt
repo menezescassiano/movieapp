@@ -31,11 +31,11 @@ class QrCodeReaderViewModel @Inject constructor(
     }
 
     fun onQrDecoded(qrContent: String) {
-        // Evita processar várias vezes o mesmo QR em sequência
+        // Prevents the same QR from being processed multiple times in a row
         if (_scanResult.value is QrCodeReaderUiState.Loading) return
 
-        // Definido de forma síncrona para que chamadas consecutivas sejam ignoradas
-        // pelo guard acima antes mesmo da coroutine ser executada
+        // Set synchronously so that consecutive calls are rejected by the guard
+        // above before the coroutine even starts
         _scanResult.value = QrCodeReaderUiState.Loading
 
         viewModelScope.launch {

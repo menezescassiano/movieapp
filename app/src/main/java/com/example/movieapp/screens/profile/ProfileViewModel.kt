@@ -30,7 +30,8 @@ class ProfileViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
             try {
                 val user = getUserUseCase()
-                _uiState.value = _uiState.value.copy(isLoading = false, user = user)
+                // Clear the local URI so the remote URL is used after a reload
+                _uiState.value = _uiState.value.copy(isLoading = false, user = user, avatarUri = null)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -64,7 +65,8 @@ class ProfileViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
             try {
                 val updatedUser = uploadProfilePictureUseCase(uri)
-                // Keep the local URI for immediate display; the remote URL is now in updatedUser
+                // Keep the local URI for immediate display while the remote URL is in updatedUser.
+                // No cache-busting needed: the ImageLoader has all caches disabled.
                 _uiState.value = _uiState.value.copy(
                     isSaving = false,
                     avatarUri = uri,

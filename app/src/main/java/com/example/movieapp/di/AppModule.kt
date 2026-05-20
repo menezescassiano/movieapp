@@ -2,6 +2,7 @@ package com.example.movieapp.di
 
 import android.content.Context
 import coil.ImageLoader
+import coil.request.CachePolicy
 import com.example.movieapp.BuildConfig
 import com.example.movieapp.data.remote.AuthApiService
 import com.example.movieapp.data.remote.AuthInterceptor
@@ -103,10 +104,19 @@ object AppModule {
     fun provideImageLoader(
         @ApplicationContext context: Context,
         okHttpClient: OkHttpClient
-    ): ImageLoader =
-        ImageLoader.Builder(context)
-            .okHttpClient(okHttpClient)
+    ): ImageLoader {
+        // Dedicated OkHttpClient without disk cache for images so that
+        // a newly uploaded profile picture is never served stale from
+        // OkHttp's HTTP cache, regardless of the server's Cache-Control headers.
+        val imageOkHttpClient = okHttpClient.newBuilder()
+            .cache(null)
             .build()
+        return ImageLoader.Builder(context)
+            .okHttpClient(imageOkHttpClient)
+            .diskCachePolicy(CachePolicy.DISABLED)
+            .memoryCachePolicy(CachePolicy.DISABLED)
+            .build()
+    }
 
     @Provides
     fun provideGetMoviesUseCase(repository: MovieRepository): GetMoviesUseCase =

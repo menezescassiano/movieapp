@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
-    // Token DB — pode sofrer migração destrutiva pois o token é restaurável via login.
+    // Token DB — destructive migration is acceptable since the token can be restored via login.
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
@@ -25,8 +25,8 @@ object DatabaseModule {
             .fallbackToDestructiveMigration(true)
             .build()
 
-    // Credentials DB — banco isolado, sem migração destrutiva.
-    // O schema nunca muda: perder as credenciais seria experiência ruim.
+    // Credentials DB — isolated database, no destructive migration.
+    // The schema never changes: losing saved credentials would be a bad user experience.
     @Provides
     @Singleton
     fun provideCredentialsDatabase(@ApplicationContext context: Context): CredentialsDatabase =

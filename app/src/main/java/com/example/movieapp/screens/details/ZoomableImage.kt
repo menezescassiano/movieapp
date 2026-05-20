@@ -33,7 +33,7 @@ fun ZoomableImage(
         modifier = modifier
             .background(Color.Black.copy(alpha = 0.9f))
             .fillMaxSize()
-            // tap em qualquer lugar da tela fecha
+            // tap anywhere on the screen closes the image
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { onClose() }

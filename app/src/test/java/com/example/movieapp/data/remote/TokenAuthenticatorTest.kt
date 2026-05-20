@@ -3,9 +3,7 @@ package com.example.movieapp.data.remote
 import com.example.movieapp.data.SessionManager
 import com.example.movieapp.data.TokenStore
 import com.example.movieapp.data.local.TokenLocalDataSource
-import com.example.movieapp.data.remote.dto.LoginResponse
-import com.example.movieapp.data.remote.dto.TokensDto
-import com.example.movieapp.data.remote.dto.UserDto
+import com.example.movieapp.data.remote.dto.RefreshResponse
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -39,19 +37,10 @@ class TokenAuthenticatorTest {
     private val newAccessToken = "new.access.token"
     private val newRefreshToken = "new.refresh.token"
 
-    private val fakeLoginResponse = LoginResponse(
-        tokens = TokensDto(
-            accessToken = newAccessToken,
-            refreshToken = newRefreshToken,
-            expiresIn = 900
-        ),
-        user = UserDto(
-            id = "user-1",
-            name = "Test User",
-            email = "test@example.com",
-            city = null,
-            profilePictureUrl = null
-        )
+    private val fakeLoginResponse = RefreshResponse(
+        accessToken = newAccessToken,
+        refreshToken = newRefreshToken,
+        expiresIn = 900
     )
 
     /** Builds a fake 401 [Response] whose request carries the given Bearer token. */
@@ -84,20 +73,20 @@ class TokenAuthenticatorTest {
         )
     }
 
-    // ── Cenário 1: happy path — token expirado → refresh bem-sucedido ────
+    // ── Scenario 1: happy path — expired token → successful refresh ──────
 
     @Test
     fun `when access token is expired, refresh succeeds and retries request with new token`() =
         runTest {
-            // O TokenStore ainda tem o token antigo (igual ao da request)
+            // TokenStore still holds the old token (matching the one in the request)
             every { tokenStore.get() } returns expiredToken
             coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
             coEvery { authApiService.refresh(any()) } returns fakeLoginResponse
 
             val newRequest = authenticator.authenticate(route = null, response = fake401())
 
-            // Deve ter retornado uma request com o novo token
-            assertNotNull("Deveria retornar uma nova Request para retry", newRequest)
+            // Should have returned a new Request with the refreshed token
+            assertNotNull("Should return a new Request for retry", newRequest)
             assertEquals(
                 "Bearer $newAccessToken",
                 newRequest!!.header("Authorization")
@@ -112,7 +101,7 @@ class TokenAuthenticatorTest {
 
         authenticator.authenticate(route = null, response = fake401())
 
-        // Verifica que os novos tokens foram salvos no banco e no store em memória
+        // Verifies that the new tokens were persisted in the database and in the in-memory store
         coVerify { tokenLocalDataSource.save(newAccessToken, newRefreshToken) }
         verify { tokenStore.save(newAccessToken) }
     }
@@ -129,7 +118,7 @@ class TokenAuthenticatorTest {
             coVerify { authApiService.refresh(match { it.refreshToken == refreshToken }) }
         }
 
-    // ── Cenário 2: refresh token ausente → logout ────────────────────────
+    // ── Scenario 2: missing refresh token → logout ───────────────────────
 
     @Test
     fun `when there is no refresh token, authenticate returns null and triggers logout`() =
@@ -139,7 +128,7 @@ class TokenAuthenticatorTest {
 
             val result = authenticator.authenticate(route = null, response = fake401())
 
-            assertNull("Sem refresh token, deve retornar null (sem retry)", result)
+            assertNull("No refresh token: should return null (no retry)", result)
             verify { sessionManager.logout() }
         }
 
@@ -153,7 +142,7 @@ class TokenAuthenticatorTest {
         coVerify(exactly = 0) { authApiService.refresh(any()) }
     }
 
-    // ── Cenário 3: refresh token presente mas API retorna erro ───────────
+    // ── Scenario 3: refresh token present but API returns an error ───────
 
     @Test
     fun `when refresh api call throws, authenticate returns null and triggers logout`() = runTest {
@@ -163,7 +152,7 @@ class TokenAuthenticatorTest {
 
         val result = authenticator.authenticate(route = null, response = fake401())
 
-        assertNull("Erro na API de refresh deve retornar null", result)
+        assertNull("Refresh API error should return null", result)
         verify { sessionManager.logout() }
     }
 
@@ -179,37 +168,37 @@ class TokenAuthenticatorTest {
         verify { tokenStore.clear() }
     }
 
-    // ── Cenário 4: outro thread já fez o refresh antes ───────────────────
+    // ── Scenario 4: another thread already refreshed first ───────────────
 
     @Test
     fun `when token in store is already different from request token, retries without refreshing`() =
         runTest {
-            // Simula que outra thread já atualizou o token enquanto essa request estava
-            // em voo. O store já tem um token novo, diferente do que foi enviado.
-            every { tokenStore.get() } returns newAccessToken // já foi trocado por outra thread
+            // Simulates another thread having refreshed the token while this request was
+            // in flight. The store already holds a new token, different from the one that was sent.
+            every { tokenStore.get() } returns newAccessToken // already updated by another thread
             coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
 
             val result = authenticator.authenticate(route = null, response = fake401(expiredToken))
 
-            // Deve usar diretamente o novo token sem chamar a API de refresh
+            // Should use the new token directly without calling the refresh API
             assertNotNull(result)
             assertEquals("Bearer $newAccessToken", result!!.header("Authorization"))
             coVerify(exactly = 0) { authApiService.refresh(any()) }
         }
 
-    // ── Cenário 5: TokenStore em memória vazio (ex: processo reiniciado) ─
+    // ── Scenario 5: in-memory TokenStore is empty (e.g. process restart) ─
 
     @Test
     fun `when in-memory token store is empty but refresh token exists, refresh still succeeds`() =
         runTest {
-            // Após reinício do processo, TokenStore fica null mas o Room ainda tem os tokens.
-            // O 401 chega porque AuthInterceptor enviou a request sem header.
-            // O header da request original será null nesse caso.
+            // After a process restart, TokenStore is null but Room still has the tokens.
+            // The 401 arrives because AuthInterceptor sent the request without a header.
+            // The original request's Authorization header will be null in this case.
             every { tokenStore.get() } returns null
             coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
             coEvery { authApiService.refresh(any()) } returns fakeLoginResponse
 
-            // Request sem header de Authorization (processo reiniciado, store vazio)
+            // Request with no Authorization header (process restarted, store is empty)
             val requestWithNoToken = Request.Builder()
                 .url("https://api.example.com/movies")
                 .build()
@@ -222,11 +211,10 @@ class TokenAuthenticatorTest {
 
             val result = authenticator.authenticate(route = null, response = responseWithNoToken)
 
-            // BUG IDENTIFICADO: requestToken será null e currentToken também é null,
-            // então a condição `currentToken != null && currentToken != requestToken`
-            // é FALSA. O fluxo continua para o getRefreshToken() corretamente —
-            // esse cenário deve funcionar.
-            assertNotNull("Deve tentar refresh mesmo com store vazio", result)
+            // NOTE: requestToken will be null and currentToken is also null, so the
+            // condition `currentToken != null && currentToken != requestToken` is FALSE.
+            // Execution correctly falls through to getRefreshToken() — this scenario works.
+            assertNotNull("Should attempt refresh even with empty store", result)
             assertEquals("Bearer $newAccessToken", result!!.header("Authorization"))
         }
 }

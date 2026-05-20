@@ -63,10 +63,10 @@ class SplashViewModelTest {
 
     @Test
     fun `when saved token exists, restoreToken is called to populate in-memory store`() = runTest {
-        // BUG FIX: sem restoreToken(), o TokenStore fica vazio e o AuthInterceptor
-        // manda todas as requests sem Authorization header, fazendo o refresh
-        // acontecer "por acidente" (só funciona se o back-end retornar 401 para
-        // requests sem header — comportamento não garantido).
+        // BUG FIX: without restoreToken(), the TokenStore is empty and AuthInterceptor
+        // sends all requests without an Authorization header, causing the refresh to
+        // happen "by accident" (only works if the backend returns 401 for requests
+        // without a header — behaviour that is not guaranteed).
         coEvery { checkSavedTokenUseCase() } returns true
 
         viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
@@ -77,8 +77,8 @@ class SplashViewModelTest {
 
     @Test
     fun `when saved token exists, restoreToken is called before navigating to Home`() = runTest {
-        // A ordem importa: o token deve estar no store ANTES de qualquer request
-        // disparada pelas telas que carregam após a splash.
+        // Order matters: the token must be in the store BEFORE any request
+        // triggered by the screens that load after the splash.
         val callOrder = mutableListOf<String>()
         coEvery { checkSavedTokenUseCase() } returns true
         coEvery { restoreTokenUseCase() } answers { callOrder.add("restore") }
@@ -86,7 +86,7 @@ class SplashViewModelTest {
         viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
         advanceUntilIdle()
 
-        // restoreToken deve ter sido chamado e o destino deve ser Home
+        // restoreToken should have been called and the destination should be Home
         assertEquals(listOf("restore"), callOrder)
         assertEquals(SplashDestination.Home, viewModel.destination.value)
     }

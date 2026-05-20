@@ -5,8 +5,8 @@ import androidx.room.RoomDatabase
 import com.example.movieapp.data.local.dao.SavedCredentialsDao
 import com.example.movieapp.data.local.entity.SavedCredentialsEntity
 
-// Banco separado e isolado — nunca sofre fallbackToDestructiveMigration.
-// O schema de credenciais é fixo: id (0), email, password.
+// Separate and isolated database — never uses fallbackToDestructiveMigration.
+// The credentials schema is fixed: id (0), email, password.
 @Database(
     entities = [SavedCredentialsEntity::class],
     version = 1,

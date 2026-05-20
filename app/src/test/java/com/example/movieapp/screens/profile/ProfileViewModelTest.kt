@@ -1,9 +1,8 @@
 package com.example.movieapp.screens.profile
 
 import android.net.Uri
-import com.example.movieapp.data.SessionManager
-import com.example.movieapp.data.TokenStore
 import com.example.movieapp.domain.GetUserUseCase
+import com.example.movieapp.domain.LogoutUseCase
 import com.example.movieapp.domain.UpdateUserUseCase
 import com.example.movieapp.domain.UploadProfilePictureUseCase
 import com.example.movieapp.model.User
@@ -33,8 +32,7 @@ class ProfileViewModelTest {
     private lateinit var getUserUseCase: GetUserUseCase
     private lateinit var updateUserUseCase: UpdateUserUseCase
     private lateinit var uploadProfilePictureUseCase: UploadProfilePictureUseCase
-    private lateinit var tokenStore: TokenStore
-    private lateinit var sessionManager: SessionManager
+    private lateinit var logoutUseCase: LogoutUseCase
     private lateinit var viewModel: ProfileViewModel
 
     private val fakeUser = User(
@@ -51,9 +49,8 @@ class ProfileViewModelTest {
         getUserUseCase = mockk()
         updateUserUseCase = mockk()
         uploadProfilePictureUseCase = mockk()
-        tokenStore = mockk(relaxed = true)
-        sessionManager = mockk(relaxed = true)
-        viewModel = ProfileViewModel(getUserUseCase, updateUserUseCase, uploadProfilePictureUseCase, tokenStore, sessionManager)
+        logoutUseCase = mockk(relaxed = true)
+        viewModel = ProfileViewModel(getUserUseCase, updateUserUseCase, uploadProfilePictureUseCase, logoutUseCase)
     }
 
     @After
@@ -131,6 +128,37 @@ class ProfileViewModelTest {
         assertEquals(fakeUser, viewModel.uiState.value.user)
     }
 
+    // ── bug fix: avatarUri limpo no reload ───────────────────────────────
+
+    @Test
+    fun `loadProfile clears avatarUri so remote URL is used after returning to screen`() = runTest {
+        // Simulates: photo was uploaded (avatarUri populated) and user left and returned to the screen
+        val uri = mockk<Uri>()
+        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
+        viewModel.onPhotoTaken(uri)
+        advanceUntilIdle()
+        assertEquals(uri, viewModel.uiState.value.avatarUri) // avatarUri populated after upload
+
+        // ON_RESUME dispara loadProfile
+        coEvery { getUserUseCase() } returns fakeUser
+        viewModel.loadProfile()
+        advanceUntilIdle()
+
+        assertNull(viewModel.uiState.value.avatarUri) // must be cleared so the remote URL is used
+    }
+
+    @Test
+    fun `loadProfile preserves remote profilePictureUrl returned by server`() = runTest {
+        val updatedUrl = "https://cdn.example.com/new-photo.jpg"
+        val userWithNewPhoto = fakeUser.copy(profilePictureUrl = updatedUrl)
+        coEvery { getUserUseCase() } returns userWithNewPhoto
+
+        viewModel.loadProfile()
+        advanceUntilIdle()
+
+        assertEquals(updatedUrl, viewModel.uiState.value.user?.profilePictureUrl)
+    }
+
     // ── avatar ───────────────────────────────────────────────────────────
 
     @Test
@@ -181,7 +209,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `upload success updates profilePictureUrl from server response`() = runTest {
+    fun `upload success stores local uri for immediate display`() = runTest {
         val uri = mockk<Uri>()
         val userWithNewUrl = fakeUser.copy(profilePictureUrl = "https://cdn.example.com/new.jpg")
         coEvery { uploadProfilePictureUseCase(uri) } returns userWithNewUrl
@@ -189,7 +217,24 @@ class ProfileViewModelTest {
         viewModel.onPhotoTaken(uri)
         advanceUntilIdle()
 
-        assertEquals("https://cdn.example.com/new.jpg", viewModel.uiState.value.user?.profilePictureUrl)
+        val state = viewModel.uiState.value
+        assertEquals(uri, state.avatarUri)
+        assertEquals("https://cdn.example.com/new.jpg", state.user?.profilePictureUrl)
+    }
+
+    @Test
+    fun `upload success does not append cache-bust param to profilePictureUrl`() = runTest {
+        // Cache is now disabled in the ImageLoader, not via a query param on the URL.
+        // The URL returned by the server must be saved exactly as received.
+        val uri = mockk<Uri>()
+        val serverUrl = "https://cdn.example.com/photo.jpg"
+        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser.copy(profilePictureUrl = serverUrl)
+
+        viewModel.onPhotoTaken(uri)
+        advanceUntilIdle()
+
+        assertEquals(serverUrl, viewModel.uiState.value.user?.profilePictureUrl)
+        assertFalse(viewModel.uiState.value.user?.profilePictureUrl?.contains("?t=") ?: false)
     }
 
     @Test
@@ -357,7 +402,7 @@ class ProfileViewModelTest {
 
         viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
 
-        // sem advanceUntilIdle: a atualização síncrona já aconteceu antes do save async
+        // without advanceUntilIdle: the synchronous update already happened before the async save
         assertEquals("Jane Doe", viewModel.uiState.value.user?.name)
         assertNull(viewModel.uiState.value.editingField)
     }
@@ -373,7 +418,7 @@ class ProfileViewModelTest {
         viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
         advanceUntilIdle()
 
-        // user mantém o valor otimista mesmo após falha no save
+        // user keeps the optimistic value even after a save failure
         assertEquals("Jane Doe", viewModel.uiState.value.user?.name)
         assertEquals("Save error", viewModel.uiState.value.errorMessage)
     }

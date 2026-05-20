@@ -101,7 +101,7 @@ class QrCodeReaderViewModelTest {
         assertFalse(viewModel.showError.value)
     }
 
-    // ── onQrDecoded: não encontrado ──────────────────────────────────────
+    // ── onQrDecoded: not found ─────────────────────────────────────────────
 
     @Test
     fun `onQrDecoded sets NotFound and showError when movie id is not found`() = runTest {
@@ -133,9 +133,9 @@ class QrCodeReaderViewModelTest {
     fun `onQrDecoded while Loading is ignored and useCase is called only once`() = runTest {
         coEvery { getMoviesUseCase() } returns fakeMovies
 
-        // primeira chamada coloca em Loading e inicia coroutine
+        // first call sets Loading and starts the coroutine
         viewModel.onQrDecoded("tt1234")
-        // segunda chamada deve ser ignorada pois scanResult já é Loading
+        // second call must be ignored because scanResult is already Loading
         viewModel.onQrDecoded("tt1234")
         advanceUntilIdle()
 

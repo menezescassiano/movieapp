@@ -131,8 +131,8 @@ class UserRepositoryImplTest {
 
         repository.uploadProfilePicture(uri)
 
-        // se o mime type fosse ignorado, o mock de "image/png" seria irrelevante —
-        // o teste confirma que getMimeType é chamado
+        // if the mime type were ignored, the "image/png" mock would be irrelevant —
+        // this test confirms that getMimeType is actually called
         coVerify(exactly = 1) { uriReader.getMimeType(uri) }
     }
 
