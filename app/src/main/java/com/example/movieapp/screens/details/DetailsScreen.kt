@@ -97,6 +97,7 @@ fun DetailsScreenContent(
         contentWindowInsets = WindowInsets(0),
         topBar = {
             CenterAlignedTopAppBar(
+                windowInsets = WindowInsets(0),
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,

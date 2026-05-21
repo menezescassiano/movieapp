@@ -4,7 +4,8 @@ import com.example.movieapp.data.MovieRepository
 import javax.inject.Inject
 
 class GetFavoriteMovieUseCase @Inject constructor(private val repository: MovieRepository) {
+
     suspend operator fun invoke(movieId: String) {
-        repository.getFavoriteMovie(movieId)
+        repository.favoriteMovie(movieId)
     }
 }

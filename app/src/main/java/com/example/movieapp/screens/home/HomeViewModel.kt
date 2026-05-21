@@ -31,7 +31,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun loadMovies() {
-        viewModelScope.launch { fetchMovies() }
+        viewModelScope.launch { fetchMovies(page = 0) }
+    }
+
+    fun loadNextPage() {
+        val state = _uiState.value
+        if (state.isLoading || state.currentPage + 1 >= state.totalPages) return
+        viewModelScope.launch { fetchMovies(page = state.currentPage + 1, append = true) }
     }
 
     fun onSearchQueryChange(query: String) {
@@ -39,41 +45,57 @@ class HomeViewModel @Inject constructor(
     }
 
     fun refresh() {
-        viewModelScope.launch { fetchMovies(isRefresh = true) }
+        viewModelScope.launch { fetchMovies(page = 0, isRefresh = true) }
     }
 
     private fun observeSearchQuery() {
         _uiState
             .debounce(400)
             .distinctUntilChanged { old, new -> old.searchQuery == new.searchQuery }
-            .onEach { state -> fetchMovies(query = state.searchQuery) }
+            .onEach { state -> fetchMovies(query = state.searchQuery, page = 0) }
             .launchIn(viewModelScope)
     }
 
-    private suspend fun fetchMovies(query: String = "", isRefresh: Boolean = false) {
-        _uiState.value = if (isRefresh) {
-            _uiState.value.copy(isRefreshing = true, errorMessage = null)
-        } else {
-            _uiState.value.copy(isLoading = true, errorMessage = null)
+    private suspend fun fetchMovies(
+        query: String = _uiState.value.searchQuery,
+        page: Int = 0,
+        isRefresh: Boolean = false,
+        append: Boolean = false
+    ) {
+        _uiState.value = when {
+            isRefresh -> _uiState.value.copy(isRefreshing = true, errorMessage = null)
+            append -> _uiState.value.copy(isLoading = true, errorMessage = null)
+            else -> _uiState.value.copy(isLoading = true, errorMessage = null, movies = emptyList())
         }
 
         try {
-            val movies = if (query.isBlank()) {
-                getMoviesUseCase()
+            val response = if (query.isBlank()) {
+                getMoviesUseCase(page = page, size = _uiState.value.pageSize)
             } else {
-                searchMoviesUseCase(query)
+                searchMoviesUseCase(query = query, page = page, size = _uiState.value.pageSize)
             }
-            _uiState.value = if (isRefresh) {
-                _uiState.value.copy(isRefreshing = false, movies = movies)
+
+            val updatedMovies = if (append) {
+                _uiState.value.movies + response.content
             } else {
-                _uiState.value.copy(isLoading = false, movies = movies)
+                response.content
             }
+
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                isRefreshing = false,
+                movies = updatedMovies,
+                currentPage = response.page,
+                totalPages = response.totalPages,
+                totalElements = response.totalElements,
+                errorMessage = null
+            )
         } catch (e: Exception) {
-            _uiState.value = if (isRefresh) {
-                _uiState.value.copy(isRefreshing = false, errorMessage = e.message)
-            } else {
-                _uiState.value.copy(isLoading = false, errorMessage = e.message)
-            }
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                isRefreshing = false,
+                errorMessage = e.message
+            )
         }
     }
 }

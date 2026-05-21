@@ -39,7 +39,7 @@ class QrCodeReaderViewModel @Inject constructor(
         _scanResult.value = QrCodeReaderUiState.Loading
 
         viewModelScope.launch {
-            val found = useCase().any { it.id == qrContent }
+            val found = useCase().content.any { it.id == qrContent }
 
             if (found) {
                 _scanResult.value = QrCodeReaderUiState.Success(qrContent)

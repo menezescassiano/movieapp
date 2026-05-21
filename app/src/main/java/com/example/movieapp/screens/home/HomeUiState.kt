@@ -7,5 +7,9 @@ data class HomeUiState(
     val isRefreshing: Boolean = false,
     val movies: List<Movie> = emptyList(),
     val searchQuery: String = "",
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val currentPage: Int = 0,
+    val totalPages: Int = 1,
+    val totalElements: Int = 0,
+    val pageSize: Int = 10
 )

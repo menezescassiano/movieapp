@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.Button
@@ -28,7 +30,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.ui.Alignment
@@ -109,9 +114,9 @@ fun HomeScreen(
                     ) {
                         MainContent(
                             navController = navController,
-                            moviesList = state.movies,
-                            searchQuery = state.searchQuery,
-                            onSearchQueryChange = viewModel::onSearchQueryChange
+                            uiState = state,
+                            onSearchQueryChange = viewModel::onSearchQueryChange,
+                            onLoadNextPage = viewModel::loadNextPage
                         )
                     }
                 }
@@ -138,11 +143,25 @@ fun HomeScreen(
 @Composable
 fun MainContent(
     navController: NavController,
-    moviesList: List<Movie>,
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit
+    uiState: HomeUiState,
+    onSearchQueryChange: (String) -> Unit,
+    onLoadNextPage: () -> Unit
 ) {
+    val gridState = rememberLazyGridState()
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val lastVisible = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val totalItems = gridState.layoutInfo.totalItemsCount
+            totalItems > 0 && lastVisible >= totalItems - 3
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore) {
+        if (shouldLoadMore) onLoadNextPage()
+    }
+
     LazyVerticalGrid(
+        state = gridState,
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 80.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -162,7 +181,7 @@ fun MainContent(
                     color = Color.White.copy(alpha = 0.55f)
                 )
                 MovieSearchBar(
-                    query = searchQuery,
+                    query = uiState.searchQuery,
                     onQueryChange = onSearchQueryChange,
                     placeholder = stringResource(R.string.home_search_placeholder),
                     modifier = Modifier.fillMaxWidth()
@@ -170,7 +189,7 @@ fun MainContent(
             }
         }
 
-        if (moviesList.isEmpty()) {
+        if (uiState.movies.isEmpty()) {
             item(span = { GridItemSpan(2) }) {
                 Box(
                     modifier = Modifier
@@ -179,19 +198,36 @@ fun MainContent(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.home_search_no_results, searchQuery),
+                        text = stringResource(R.string.home_search_no_results, uiState.searchQuery),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.5f)
                     )
                 }
             }
         } else {
-            items(items = moviesList, key = { it.id }) { movie ->
+            items(items = uiState.movies, key = { it.id }) { movie ->
                 MovieCard(
                     movie = movie,
                     onItemClick = { navController.navigate(DetailsRoute(movie.id)) },
                     modifier = Modifier.animateItem()
                 )
+            }
+
+            if (uiState.isLoading) {
+                item(span = { GridItemSpan(2) }) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(28.dp),
+                            color = AccentPurple,
+                            strokeWidth = 2.dp
+                        )
+                    }
+                }
             }
         }
     }

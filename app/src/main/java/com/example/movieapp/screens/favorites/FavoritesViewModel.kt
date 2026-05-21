@@ -14,7 +14,10 @@ import javax.inject.Inject
 data class FavoritesUiState(
     val isLoading: Boolean = false,
     val movies: List<Movie> = emptyList(),
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val currentPage: Int = 0,
+    val totalPages: Int = 1,
+    val totalElements: Int = 0
 )
 
 @HiltViewModel
@@ -26,14 +29,29 @@ class FavoritesViewModel @Inject constructor(
     val uiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
 
     fun loadFavorites() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            try {
-                val movies = getFavoriteMoviesUseCase()
-                _uiState.value = _uiState.value.copy(isLoading = false, movies = movies)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
-            }
+        viewModelScope.launch { fetchFavorites(page = 0) }
+    }
+
+    fun loadNextPage() {
+        val state = _uiState.value
+        if (state.isLoading || state.currentPage + 1 >= state.totalPages) return
+        viewModelScope.launch { fetchFavorites(page = state.currentPage + 1, append = true) }
+    }
+
+    private suspend fun fetchFavorites(page: Int, append: Boolean = false) {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+        try {
+            val response = getFavoriteMoviesUseCase(page = page)
+            val updatedMovies = if (append) _uiState.value.movies + response.content else response.content
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                movies = updatedMovies,
+                currentPage = response.page,
+                totalPages = response.totalPages,
+                totalElements = response.totalElements
+            )
+        } catch (e: Exception) {
+            _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
         }
     }
 }
