@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +14,8 @@ import com.example.movieapp.screens.details.DetailsScreen
 import com.example.movieapp.screens.favorites.FavoritesScreen
 import com.example.movieapp.screens.home.HomeScreen
 import com.example.movieapp.screens.login.LoginScreen
+import com.example.movieapp.screens.onboarding.OnboardingScreen
+import com.example.movieapp.screens.onboarding.OnboardingViewModel
 import com.example.movieapp.screens.profile.ProfileScreen
 import com.example.movieapp.screens.qrcode.QrCodeReaderScreen
 import com.example.movieapp.screens.settings.SettingsScreen
@@ -42,6 +45,23 @@ fun MovieNavigation(
                 onNavigateToLogin = {
                     navController.navigate(LoginRoute) {
                         popUpTo(SplashRoute) { inclusive = true }
+                    }
+                },
+                onNavigateToOnboarding = {
+                    navController.navigate(OnboardingRoute) {
+                        popUpTo(SplashRoute) { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        composable<OnboardingRoute> {
+            val viewModel: OnboardingViewModel = hiltViewModel()
+            OnboardingScreen(
+                onFinish = {
+                    viewModel.markOnboardingCompleted()
+                    navController.navigate(LoginRoute) {
+                        popUpTo(OnboardingRoute) { inclusive = true }
                     }
                 },
             )

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="280dp"
+    android:height="280dp"
+    android:viewportWidth="280"
+    android:viewportHeight="280">
+
+    <!-- Background -->
+    <path android:fillColor="#1E1E2E" android:pathData="M0,0h280v280H0z" />
+
+    <!-- Film reel circle -->
+    <path
+        android:fillColor="#2A2A3C"
+        android:pathData="M140,60 m-70,0 a70,70 0 1,0 140,0 a70,70 0 1,0 -140,0" />
+
+    <!-- Projector beam -->
+    <path
+        android:fillColor="#7C6AF7"
+        android:fillAlpha="0.15"
+        android:pathData="M140,130 L200,200 L80,200 Z" />
+
+    <!-- Star 1 -->
+    <path
+        android:fillColor="#FFC940"
+        android:pathData="M140,75 L144,88 L158,88 L147,96 L151,109 L140,101 L129,109 L133,96 L122,88 L136,88 Z" />
+
+    <!-- Film strip left -->
+    <path
+        android:fillColor="#7C6AF7"
+        android:pathData="M60,160 h160 v8 H60 Z" />
+    <path
+        android:fillColor="#7C6AF7"
+        android:pathData="M60,172 h160 v8 H60 Z" />
+
+    <!-- Sprocket holes -->
+    <path android:fillColor="#12121A" android:pathData="M68,158 h8 v12 H68 Z" />
+    <path android:fillColor="#12121A" android:pathData="M88,158 h8 v12 H88 Z" />
+    <path android:fillColor="#12121A" android:pathData="M108,158 h8 v12 H108 Z" />
+    <path android:fillColor="#12121A" android:pathData="M128,158 h8 v12 H128 Z" />
+    <path android:fillColor="#12121A" android:pathData="M148,158 h8 v12 H148 Z" />
+    <path android:fillColor="#12121A" android:pathData="M168,158 h8 v12 H168 Z" />
+    <path android:fillColor="#12121A" android:pathData="M188,158 h8 v12 H188 Z" />
+    <path android:fillColor="#12121A" android:pathData="M208,158 h8 v12 H208 Z" />
+
+    <!-- Magnifying glass -->
+    <path
+        android:strokeColor="#7C6AF7"
+        android:strokeWidth="6"
+        android:fillColor="#00000000"
+        android:pathData="M155,195 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0" />
+    <path
+        android:strokeColor="#7C6AF7"
+        android:strokeWidth="6"
+        android:pathData="M168,208 L180,220" />
+
+    <!-- Small stars scattered -->
+    <path android:fillColor="#7C6AF7" android:fillAlpha="0.5"
+        android:pathData="M80,100 L82,106 L88,106 L83,110 L85,116 L80,112 L75,116 L77,110 L72,106 L78,106 Z" />
+    <path android:fillColor="#FFC940" android:fillAlpha="0.4"
+        android:pathData="M200,90 L201,94 L205,94 L202,97 L203,101 L200,98 L197,101 L198,97 L195,94 L199,94 Z" />
+</vector>

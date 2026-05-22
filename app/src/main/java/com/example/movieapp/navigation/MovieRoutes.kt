@@ -30,3 +30,6 @@ object SignUpRoute
 
 @Serializable
 object SettingsRoute
+
+@Serializable
+object OnboardingRoute

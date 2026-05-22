@@ -15,6 +15,7 @@ import com.example.movieapp.ui.theme.AppBackground
 fun SplashScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToLogin: () -> Unit,
+    onNavigateToOnboarding: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel(),
 ) {
     val destination by viewModel.destination.collectAsStateWithLifecycle()
@@ -23,6 +24,7 @@ fun SplashScreen(
         when (destination) {
             SplashDestination.Home -> onNavigateToHome()
             SplashDestination.Login -> onNavigateToLogin()
+            SplashDestination.Onboarding -> onNavigateToOnboarding()
             SplashDestination.Loading -> Unit
         }
     }

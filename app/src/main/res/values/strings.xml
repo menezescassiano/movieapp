@@ -98,6 +98,17 @@
     <string name="settings_about_privacy">Privacy policy</string>
     <string name="settings_about_rate">Rate the app</string>
 
+    <!-- Onboarding Screen -->
+    <string name="onboarding_page1_title">Discover great movies.</string>
+    <string name="onboarding_page1_description">Explore a handpicked selection of classics and new releases. Everything you need for a great movie night, all in one place.</string>
+    <string name="onboarding_page2_title">Every detail at a glance.</string>
+    <string name="onboarding_page2_description">Read the synopsis, meet the cast, learn about the director and watch the trailer — without ever leaving the app.</string>
+    <string name="onboarding_page3_title">Save your favorites.</string>
+    <string name="onboarding_page3_description">Bookmark the movies you love and find them instantly whenever you\'re ready to watch again.</string>
+    <string name="onboarding_button_next">Next</string>
+    <string name="onboarding_button_get_started">Get started</string>
+    <string name="onboarding_button_skip">Skip</string>
+
     <!-- Details Screen -->
     <string name="details_title">Movie\'s details</string>
     <string name="details_back">Back</string>

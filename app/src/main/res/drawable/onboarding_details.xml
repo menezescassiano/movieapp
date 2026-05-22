@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="280dp"
+    android:height="280dp"
+    android:viewportWidth="280"
+    android:viewportHeight="280">
+
+    <!-- Background -->
+    <path android:fillColor="#1E1E2E" android:pathData="M0,0h280v280H0z" />
+
+    <!-- Movie poster card -->
+    <path
+        android:fillColor="#2A2A3C"
+        android:pathData="M80,50 Q80,44 86,44 H154 Q160,44 160,50 V190 Q160,196 154,196 H86 Q80,196 80,190 Z" />
+
+    <!-- Poster accent stripe -->
+    <path
+        android:fillColor="#7C6AF7"
+        android:pathData="M80,50 Q80,44 86,44 H154 Q160,44 160,50 V80 H80 Z" />
+
+    <!-- Play button on poster -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.9"
+        android:pathData="M128,62 L128,68 L134,65 Z" />
+
+    <!-- Info lines on card -->
+    <path android:fillColor="#7C6AF7" android:pathData="M90,100 h50 v6 H90 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.3" android:pathData="M90,114 h60 v4 H90 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.3" android:pathData="M90,124 h45 v4 H90 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.2" android:pathData="M90,138 h60 v4 H90 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.2" android:pathData="M90,148 h55 v4 H90 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.2" android:pathData="M90,158 h50 v4 H90 Z" />
+
+    <!-- Star rating row -->
+    <path android:fillColor="#FFC940"
+        android:pathData="M90,174 L92,180 L98,180 L93,184 L95,190 L90,186 L85,190 L87,184 L82,180 L88,180 Z" />
+    <path android:fillColor="#FFC940"
+        android:pathData="M102,174 L104,180 L110,180 L105,184 L107,190 L102,186 L97,190 L99,184 L94,180 L100,180 Z" />
+    <path android:fillColor="#FFC940"
+        android:pathData="M114,174 L116,180 L122,180 L117,184 L119,190 L114,186 L109,190 L111,184 L106,180 L112,180 Z" />
+    <path android:fillColor="#2A2A3C"
+        android:pathData="M126,174 L128,180 L134,180 L129,184 L131,190 L126,186 L121,190 L123,184 L118,180 L124,180 Z" />
+    <path android:fillColor="#2A2A3C"
+        android:pathData="M138,174 L140,180 L146,180 L141,184 L143,190 L138,186 L133,190 L135,184 L130,180 L136,180 Z" />
+
+    <!-- Detail panel on the right -->
+    <path
+        android:fillColor="#2A2A3C"
+        android:pathData="M170,100 Q170,94 176,94 H224 Q230,94 230,100 V220 Q230,226 224,226 H176 Q170,226 170,220 Z" />
+
+    <!-- Panel items -->
+    <path android:fillColor="#7C6AF7" android:fillAlpha="0.6" android:pathData="M178,108 h44 v5 H178 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.25" android:pathData="M178,120 h38 v4 H178 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.25" android:pathData="M178,130 h44 v4 H178 Z" />
+
+    <path android:fillColor="#7C6AF7" android:fillAlpha="0.6" android:pathData="M178,148 h44 v5 H178 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.25" android:pathData="M178,160 h38 v4 H178 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.25" android:pathData="M178,170 h30 v4 H178 Z" />
+
+    <!-- Play / trailer button -->
+    <path
+        android:fillColor="#7C6AF7"
+        android:pathData="M178,190 Q178,185 183,185 H220 Q225,185 225,190 V205 Q225,210 220,210 H183 Q178,210 178,205 Z" />
+    <!-- Triangle play icon -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M196,192 L196,203 L207,197.5 Z" />
+</vector>

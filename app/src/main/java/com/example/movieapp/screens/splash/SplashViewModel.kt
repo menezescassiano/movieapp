@@ -3,6 +3,7 @@ package com.example.movieapp.screens.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movieapp.domain.CheckSavedTokenUseCase
+import com.example.movieapp.domain.IsOnboardingCompletedUseCase
 import com.example.movieapp.domain.RestoreTokenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,12 +18,15 @@ sealed interface SplashDestination {
     data object Home : SplashDestination
 
     data object Login : SplashDestination
+
+    data object Onboarding : SplashDestination
 }
 
 @HiltViewModel
 class SplashViewModel
     @Inject
     constructor(
+        private val isOnboardingCompleted: IsOnboardingCompletedUseCase,
         private val checkSavedTokenUseCase: CheckSavedTokenUseCase,
         private val restoreTokenUseCase: RestoreTokenUseCase,
     ) : ViewModel() {
@@ -31,7 +35,9 @@ class SplashViewModel
 
         init {
             viewModelScope.launch {
-                if (checkSavedTokenUseCase()) {
+                if (!isOnboardingCompleted()) {
+                    _destination.value = SplashDestination.Onboarding
+                } else if (checkSavedTokenUseCase()) {
                     // Populate the in-memory TokenStore before any authenticated
                     // request is fired by the screens that follow the splash.
                     // Without this, AuthInterceptor sends requests with no
