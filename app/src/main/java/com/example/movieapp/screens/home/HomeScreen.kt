@@ -1,5 +1,9 @@
 package com.example.movieapp.screens.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,33 +28,28 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.movieapp.model.Movie
 import com.example.movieapp.R
 import com.example.movieapp.navigation.DetailsRoute
 import com.example.movieapp.navigation.QrCodeRoute
-import com.example.movieapp.ui.components.text.BodyText
 import com.example.movieapp.ui.components.MovieCard
 import com.example.movieapp.ui.components.MovieSearchBar
+import com.example.movieapp.ui.components.text.BodyText
 import com.example.movieapp.ui.components.text.TitleText
 import com.example.movieapp.ui.theme.AccentPurple
 import com.example.movieapp.ui.theme.AppBackground
@@ -60,7 +59,7 @@ import com.example.movieapp.ui.theme.AppBackground
 fun HomeScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -69,22 +68,23 @@ fun HomeScreen(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(AppBackground)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(AppBackground),
     ) {
         AnimatedContent(
             targetState = uiState,
             transitionSpec = { fadeIn() togetherWith fadeOut() },
             contentKey = { it.isLoading && it.movies.isEmpty() || it.errorMessage != null },
-            label = "HomeScreenTransition"
+            label = "HomeScreenTransition",
         ) { state ->
             when {
                 state.isLoading && state.movies.isEmpty() -> {
                     Box(modifier = Modifier.fillMaxSize()) {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
-                            color = AccentPurple
+                            color = AccentPurple,
                         )
                     }
                 }
@@ -93,11 +93,11 @@ fun HomeScreen(
                     Box(modifier = Modifier.fillMaxSize()) {
                         Column(
                             modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
                                 text = state.errorMessage ?: "Unknown error",
-                                color = Color.White
+                                color = Color.White,
                             )
                             Button(onClick = { viewModel.loadMovies() }) {
                                 Text(stringResource(R.string.home_retry))
@@ -110,13 +110,13 @@ fun HomeScreen(
                     PullToRefreshBox(
                         isRefreshing = state.isRefreshing,
                         onRefresh = { viewModel.refresh() },
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
                     ) {
                         MainContent(
                             navController = navController,
                             uiState = state,
                             onSearchQueryChange = viewModel::onSearchQueryChange,
-                            onLoadNextPage = viewModel::loadNextPage
+                            onLoadNextPage = viewModel::loadNextPage,
                         )
                     }
                 }
@@ -124,17 +124,18 @@ fun HomeScreen(
         }
 
         FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
             onClick = { navController.navigate(QrCodeRoute) },
             containerColor = AccentPurple,
-            elevation = FloatingActionButtonDefaults.elevation(0.dp)
+            elevation = FloatingActionButtonDefaults.elevation(0.dp),
         ) {
             Icon(
                 Icons.Default.QrCodeScanner,
                 contentDescription = null,
-                tint = Color.White
+                tint = Color.White,
             )
         }
     }
@@ -145,12 +146,15 @@ fun MainContent(
     navController: NavController,
     uiState: HomeUiState,
     onSearchQueryChange: (String) -> Unit,
-    onLoadNextPage: () -> Unit
+    onLoadNextPage: () -> Unit,
 ) {
     val gridState = rememberLazyGridState()
     val shouldLoadMore by remember {
         derivedStateOf {
-            val lastVisible = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val lastVisible =
+                gridState.layoutInfo.visibleItemsInfo
+                    .lastOrNull()
+                    ?.index ?: 0
             val totalItems = gridState.layoutInfo.totalItemsCount
             totalItems > 0 && lastVisible >= totalItems - 3
         }
@@ -166,25 +170,26 @@ fun MainContent(
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 80.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         item(span = { GridItemSpan(2) }) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp, bottom = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp, bottom = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 TitleText(stringResource(R.string.home_title))
                 BodyText(
                     text = stringResource(R.string.home_subtitle),
-                    color = Color.White.copy(alpha = 0.55f)
+                    color = Color.White.copy(alpha = 0.55f),
                 )
                 MovieSearchBar(
                     query = uiState.searchQuery,
                     onQueryChange = onSearchQueryChange,
                     placeholder = stringResource(R.string.home_search_placeholder),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -192,15 +197,16 @@ fun MainContent(
         if (uiState.movies.isEmpty()) {
             item(span = { GridItemSpan(2) }) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 48.dp),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 48.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = stringResource(R.string.home_search_no_results, uiState.searchQuery),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.5f)
+                        color = Color.White.copy(alpha = 0.5f),
                     )
                 }
             }
@@ -209,22 +215,23 @@ fun MainContent(
                 MovieCard(
                     movie = movie,
                     onItemClick = { navController.navigate(DetailsRoute(movie.id)) },
-                    modifier = Modifier.animateItem()
+                    modifier = Modifier.animateItem(),
                 )
             }
 
             if (uiState.isLoading) {
                 item(span = { GridItemSpan(2) }) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(28.dp),
                             color = AccentPurple,
-                            strokeWidth = 2.dp
+                            strokeWidth = 2.dp,
                         )
                     }
                 }

@@ -10,7 +10,7 @@ import com.example.movieapp.data.local.entity.SavedCredentialsEntity
 @Database(
     entities = [SavedCredentialsEntity::class],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
 )
 abstract class CredentialsDatabase : RoomDatabase() {
     abstract fun savedCredentialsDao(): SavedCredentialsDao

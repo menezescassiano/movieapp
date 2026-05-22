@@ -8,7 +8,7 @@ import com.example.movieapp.data.local.entity.TokenEntity
 @Database(
     entities = [TokenEntity::class],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun tokenDao(): TokenDao

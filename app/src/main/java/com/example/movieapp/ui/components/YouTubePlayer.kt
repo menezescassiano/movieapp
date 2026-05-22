@@ -22,7 +22,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 @Composable
 fun YouTubePlayer(
     videoUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val videoId = remember(videoUrl) { extractYouTubeId(videoUrl) }
     var isLoading by remember { mutableStateOf(true) }
@@ -32,14 +32,16 @@ fun YouTubePlayer(
             modifier = Modifier.matchParentSize(),
             factory = { context ->
                 YouTubePlayerView(context).apply {
-                    addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-                        override fun onReady(youTubePlayer: YouTubePlayer) {
-                            youTubePlayer.cueVideo(videoId, 0f)
-                            isLoading = false
-                        }
-                    })
+                    addYouTubePlayerListener(
+                        object : AbstractYouTubePlayerListener() {
+                            override fun onReady(youTubePlayer: YouTubePlayer) {
+                                youTubePlayer.cueVideo(videoId, 0f)
+                                isLoading = false
+                            }
+                        },
+                    )
                 }
-            }
+            },
         )
 
         if (isLoading) {
@@ -49,10 +51,11 @@ fun YouTubePlayer(
 }
 
 private fun extractYouTubeId(url: String): String {
-    val patterns = listOf(
-        Regex("""(?:v=)([a-zA-Z0-9_-]{11})"""),
-        Regex("""youtu\.be/([a-zA-Z0-9_-]{11})""")
-    )
+    val patterns =
+        listOf(
+            Regex("""(?:v=)([a-zA-Z0-9_-]{11})"""),
+            Regex("""youtu\.be/([a-zA-Z0-9_-]{11})"""),
+        )
     for (pattern in patterns) {
         val match = pattern.find(url)
         if (match != null) return match.groupValues[1]

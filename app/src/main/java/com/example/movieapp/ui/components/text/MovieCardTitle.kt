@@ -18,7 +18,7 @@ fun MovieCardTitle(title: String) {
         fontWeight = FontWeight.SemiBold,
         color = Color.White,
         maxLines = 1,
-        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
     )
 }
 

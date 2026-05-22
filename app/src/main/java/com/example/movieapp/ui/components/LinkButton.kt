@@ -22,13 +22,13 @@ fun LinkButton(
 ) {
     TextButton(
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Text(
             text = text,
             style = style,
             fontWeight = fontWeight,
-            color = color
+            color = color,
         )
     }
 }

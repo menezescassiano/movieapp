@@ -16,34 +16,43 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 
-private val DarkColorScheme = darkColorScheme(
-    primary = AccentPurple,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = AppBackground,
-    surface = AppBackground
-)
+private val DarkColorScheme =
+    darkColorScheme(
+        primary = AccentPurple,
+        secondary = PurpleGrey80,
+        tertiary = Pink80,
+        background = AppBackground,
+        surface = AppBackground,
+    )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-)
+private val LightColorScheme =
+    lightColorScheme(
+        primary = Purple40,
+        secondary = PurpleGrey40,
+        tertiary = Pink40,
+    )
 
 @Composable
 fun MovieAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+
+            darkTheme -> {
+                DarkColorScheme
+            }
+
+            else -> {
+                LightColorScheme
+            }
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -51,7 +60,7 @@ fun MovieAppTheme(
             val activity = view.context as ComponentActivity
             activity.enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.dark(AppBackground.toArgb()),
-                navigationBarStyle = SystemBarStyle.dark(AppBackground.toArgb())
+                navigationBarStyle = SystemBarStyle.dark(AppBackground.toArgb()),
             )
         }
     }
@@ -59,6 +68,6 @@ fun MovieAppTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

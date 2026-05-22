@@ -8,7 +8,6 @@ import com.example.movieapp.data.local.entity.TokenEntity
 
 @Dao
 interface TokenDao {
-
     @Upsert
     suspend fun save(entity: TokenEntity)
 

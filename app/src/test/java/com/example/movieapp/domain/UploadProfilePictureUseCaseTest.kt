@@ -12,17 +12,17 @@ import org.junit.Before
 import org.junit.Test
 
 class UploadProfilePictureUseCaseTest {
-
     private lateinit var repository: UserRepository
     private lateinit var useCase: UploadProfilePictureUseCase
 
-    private val fakeUser = User(
-        id = "1",
-        name = "John Doe",
-        email = "john@example.com",
-        city = "São Paulo",
-        profilePictureUrl = "https://example.com/photo.jpg"
-    )
+    private val fakeUser =
+        User(
+            id = "1",
+            name = "John Doe",
+            email = "john@example.com",
+            city = "São Paulo",
+            profilePictureUrl = "https://example.com/photo.jpg",
+        )
 
     @Before
     fun setUp() {
@@ -31,23 +31,25 @@ class UploadProfilePictureUseCaseTest {
     }
 
     @Test
-    fun `invoke delegates to repository and returns updated user`() = runTest {
-        val uri = mockk<Uri>()
-        coEvery { repository.uploadProfilePicture(uri) } returns fakeUser
+    fun `invoke delegates to repository and returns updated user`() =
+        runTest {
+            val uri = mockk<Uri>()
+            coEvery { repository.uploadProfilePicture(uri) } returns fakeUser
 
-        val result = useCase(uri)
+            val result = useCase(uri)
 
-        assertEquals(fakeUser, result)
-        coVerify(exactly = 1) { repository.uploadProfilePicture(uri) }
-    }
+            assertEquals(fakeUser, result)
+            coVerify(exactly = 1) { repository.uploadProfilePicture(uri) }
+        }
 
     @Test
-    fun `invoke propagates exception from repository`() = runTest {
-        val uri = mockk<Uri>()
-        coEvery { repository.uploadProfilePicture(uri) } throws RuntimeException("Upload failed")
+    fun `invoke propagates exception from repository`() =
+        runTest {
+            val uri = mockk<Uri>()
+            coEvery { repository.uploadProfilePicture(uri) } throws RuntimeException("Upload failed")
 
-        val exception = runCatching { useCase(uri) }.exceptionOrNull()
+            val exception = runCatching { useCase(uri) }.exceptionOrNull()
 
-        assertEquals("Upload failed", exception?.message)
-    }
+            assertEquals("Upload failed", exception?.message)
+        }
 }

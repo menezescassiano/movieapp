@@ -20,8 +20,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -64,7 +64,7 @@ import com.example.movieapp.ui.theme.NavUnselected
 fun SignUpScreen(
     onSignUpSuccess: () -> Unit = {},
     onLoginClick: () -> Unit = {},
-    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -81,12 +81,13 @@ fun SignUpScreen(
     val noNetworkMsg = stringResource(R.string.login_error_no_network)
     val genericErrorMsg = stringResource(R.string.signup_error_generic)
 
-    fun mapError(raw: String?): String? = when (raw) {
-        AuthException.EmailAlreadyInUse.message -> emailInUseMsg
-        AuthException.NoNetwork.message         -> noNetworkMsg
-        null                                    -> null
-        else                                    -> genericErrorMsg
-    }
+    fun mapError(raw: String?): String? =
+        when (raw) {
+            AuthException.EmailAlreadyInUse.message -> emailInUseMsg
+            AuthException.NoNetwork.message -> noNetworkMsg
+            null -> null
+            else -> genericErrorMsg
+        }
 
     SignUpContent(
         uiState = uiState,
@@ -102,11 +103,11 @@ fun SignUpScreen(
                 emptyNameMsg,
                 invalidEmailMsg,
                 shortPasswordMsg,
-                passwordMismatchMsg
+                passwordMismatchMsg,
             )
         },
         onLoginClick = onLoginClick,
-        onErrorDismissed = viewModel::onErrorDismissed
+        onErrorDismissed = viewModel::onErrorDismissed,
     )
 }
 
@@ -122,7 +123,7 @@ private fun SignUpContent(
     onToggleConfirmPasswordVisibility: () -> Unit,
     onCreateAccountClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onErrorDismissed: () -> Unit
+    onErrorDismissed: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -135,41 +136,44 @@ private fun SignUpContent(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppBackground)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(AppBackground),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .imePadding()
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.Center
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .imePadding()
+                    .padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.Center,
         ) {
             Spacer(modifier = Modifier.height(48.dp))
 
             // ── Header ───────────────────────────────────────────────────
             TitleText(
                 text = stringResource(R.string.signup_title),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(8.dp))
             BodyText(
                 text = stringResource(R.string.signup_subtitle),
-                color = NavUnselected
+                color = NavUnselected,
             )
 
             Spacer(modifier = Modifier.height(40.dp))
 
             // ── Fields card ──────────────────────────────────────────────
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(CardDark, RoundedCornerShape(16.dp))
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(CardDark, RoundedCornerShape(16.dp))
+                        .padding(horizontal = 16.dp, vertical = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 // Name
                 CustomTextField(
@@ -179,13 +183,15 @@ private fun SignUpContent(
                     placeholder = stringResource(R.string.signup_placeholder_name),
                     leadingIcon = Icons.Default.Person,
                     errorMessage = uiState.nameError,
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    )
+                    keyboardOptions =
+                        KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            imeAction = ImeAction.Next,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                        ),
                 )
 
                 // Email
@@ -196,13 +202,15 @@ private fun SignUpContent(
                     placeholder = stringResource(R.string.signup_placeholder_email),
                     leadingIcon = Icons.Default.Email,
                     errorMessage = uiState.emailError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    )
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                        ),
                 )
 
                 // Password
@@ -212,19 +220,29 @@ private fun SignUpContent(
                     onValueChange = onPasswordChange,
                     placeholder = stringResource(R.string.signup_placeholder_password),
                     leadingIcon = Icons.Default.Lock,
-                    trailingIcon = if (uiState.passwordVisible) Icons.Default.VisibilityOff
-                    else Icons.Default.Visibility,
+                    trailingIcon =
+                        if (uiState.passwordVisible) {
+                            Icons.Default.VisibilityOff
+                        } else {
+                            Icons.Default.Visibility
+                        },
                     onTrailingIconClick = onTogglePasswordVisibility,
-                    visualTransformation = if (uiState.passwordVisible) VisualTransformation.None
-                    else PasswordVisualTransformation(),
+                    visualTransformation =
+                        if (uiState.passwordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
                     errorMessage = uiState.passwordError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    )
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                        ),
                 )
 
                 // Confirm password
@@ -234,22 +252,32 @@ private fun SignUpContent(
                     onValueChange = onConfirmPasswordChange,
                     placeholder = stringResource(R.string.signup_placeholder_confirm_password),
                     leadingIcon = Icons.Default.Lock,
-                    trailingIcon = if (uiState.confirmPasswordVisible) Icons.Default.VisibilityOff
-                    else Icons.Default.Visibility,
+                    trailingIcon =
+                        if (uiState.confirmPasswordVisible) {
+                            Icons.Default.VisibilityOff
+                        } else {
+                            Icons.Default.Visibility
+                        },
                     onTrailingIconClick = onToggleConfirmPasswordVisibility,
-                    visualTransformation = if (uiState.confirmPasswordVisible) VisualTransformation.None
-                    else PasswordVisualTransformation(),
+                    visualTransformation =
+                        if (uiState.confirmPasswordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
                     errorMessage = uiState.confirmPasswordError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            onCreateAccountClick()
-                        }
-                    )
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                onCreateAccountClick()
+                            },
+                        ),
                 )
             }
 
@@ -260,7 +288,7 @@ private fun SignUpContent(
                 text = stringResource(R.string.signup_button_create),
                 onClick = onCreateAccountClick,
                 modifier = Modifier.fillMaxWidth(),
-                isLoading = uiState.isLoading
+                isLoading = uiState.isLoading,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -269,12 +297,12 @@ private fun SignUpContent(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 BodyText(text = stringResource(R.string.signup_login_prompt))
                 LinkButton(
                     text = stringResource(R.string.signup_login_action),
-                    onClick = onLoginClick
+                    onClick = onLoginClick,
                 )
             }
 
@@ -284,15 +312,16 @@ private fun SignUpContent(
         // ── Snackbar ─────────────────────────────────────────────────────
         SnackbarHost(
             hostState = snackbarHostState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
         ) { data ->
             Snackbar(
                 snackbarData = data,
                 containerColor = CardDark,
                 contentColor = Color.White,
-                actionColor = AccentPurple
+                actionColor = AccentPurple,
             )
         }
     }
@@ -312,7 +341,7 @@ private fun SignUpScreenPreview() {
         onToggleConfirmPasswordVisibility = {},
         onCreateAccountClick = {},
         onLoginClick = {},
-        onErrorDismissed = {}
+        onErrorDismissed = {},
     )
 }
 
@@ -320,16 +349,17 @@ private fun SignUpScreenPreview() {
 @Composable
 private fun SignUpScreenErrorPreview() {
     SignUpContent(
-        uiState = SignUpUiState(
-            name = "",
-            nameError = "Name cannot be empty",
-            email = "invalid",
-            emailError = "Enter a valid email",
-            password = "123",
-            passwordError = "Password must be at least 8 characters",
-            confirmPassword = "456",
-            confirmPasswordError = "Passwords do not match"
-        ),
+        uiState =
+            SignUpUiState(
+                name = "",
+                nameError = "Name cannot be empty",
+                email = "invalid",
+                emailError = "Enter a valid email",
+                password = "123",
+                passwordError = "Password must be at least 8 characters",
+                confirmPassword = "456",
+                confirmPasswordError = "Passwords do not match",
+            ),
         errorMessage = null,
         onNameChange = {},
         onEmailChange = {},
@@ -339,7 +369,7 @@ private fun SignUpScreenErrorPreview() {
         onToggleConfirmPasswordVisibility = {},
         onCreateAccountClick = {},
         onLoginClick = {},
-        onErrorDismissed = {}
+        onErrorDismissed = {},
     )
 }
 
@@ -347,13 +377,14 @@ private fun SignUpScreenErrorPreview() {
 @Composable
 private fun SignUpScreenLoadingPreview() {
     SignUpContent(
-        uiState = SignUpUiState(
-            name = "Cassiano Menezes",
-            email = "cassiano@email.com",
-            password = "secret",
-            confirmPassword = "secret",
-            isLoading = true
-        ),
+        uiState =
+            SignUpUiState(
+                name = "Cassiano Menezes",
+                email = "cassiano@email.com",
+                password = "secret",
+                confirmPassword = "secret",
+                isLoading = true,
+            ),
         errorMessage = null,
         onNameChange = {},
         onEmailChange = {},
@@ -363,6 +394,6 @@ private fun SignUpScreenLoadingPreview() {
         onToggleConfirmPasswordVisibility = {},
         onCreateAccountClick = {},
         onLoginClick = {},
-        onErrorDismissed = {}
+        onErrorDismissed = {},
     )
 }

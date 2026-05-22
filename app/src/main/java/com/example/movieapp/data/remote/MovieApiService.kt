@@ -9,32 +9,37 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieApiService {
-
     @GET("movies")
     suspend fun getMovies(
         @Query("page") page: Int = 0,
-        @Query("size") size: Int = 10
+        @Query("size") size: Int = 10,
     ): PagedResponse<Movie>
 
     @GET("movies/search")
     suspend fun searchMovies(
         @Query("q") query: String,
         @Query("page") page: Int = 0,
-        @Query("size") size: Int = 10
+        @Query("size") size: Int = 10,
     ): PagedResponse<Movie>
 
     @GET("movies/{id}")
-    suspend fun getMovieById(@Path("id") movieId: String): Movie
+    suspend fun getMovieById(
+        @Path("id") movieId: String,
+    ): Movie
 
     @POST("movies/{id}/favorite")
-    suspend fun favoriteMovie(@Path("id") movieId: String)
+    suspend fun favoriteMovie(
+        @Path("id") movieId: String,
+    )
 
     @DELETE("movies/{id}/favorite")
-    suspend fun unfavoriteMovie(@Path("id") movieId: String)
+    suspend fun unfavoriteMovie(
+        @Path("id") movieId: String,
+    )
 
     @GET("movies/favorite")
     suspend fun getFavoriteMovies(
         @Query("page") page: Int = 0,
-        @Query("size") size: Int = 10
+        @Query("size") size: Int = 10,
     ): PagedResponse<Movie>
 }

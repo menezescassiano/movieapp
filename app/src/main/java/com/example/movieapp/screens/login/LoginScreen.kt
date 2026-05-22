@@ -3,8 +3,8 @@ package com.example.movieapp.screens.login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -41,7 +42,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,7 +62,7 @@ import com.example.movieapp.ui.theme.NavUnselected
 fun LoginScreen(
     onLoginSuccess: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -77,12 +77,13 @@ fun LoginScreen(
     val noNetworkMsg = stringResource(R.string.login_error_no_network)
     val genericErrorMsg = stringResource(R.string.login_error_generic)
 
-    fun mapError(raw: String?): String? = when (raw) {
-        AuthException.InvalidCredentials.message -> invalidCredsMsg
-        AuthException.NoNetwork.message -> noNetworkMsg
-        null -> null
-        else -> genericErrorMsg
-    }
+    fun mapError(raw: String?): String? =
+        when (raw) {
+            AuthException.InvalidCredentials.message -> invalidCredsMsg
+            AuthException.NoNetwork.message -> noNetworkMsg
+            null -> null
+            else -> genericErrorMsg
+        }
 
     LoginContent(
         uiState = uiState,
@@ -95,7 +96,7 @@ fun LoginScreen(
         },
         onForgotPasswordClick = viewModel::onForgotPasswordClick,
         onSignUpClick = onSignUpClick,
-        onErrorDismissed = viewModel::onErrorDismissed
+        onErrorDismissed = viewModel::onErrorDismissed,
     )
 }
 
@@ -109,7 +110,7 @@ private fun LoginContent(
     onContinueClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     onSignUpClick: () -> Unit,
-    onErrorDismissed: () -> Unit
+    onErrorDismissed: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -122,41 +123,44 @@ private fun LoginContent(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppBackground)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(AppBackground),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .imePadding()
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.Center
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .imePadding()
+                    .padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.Center,
         ) {
             Spacer(modifier = Modifier.height(48.dp))
 
             // ── Header ───────────────────────────────────────────────────
             TitleText(
                 text = stringResource(R.string.login_title),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(8.dp))
             BodyText(
                 text = stringResource(R.string.login_subtitle),
-                color = NavUnselected
+                color = NavUnselected,
             )
 
             Spacer(modifier = Modifier.height(40.dp))
 
             // ── Fields card ──────────────────────────────────────────────
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(CardDark, RoundedCornerShape(16.dp))
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(CardDark, RoundedCornerShape(16.dp))
+                        .padding(horizontal = 16.dp, vertical = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 // Email
                 CustomTextField(
@@ -166,13 +170,15 @@ private fun LoginContent(
                     placeholder = stringResource(R.string.login_email_placeholder),
                     leadingIcon = Icons.Default.Email,
                     errorMessage = uiState.emailError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    )
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                        ),
                 )
 
                 // Password
@@ -182,22 +188,32 @@ private fun LoginContent(
                     onValueChange = onPasswordChange,
                     placeholder = stringResource(R.string.login_password_placeholder),
                     leadingIcon = Icons.Default.Lock,
-                    trailingIcon = if (uiState.passwordVisible) Icons.Default.VisibilityOff
-                    else Icons.Default.Visibility,
+                    trailingIcon =
+                        if (uiState.passwordVisible) {
+                            Icons.Default.VisibilityOff
+                        } else {
+                            Icons.Default.Visibility
+                        },
                     onTrailingIconClick = onTogglePasswordVisibility,
-                    visualTransformation = if (uiState.passwordVisible) VisualTransformation.None
-                    else PasswordVisualTransformation(),
+                    visualTransformation =
+                        if (uiState.passwordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
                     errorMessage = uiState.passwordError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            onContinueClick()
-                        }
-                    )
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                onContinueClick()
+                            },
+                        ),
                 )
             }
 
@@ -208,7 +224,7 @@ private fun LoginContent(
                 text = stringResource(R.string.login_button_continue),
                 onClick = onContinueClick,
                 modifier = Modifier.fillMaxWidth(),
-                isLoading = uiState.isLoading
+                isLoading = uiState.isLoading,
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -217,7 +233,7 @@ private fun LoginContent(
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 LinkButton(
                     text = stringResource(R.string.login_button_forgot_password),
-                    onClick = onForgotPasswordClick
+                    onClick = onForgotPasswordClick,
                 )
             }
 
@@ -227,12 +243,12 @@ private fun LoginContent(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 BodyText(text = stringResource(R.string.login_signup_prompt))
                 LinkButton(
                     text = stringResource(R.string.login_signup_action),
-                    onClick = onSignUpClick
+                    onClick = onSignUpClick,
                 )
             }
 
@@ -242,15 +258,16 @@ private fun LoginContent(
         // ── Snackbar ─────────────────────────────────────────────────────
         SnackbarHost(
             hostState = snackbarHostState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
         ) { data ->
             Snackbar(
                 snackbarData = data,
                 containerColor = CardDark,
                 contentColor = Color.White,
-                actionColor = AccentPurple
+                actionColor = AccentPurple,
             )
         }
     }
@@ -268,7 +285,7 @@ private fun LoginScreenPreview() {
         onContinueClick = {},
         onForgotPasswordClick = {},
         onSignUpClick = {},
-        onErrorDismissed = {}
+        onErrorDismissed = {},
     )
 }
 
@@ -276,11 +293,12 @@ private fun LoginScreenPreview() {
 @Composable
 private fun LoginScreenLoadingPreview() {
     LoginContent(
-        uiState = LoginUiState(
-            email = "user@example.com",
-            password = "secret",
-            isLoading = true
-        ),
+        uiState =
+            LoginUiState(
+                email = "user@example.com",
+                password = "secret",
+                isLoading = true,
+            ),
         errorMessage = null,
         onEmailChange = {},
         onPasswordChange = {},
@@ -288,7 +306,7 @@ private fun LoginScreenLoadingPreview() {
         onContinueClick = {},
         onForgotPasswordClick = {},
         onSignUpClick = {},
-        onErrorDismissed = {}
+        onErrorDismissed = {},
     )
 }
 
@@ -296,12 +314,13 @@ private fun LoginScreenLoadingPreview() {
 @Composable
 private fun LoginScreenErrorPreview() {
     LoginContent(
-        uiState = LoginUiState(
-            email = "invalid",
-            emailError = "Enter a valid email",
-            password = "",
-            passwordError = "Password cannot be empty"
-        ),
+        uiState =
+            LoginUiState(
+                email = "invalid",
+                emailError = "Enter a valid email",
+                password = "",
+                passwordError = "Password cannot be empty",
+            ),
         errorMessage = null,
         onEmailChange = {},
         onPasswordChange = {},
@@ -309,6 +328,6 @@ private fun LoginScreenErrorPreview() {
         onContinueClick = {},
         onForgotPasswordClick = {},
         onSignUpClick = {},
-        onErrorDismissed = {}
+        onErrorDismissed = {},
     )
 }

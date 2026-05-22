@@ -8,18 +8,19 @@ import javax.inject.Singleton
  * Replace with EncryptedSharedPreferences if persistence across restarts is needed.
  */
 @Singleton
-class TokenStore @Inject constructor() {
+class TokenStore
+    @Inject
+    constructor() {
+        @Volatile
+        private var accessToken: String? = null
 
-    @Volatile
-    private var accessToken: String? = null
+        fun save(token: String) {
+            accessToken = token
+        }
 
-    fun save(token: String) {
-        accessToken = token
+        fun get(): String? = accessToken
+
+        fun clear() {
+            accessToken = null
+        }
     }
-
-    fun get(): String? = accessToken
-
-    fun clear() {
-        accessToken = null
-    }
-}

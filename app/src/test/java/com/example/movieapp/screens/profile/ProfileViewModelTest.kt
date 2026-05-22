@@ -26,7 +26,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProfileViewModelTest {
-
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var getUserUseCase: GetUserUseCase
@@ -35,13 +34,14 @@ class ProfileViewModelTest {
     private lateinit var logoutUseCase: LogoutUseCase
     private lateinit var viewModel: ProfileViewModel
 
-    private val fakeUser = User(
-        id = "1",
-        name = "John Doe",
-        email = "john@example.com",
-        city = "São Paulo",
-        profilePictureUrl = "https://example.com/photo.jpg"
-    )
+    private val fakeUser =
+        User(
+            id = "1",
+            name = "John Doe",
+            email = "john@example.com",
+            city = "São Paulo",
+            profilePictureUrl = "https://example.com/photo.jpg",
+        )
 
     @Before
     fun setUp() {
@@ -75,89 +75,99 @@ class ProfileViewModelTest {
     // ── loadProfile ──────────────────────────────────────────────────────
 
     @Test
-    fun `loadProfile sets user and clears loading on success`() = runTest {
-        coEvery { getUserUseCase() } returns fakeUser
+    fun `loadProfile sets user and clears loading on success`() =
+        runTest {
+            coEvery { getUserUseCase() } returns fakeUser
 
-        viewModel.loadProfile()
-        advanceUntilIdle()
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertEquals(fakeUser, state.user)
-        assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
-    }
-
-    @Test
-    fun `loadProfile sets errorMessage and clears loading on failure`() = runTest {
-        coEvery { getUserUseCase() } throws RuntimeException("Network error")
-
-        viewModel.loadProfile()
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertNull(state.user)
-        assertFalse(state.isLoading)
-        assertEquals("Network error", state.errorMessage)
-    }
+            val state = viewModel.uiState.value
+            assertEquals(fakeUser, state.user)
+            assertFalse(state.isLoading)
+            assertNull(state.errorMessage)
+        }
 
     @Test
-    fun `loadProfile sets generic message when exception has no message`() = runTest {
-        coEvery { getUserUseCase() } throws RuntimeException()
+    fun `loadProfile sets errorMessage and clears loading on failure`() =
+        runTest {
+            coEvery { getUserUseCase() } throws RuntimeException("Network error")
 
-        viewModel.loadProfile()
-        advanceUntilIdle()
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertEquals("Failed to load profile", state.errorMessage)
-        assertFalse(state.isLoading)
-    }
+            val state = viewModel.uiState.value
+            assertNull(state.user)
+            assertFalse(state.isLoading)
+            assertEquals("Network error", state.errorMessage)
+        }
 
     @Test
-    fun `loadProfile clears previous error on success`() = runTest {
-        coEvery { getUserUseCase() } throws RuntimeException("First error")
-        viewModel.loadProfile()
-        advanceUntilIdle()
+    fun `loadProfile sets generic message when exception has no message`() =
+        runTest {
+            coEvery { getUserUseCase() } throws RuntimeException()
 
-        assertEquals("First error", viewModel.uiState.value.errorMessage)
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-        coEvery { getUserUseCase() } returns fakeUser
-        viewModel.loadProfile()
-        advanceUntilIdle()
+            val state = viewModel.uiState.value
+            assertEquals("Failed to load profile", state.errorMessage)
+            assertFalse(state.isLoading)
+        }
 
-        assertNull(viewModel.uiState.value.errorMessage)
-        assertEquals(fakeUser, viewModel.uiState.value.user)
-    }
+    @Test
+    fun `loadProfile clears previous error on success`() =
+        runTest {
+            coEvery { getUserUseCase() } throws RuntimeException("First error")
+            viewModel.loadProfile()
+            advanceUntilIdle()
+
+            assertEquals("First error", viewModel.uiState.value.errorMessage)
+
+            coEvery { getUserUseCase() } returns fakeUser
+            viewModel.loadProfile()
+            advanceUntilIdle()
+
+            assertNull(viewModel.uiState.value.errorMessage)
+            assertEquals(fakeUser, viewModel.uiState.value.user)
+        }
 
     // ── bug fix: avatarUri limpo no reload ───────────────────────────────
 
     @Test
-    fun `loadProfile clears avatarUri so remote URL is used after returning to screen`() = runTest {
-        // Simulates: photo was uploaded (avatarUri populated) and user left and returned to the screen
-        val uri = mockk<Uri>()
-        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
-        viewModel.onPhotoTaken(uri)
-        advanceUntilIdle()
-        assertEquals(uri, viewModel.uiState.value.avatarUri) // avatarUri populated after upload
+    fun `loadProfile clears avatarUri so remote URL is used after returning to screen`() =
+        runTest {
+            // Simulates: photo was uploaded (avatarUri populated) and user left and returned to the screen
+            val uri = mockk<Uri>()
+            coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
+            viewModel.onPhotoTaken(uri)
+            advanceUntilIdle()
+            assertEquals(uri, viewModel.uiState.value.avatarUri) // avatarUri populated after upload
 
-        // ON_RESUME dispara loadProfile
-        coEvery { getUserUseCase() } returns fakeUser
-        viewModel.loadProfile()
-        advanceUntilIdle()
+            // ON_RESUME dispara loadProfile
+            coEvery { getUserUseCase() } returns fakeUser
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-        assertNull(viewModel.uiState.value.avatarUri) // must be cleared so the remote URL is used
-    }
+            assertNull(viewModel.uiState.value.avatarUri) // must be cleared so the remote URL is used
+        }
 
     @Test
-    fun `loadProfile preserves remote profilePictureUrl returned by server`() = runTest {
-        val updatedUrl = "https://cdn.example.com/new-photo.jpg"
-        val userWithNewPhoto = fakeUser.copy(profilePictureUrl = updatedUrl)
-        coEvery { getUserUseCase() } returns userWithNewPhoto
+    fun `loadProfile preserves remote profilePictureUrl returned by server`() =
+        runTest {
+            val updatedUrl = "https://cdn.example.com/new-photo.jpg"
+            val userWithNewPhoto = fakeUser.copy(profilePictureUrl = updatedUrl)
+            coEvery { getUserUseCase() } returns userWithNewPhoto
 
-        viewModel.loadProfile()
-        advanceUntilIdle()
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-        assertEquals(updatedUrl, viewModel.uiState.value.user?.profilePictureUrl)
-    }
+            assertEquals(
+                updatedUrl,
+                viewModel.uiState.value.user
+                    ?.profilePictureUrl,
+            )
+        }
 
     // ── avatar ───────────────────────────────────────────────────────────
 
@@ -177,101 +187,116 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `onPhotoTaken hides picker and triggers upload`() = runTest {
-        val uri = mockk<Uri>()
-        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
+    fun `onPhotoTaken hides picker and triggers upload`() =
+        runTest {
+            val uri = mockk<Uri>()
+            coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
 
-        viewModel.onAvatarClick()
-        viewModel.onPhotoTaken(uri)
-        advanceUntilIdle()
+            viewModel.onAvatarClick()
+            viewModel.onPhotoTaken(uri)
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertFalse(state.showAvatarPicker)
-        assertEquals(uri, state.avatarUri)
-        assertEquals(fakeUser, state.user)
-        assertFalse(state.isSaving)
-    }
-
-    @Test
-    fun `onImagePicked hides picker and triggers upload`() = runTest {
-        val uri = mockk<Uri>()
-        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
-
-        viewModel.onAvatarClick()
-        viewModel.onImagePicked(uri)
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertFalse(state.showAvatarPicker)
-        assertEquals(uri, state.avatarUri)
-        assertEquals(fakeUser, state.user)
-        assertFalse(state.isSaving)
-    }
+            val state = viewModel.uiState.value
+            assertFalse(state.showAvatarPicker)
+            assertEquals(uri, state.avatarUri)
+            assertEquals(fakeUser, state.user)
+            assertFalse(state.isSaving)
+        }
 
     @Test
-    fun `upload success stores local uri for immediate display`() = runTest {
-        val uri = mockk<Uri>()
-        val userWithNewUrl = fakeUser.copy(profilePictureUrl = "https://cdn.example.com/new.jpg")
-        coEvery { uploadProfilePictureUseCase(uri) } returns userWithNewUrl
+    fun `onImagePicked hides picker and triggers upload`() =
+        runTest {
+            val uri = mockk<Uri>()
+            coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
 
-        viewModel.onPhotoTaken(uri)
-        advanceUntilIdle()
+            viewModel.onAvatarClick()
+            viewModel.onImagePicked(uri)
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertEquals(uri, state.avatarUri)
-        assertEquals("https://cdn.example.com/new.jpg", state.user?.profilePictureUrl)
-    }
-
-    @Test
-    fun `upload success does not append cache-bust param to profilePictureUrl`() = runTest {
-        // Cache is now disabled in the ImageLoader, not via a query param on the URL.
-        // The URL returned by the server must be saved exactly as received.
-        val uri = mockk<Uri>()
-        val serverUrl = "https://cdn.example.com/photo.jpg"
-        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser.copy(profilePictureUrl = serverUrl)
-
-        viewModel.onPhotoTaken(uri)
-        advanceUntilIdle()
-
-        assertEquals(serverUrl, viewModel.uiState.value.user?.profilePictureUrl)
-        assertFalse(viewModel.uiState.value.user?.profilePictureUrl?.contains("?t=") ?: false)
-    }
+            val state = viewModel.uiState.value
+            assertFalse(state.showAvatarPicker)
+            assertEquals(uri, state.avatarUri)
+            assertEquals(fakeUser, state.user)
+            assertFalse(state.isSaving)
+        }
 
     @Test
-    fun `upload failure sets errorMessage and clears isSaving`() = runTest {
-        val uri = mockk<Uri>()
-        coEvery { uploadProfilePictureUseCase(uri) } throws RuntimeException("Upload failed")
+    fun `upload success stores local uri for immediate display`() =
+        runTest {
+            val uri = mockk<Uri>()
+            val userWithNewUrl = fakeUser.copy(profilePictureUrl = "https://cdn.example.com/new.jpg")
+            coEvery { uploadProfilePictureUseCase(uri) } returns userWithNewUrl
 
-        viewModel.onPhotoTaken(uri)
-        advanceUntilIdle()
+            viewModel.onPhotoTaken(uri)
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertEquals("Upload failed", state.errorMessage)
-        assertFalse(state.isSaving)
-        assertNull(state.avatarUri)
-    }
-
-    @Test
-    fun `upload failure with no message sets generic error`() = runTest {
-        val uri = mockk<Uri>()
-        coEvery { uploadProfilePictureUseCase(uri) } throws RuntimeException()
-
-        viewModel.onPhotoTaken(uri)
-        advanceUntilIdle()
-
-        assertEquals("Failed to upload picture", viewModel.uiState.value.errorMessage)
-    }
+            val state = viewModel.uiState.value
+            assertEquals(uri, state.avatarUri)
+            assertEquals("https://cdn.example.com/new.jpg", state.user?.profilePictureUrl)
+        }
 
     @Test
-    fun `upload calls use case with correct uri`() = runTest {
-        val uri = mockk<Uri>()
-        coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
+    fun `upload success does not append cache-bust param to profilePictureUrl`() =
+        runTest {
+            // Cache is now disabled in the ImageLoader, not via a query param on the URL.
+            // The URL returned by the server must be saved exactly as received.
+            val uri = mockk<Uri>()
+            val serverUrl = "https://cdn.example.com/photo.jpg"
+            coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser.copy(profilePictureUrl = serverUrl)
 
-        viewModel.onImagePicked(uri)
-        advanceUntilIdle()
+            viewModel.onPhotoTaken(uri)
+            advanceUntilIdle()
 
-        coVerify(exactly = 1) { uploadProfilePictureUseCase(uri) }
-    }
+            assertEquals(
+                serverUrl,
+                viewModel.uiState.value.user
+                    ?.profilePictureUrl,
+            )
+            assertFalse(
+                viewModel.uiState.value.user
+                    ?.profilePictureUrl
+                    ?.contains("?t=") ?: false,
+            )
+        }
+
+    @Test
+    fun `upload failure sets errorMessage and clears isSaving`() =
+        runTest {
+            val uri = mockk<Uri>()
+            coEvery { uploadProfilePictureUseCase(uri) } throws RuntimeException("Upload failed")
+
+            viewModel.onPhotoTaken(uri)
+            advanceUntilIdle()
+
+            val state = viewModel.uiState.value
+            assertEquals("Upload failed", state.errorMessage)
+            assertFalse(state.isSaving)
+            assertNull(state.avatarUri)
+        }
+
+    @Test
+    fun `upload failure with no message sets generic error`() =
+        runTest {
+            val uri = mockk<Uri>()
+            coEvery { uploadProfilePictureUseCase(uri) } throws RuntimeException()
+
+            viewModel.onPhotoTaken(uri)
+            advanceUntilIdle()
+
+            assertEquals("Failed to upload picture", viewModel.uiState.value.errorMessage)
+        }
+
+    @Test
+    fun `upload calls use case with correct uri`() =
+        runTest {
+            val uri = mockk<Uri>()
+            coEvery { uploadProfilePictureUseCase(uri) } returns fakeUser
+
+            viewModel.onImagePicked(uri)
+            advanceUntilIdle()
+
+            coVerify(exactly = 1) { uploadProfilePictureUseCase(uri) }
+        }
 
     // ── edit field ───────────────────────────────────────────────────────
 
@@ -298,208 +323,235 @@ class ProfileViewModelTest {
     // ── onEditFieldConfirm ───────────────────────────────────────────────
 
     @Test
-    fun `onEditFieldConfirm NAME updates name and saves profile`() = runTest {
-        val updatedUser = fakeUser.copy(name = "Jane Doe")
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery {
-            updateUserUseCase(
-                name = "Jane Doe",
-                email = fakeUser.email,
-                city = fakeUser.city,
-                profilePictureUrl = fakeUser.profilePictureUrl
+    fun `onEditFieldConfirm NAME updates name and saves profile`() =
+        runTest {
+            val updatedUser = fakeUser.copy(name = "Jane Doe")
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery {
+                updateUserUseCase(
+                    name = "Jane Doe",
+                    email = fakeUser.email,
+                    city = fakeUser.city,
+                    profilePictureUrl = fakeUser.profilePictureUrl,
+                )
+            } returns updatedUser
+
+            viewModel.loadProfile()
+            advanceUntilIdle()
+
+            viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
+            advanceUntilIdle()
+
+            val state = viewModel.uiState.value
+            assertEquals("Jane Doe", state.user?.name)
+            assertNull(state.editingField)
+            assertFalse(state.isSaving)
+            assertNull(state.errorMessage)
+        }
+
+    @Test
+    fun `onEditFieldConfirm EMAIL updates email and saves profile`() =
+        runTest {
+            val updatedUser = fakeUser.copy(email = "jane@example.com")
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery {
+                updateUserUseCase(
+                    name = fakeUser.name,
+                    email = "jane@example.com",
+                    city = fakeUser.city,
+                    profilePictureUrl = fakeUser.profilePictureUrl,
+                )
+            } returns updatedUser
+
+            viewModel.loadProfile()
+            advanceUntilIdle()
+
+            viewModel.onEditFieldConfirm(EditableField.EMAIL, "jane@example.com")
+            advanceUntilIdle()
+
+            assertEquals(
+                "jane@example.com",
+                viewModel.uiState.value.user
+                    ?.email,
             )
-        } returns updatedUser
-
-        viewModel.loadProfile()
-        advanceUntilIdle()
-
-        viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertEquals("Jane Doe", state.user?.name)
-        assertNull(state.editingField)
-        assertFalse(state.isSaving)
-        assertNull(state.errorMessage)
-    }
+        }
 
     @Test
-    fun `onEditFieldConfirm EMAIL updates email and saves profile`() = runTest {
-        val updatedUser = fakeUser.copy(email = "jane@example.com")
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery {
-            updateUserUseCase(
-                name = fakeUser.name,
-                email = "jane@example.com",
-                city = fakeUser.city,
-                profilePictureUrl = fakeUser.profilePictureUrl
+    fun `onEditFieldConfirm CITY updates city and saves profile`() =
+        runTest {
+            val updatedUser = fakeUser.copy(city = "Rio de Janeiro")
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery {
+                updateUserUseCase(
+                    name = fakeUser.name,
+                    email = fakeUser.email,
+                    city = "Rio de Janeiro",
+                    profilePictureUrl = fakeUser.profilePictureUrl,
+                )
+            } returns updatedUser
+
+            viewModel.loadProfile()
+            advanceUntilIdle()
+
+            viewModel.onEditFieldConfirm(EditableField.CITY, "Rio de Janeiro")
+            advanceUntilIdle()
+
+            assertEquals(
+                "Rio de Janeiro",
+                viewModel.uiState.value.user
+                    ?.city,
             )
-        } returns updatedUser
-
-        viewModel.loadProfile()
-        advanceUntilIdle()
-
-        viewModel.onEditFieldConfirm(EditableField.EMAIL, "jane@example.com")
-        advanceUntilIdle()
-
-        assertEquals("jane@example.com", viewModel.uiState.value.user?.email)
-    }
+        }
 
     @Test
-    fun `onEditFieldConfirm CITY updates city and saves profile`() = runTest {
-        val updatedUser = fakeUser.copy(city = "Rio de Janeiro")
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery {
-            updateUserUseCase(
-                name = fakeUser.name,
-                email = fakeUser.email,
-                city = "Rio de Janeiro",
-                profilePictureUrl = fakeUser.profilePictureUrl
-            )
-        } returns updatedUser
+    fun `onEditFieldConfirm does nothing when user is null`() =
+        runTest {
+            viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
+            advanceUntilIdle()
 
-        viewModel.loadProfile()
-        advanceUntilIdle()
-
-        viewModel.onEditFieldConfirm(EditableField.CITY, "Rio de Janeiro")
-        advanceUntilIdle()
-
-        assertEquals("Rio de Janeiro", viewModel.uiState.value.user?.city)
-    }
+            coVerify(exactly = 0) { updateUserUseCase(any(), any(), any(), any()) }
+            assertNull(viewModel.uiState.value.user)
+        }
 
     @Test
-    fun `onEditFieldConfirm does nothing when user is null`() = runTest {
-        viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
-        advanceUntilIdle()
+    fun `onEditFieldConfirm clears editingField even before save completes`() =
+        runTest {
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery { updateUserUseCase(any(), any(), any(), any()) } returns fakeUser
 
-        coVerify(exactly = 0) { updateUserUseCase(any(), any(), any(), any()) }
-        assertNull(viewModel.uiState.value.user)
-    }
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-    @Test
-    fun `onEditFieldConfirm clears editingField even before save completes`() = runTest {
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery { updateUserUseCase(any(), any(), any(), any()) } returns fakeUser
+            viewModel.onEditField(EditableField.NAME)
+            viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
 
-        viewModel.loadProfile()
-        advanceUntilIdle()
-
-        viewModel.onEditField(EditableField.NAME)
-        viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
-
-        assertNull(viewModel.uiState.value.editingField)
-    }
+            assertNull(viewModel.uiState.value.editingField)
+        }
 
     // ── update otimista ──────────────────────────────────────────────────
 
     @Test
-    fun `onEditFieldConfirm updates user optimistically before save completes`() = runTest {
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery { updateUserUseCase(any(), any(), any(), any()) } returns fakeUser.copy(name = "Jane Doe")
+    fun `onEditFieldConfirm updates user optimistically before save completes`() =
+        runTest {
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery { updateUserUseCase(any(), any(), any(), any()) } returns fakeUser.copy(name = "Jane Doe")
 
-        viewModel.loadProfile()
-        advanceUntilIdle()
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-        viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
+            viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
 
-        // without advanceUntilIdle: the synchronous update already happened before the async save
-        assertEquals("Jane Doe", viewModel.uiState.value.user?.name)
-        assertNull(viewModel.uiState.value.editingField)
-    }
-
-    @Test
-    fun `save failure does not revert optimistic user update`() = runTest {
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery { updateUserUseCase(any(), any(), any(), any()) } throws RuntimeException("Save error")
-
-        viewModel.loadProfile()
-        advanceUntilIdle()
-
-        viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
-        advanceUntilIdle()
-
-        // user keeps the optimistic value even after a save failure
-        assertEquals("Jane Doe", viewModel.uiState.value.user?.name)
-        assertEquals("Save error", viewModel.uiState.value.errorMessage)
-    }
+            // without advanceUntilIdle: the synchronous update already happened before the async save
+            assertEquals(
+                "Jane Doe",
+                viewModel.uiState.value.user
+                    ?.name,
+            )
+            assertNull(viewModel.uiState.value.editingField)
+        }
 
     @Test
-    fun `save clears previous errorMessage when starting new save`() = runTest {
-        // primeiro save falha e deixa errorMessage
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery { updateUserUseCase(any(), any(), any(), any()) } throws RuntimeException("Save error")
+    fun `save failure does not revert optimistic user update`() =
+        runTest {
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery { updateUserUseCase(any(), any(), any(), any()) } throws RuntimeException("Save error")
 
-        viewModel.loadProfile()
-        advanceUntilIdle()
-        viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
-        advanceUntilIdle()
-        assertEquals("Save error", viewModel.uiState.value.errorMessage)
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-        // segundo save bem-sucedido deve limpar o erro
-        coEvery { updateUserUseCase(any(), any(), any(), any()) } returns fakeUser.copy(name = "Jane Doe")
-        viewModel.onEditFieldConfirm(EditableField.EMAIL, "jane@example.com")
-        advanceUntilIdle()
+            viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
+            advanceUntilIdle()
 
-        assertNull(viewModel.uiState.value.errorMessage)
-    }
+            // user keeps the optimistic value even after a save failure
+            assertEquals(
+                "Jane Doe",
+                viewModel.uiState.value.user
+                    ?.name,
+            )
+            assertEquals("Save error", viewModel.uiState.value.errorMessage)
+        }
+
+    @Test
+    fun `save clears previous errorMessage when starting new save`() =
+        runTest {
+            // primeiro save falha e deixa errorMessage
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery { updateUserUseCase(any(), any(), any(), any()) } throws RuntimeException("Save error")
+
+            viewModel.loadProfile()
+            advanceUntilIdle()
+            viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
+            advanceUntilIdle()
+            assertEquals("Save error", viewModel.uiState.value.errorMessage)
+
+            // segundo save bem-sucedido deve limpar o erro
+            coEvery { updateUserUseCase(any(), any(), any(), any()) } returns fakeUser.copy(name = "Jane Doe")
+            viewModel.onEditFieldConfirm(EditableField.EMAIL, "jane@example.com")
+            advanceUntilIdle()
+
+            assertNull(viewModel.uiState.value.errorMessage)
+        }
 
     // ── saveProfile (via onEditFieldConfirm) ─────────────────────────────
 
     @Test
-    fun `save failure sets errorMessage and clears isSaving`() = runTest {
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery { updateUserUseCase(any(), any(), any(), any()) } throws RuntimeException("Save error")
+    fun `save failure sets errorMessage and clears isSaving`() =
+        runTest {
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery { updateUserUseCase(any(), any(), any(), any()) } throws RuntimeException("Save error")
 
-        viewModel.loadProfile()
-        advanceUntilIdle()
+            viewModel.loadProfile()
+            advanceUntilIdle()
 
-        viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
-        advanceUntilIdle()
+            viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertEquals("Save error", state.errorMessage)
-        assertFalse(state.isSaving)
-    }
-
-    @Test
-    fun `save failure with no message sets generic error`() = runTest {
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery { updateUserUseCase(any(), any(), any(), any()) } throws RuntimeException()
-
-        viewModel.loadProfile()
-        advanceUntilIdle()
-
-        viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
-        advanceUntilIdle()
-
-        assertEquals("Failed to save profile", viewModel.uiState.value.errorMessage)
-    }
-
-    @Test
-    fun `successful save calls updateUserUseCase with correct parameters`() = runTest {
-        coEvery { getUserUseCase() } returns fakeUser
-        coEvery {
-            updateUserUseCase(
-                name = "New Name",
-                email = fakeUser.email,
-                city = fakeUser.city,
-                profilePictureUrl = fakeUser.profilePictureUrl
-            )
-        } returns fakeUser.copy(name = "New Name")
-
-        viewModel.loadProfile()
-        advanceUntilIdle()
-
-        viewModel.onEditFieldConfirm(EditableField.NAME, "New Name")
-        advanceUntilIdle()
-
-        coVerify(exactly = 1) {
-            updateUserUseCase(
-                name = "New Name",
-                email = fakeUser.email,
-                city = fakeUser.city,
-                profilePictureUrl = fakeUser.profilePictureUrl
-            )
+            val state = viewModel.uiState.value
+            assertEquals("Save error", state.errorMessage)
+            assertFalse(state.isSaving)
         }
-    }
+
+    @Test
+    fun `save failure with no message sets generic error`() =
+        runTest {
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery { updateUserUseCase(any(), any(), any(), any()) } throws RuntimeException()
+
+            viewModel.loadProfile()
+            advanceUntilIdle()
+
+            viewModel.onEditFieldConfirm(EditableField.NAME, "Jane Doe")
+            advanceUntilIdle()
+
+            assertEquals("Failed to save profile", viewModel.uiState.value.errorMessage)
+        }
+
+    @Test
+    fun `successful save calls updateUserUseCase with correct parameters`() =
+        runTest {
+            coEvery { getUserUseCase() } returns fakeUser
+            coEvery {
+                updateUserUseCase(
+                    name = "New Name",
+                    email = fakeUser.email,
+                    city = fakeUser.city,
+                    profilePictureUrl = fakeUser.profilePictureUrl,
+                )
+            } returns fakeUser.copy(name = "New Name")
+
+            viewModel.loadProfile()
+            advanceUntilIdle()
+
+            viewModel.onEditFieldConfirm(EditableField.NAME, "New Name")
+            advanceUntilIdle()
+
+            coVerify(exactly = 1) {
+                updateUserUseCase(
+                    name = "New Name",
+                    email = fakeUser.email,
+                    city = fakeUser.city,
+                    profilePictureUrl = fakeUser.profilePictureUrl,
+                )
+            }
+        }
 }

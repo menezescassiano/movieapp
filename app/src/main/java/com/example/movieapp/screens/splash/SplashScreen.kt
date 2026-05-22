@@ -15,13 +15,13 @@ import com.example.movieapp.ui.theme.AppBackground
 fun SplashScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    viewModel: SplashViewModel = hiltViewModel()
+    viewModel: SplashViewModel = hiltViewModel(),
 ) {
     val destination by viewModel.destination.collectAsStateWithLifecycle()
 
     LaunchedEffect(destination) {
         when (destination) {
-            SplashDestination.Home  -> onNavigateToHome()
+            SplashDestination.Home -> onNavigateToHome()
             SplashDestination.Login -> onNavigateToLogin()
             SplashDestination.Loading -> Unit
         }
@@ -30,8 +30,9 @@ fun SplashScreen(
     // Transparent screen — the visual splash has already been shown by the system.
     // Just holds the frame until Room responds.
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppBackground)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(AppBackground),
     )
 }

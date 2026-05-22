@@ -14,17 +14,17 @@ import com.example.movieapp.ui.theme.CardDark
 @Composable
 fun GenreChip(label: String) {
     Box(
-        modifier = Modifier
-            .background(
-                color = CardDark,
-                shape = MaterialTheme.shapes.small
-            )
-            .padding(horizontal = 10.dp, vertical = 4.dp)
+        modifier =
+            Modifier
+                .background(
+                    color = CardDark,
+                    shape = MaterialTheme.shapes.small,
+                ).padding(horizontal = 10.dp, vertical = 4.dp),
     ) {
         Text(
             text = label.uppercase(),
             style = MaterialTheme.typography.labelSmall,
-            color = Color.White.copy(alpha = 0.85f)
+            color = Color.White.copy(alpha = 0.85f),
         )
     }
 }

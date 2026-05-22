@@ -11,14 +11,17 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 
 interface UserApiService {
-
     @GET("users/me")
     suspend fun getUser(): UserDto
 
     @PUT("users/me")
-    suspend fun updateUser(@Body request: UpdateUserRequest): UserDto
+    suspend fun updateUser(
+        @Body request: UpdateUserRequest,
+    ): UserDto
 
     @Multipart
     @POST("users/me/picture")
-    suspend fun uploadProfilePicture(@Part file: MultipartBody.Part): UserDto
+    suspend fun uploadProfilePicture(
+        @Part file: MultipartBody.Part,
+    ): UserDto
 }

@@ -4,40 +4,41 @@ import com.example.movieapp.model.AuthResult
 import com.google.gson.annotations.SerializedName
 
 data class RefreshRequest(
-    @SerializedName("refreshToken") val refreshToken: String
+    @SerializedName("refreshToken") val refreshToken: String,
 )
 
 data class RefreshResponse(
     @SerializedName("accessToken") val accessToken: String,
     @SerializedName("refreshToken") val refreshToken: String,
-    @SerializedName("expiresIn") val expiresIn: Int
+    @SerializedName("expiresIn") val expiresIn: Int,
 )
 
 data class LoginRequest(
     @SerializedName("email") val email: String,
-    @SerializedName("password") val password: String
+    @SerializedName("password") val password: String,
 )
 
 data class RegisterRequest(
     @SerializedName("name") val name: String,
     @SerializedName("email") val email: String,
-    @SerializedName("password") val password: String
+    @SerializedName("password") val password: String,
 )
 
 data class LoginResponse(
     @SerializedName("tokens") val tokens: TokensDto,
-    @SerializedName("user") val user: UserDto
+    @SerializedName("user") val user: UserDto,
 )
 
 data class TokensDto(
     @SerializedName("accessToken") val accessToken: String,
     @SerializedName("refreshToken") val refreshToken: String,
-    @SerializedName("expiresIn") val expiresIn: Int
+    @SerializedName("expiresIn") val expiresIn: Int,
 )
 
-fun LoginResponse.toDomain() = AuthResult(
-    accessToken = tokens.accessToken,
-    refreshToken = tokens.refreshToken,
-    expiresIn = tokens.expiresIn,
-    user = user.toDomain()
-)
+fun LoginResponse.toDomain() =
+    AuthResult(
+        accessToken = tokens.accessToken,
+        refreshToken = tokens.refreshToken,
+        expiresIn = tokens.expiresIn,
+        user = user.toDomain(),
+    )

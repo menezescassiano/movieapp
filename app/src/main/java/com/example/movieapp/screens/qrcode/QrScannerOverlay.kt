@@ -12,7 +12,7 @@ fun QrScannerOverlay(
     borderWidth: Float = 6f,
     cornerRadius: Float = 32f,
     overlayAlpha: Float = 0.6f,
-    boxAspectRatio: Float = 1f // 1f = squared
+    boxAspectRatio: Float = 1f, // 1f = squared
 ) {
     Canvas(modifier = modifier) {
         val canvasWidth = size.width
@@ -27,12 +27,14 @@ fun QrScannerOverlay(
         val right = left + boxWidth
         val bottom = top + boxHeight
 
-        val scanRect = androidx.compose.ui.geometry.Rect(left, top, right, bottom)
+        val scanRect =
+            androidx.compose.ui.geometry
+                .Rect(left, top, right, bottom)
 
         // Dark background
         drawRect(
             color = Color.Black.copy(alpha = overlayAlpha),
-            size = size
+            size = size,
         )
 
         // Cleans the central rectangular area using composition mode
@@ -40,8 +42,10 @@ fun QrScannerOverlay(
             color = Color.Transparent,
             topLeft = scanRect.topLeft,
             size = scanRect.size,
-            cornerRadius = androidx.compose.ui.geometry.CornerRadius(cornerRadius, cornerRadius),
-            blendMode = androidx.compose.ui.graphics.BlendMode.Clear
+            cornerRadius =
+                androidx.compose.ui.geometry
+                    .CornerRadius(cornerRadius, cornerRadius),
+            blendMode = androidx.compose.ui.graphics.BlendMode.Clear,
         )
 
         // Rectangle border
@@ -49,8 +53,12 @@ fun QrScannerOverlay(
             color = borderColor,
             topLeft = scanRect.topLeft,
             size = scanRect.size,
-            cornerRadius = androidx.compose.ui.geometry.CornerRadius(cornerRadius, cornerRadius),
-            style = androidx.compose.ui.graphics.drawscope.Stroke(width = borderWidth)
+            cornerRadius =
+                androidx.compose.ui.geometry
+                    .CornerRadius(cornerRadius, cornerRadius),
+            style =
+                androidx.compose.ui.graphics.drawscope
+                    .Stroke(width = borderWidth),
         )
     }
 }

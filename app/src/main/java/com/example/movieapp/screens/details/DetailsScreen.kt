@@ -66,7 +66,7 @@ fun DetailsScreen(
     navController: NavController,
     movieId: String?,
     modifier: Modifier = Modifier,
-    viewModel: DetailsViewModel = hiltViewModel()
+    viewModel: DetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -78,7 +78,7 @@ fun DetailsScreen(
         uiState = uiState,
         modifier = modifier,
         onBackClick = { navController.popBackStack() },
-        onFavoriteClick = { movieId?.let { viewModel.toggleFavorite(it) } }
+        onFavoriteClick = { movieId?.let { viewModel.toggleFavorite(it) } },
     )
 }
 
@@ -88,7 +88,7 @@ fun DetailsScreenContent(
     uiState: DetailsUiState,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
-    onFavoriteClick: () -> Unit = {}
+    onFavoriteClick: () -> Unit = {},
 ) {
     var selectedImageUrl by remember { mutableStateOf<String?>(null) }
 
@@ -103,30 +103,32 @@ fun DetailsScreenContent(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.details_back),
                         modifier = Modifier.clickable { onBackClick() },
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 },
                 title = { Text(stringResource(R.string.details_title)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppBackground,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                )
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = AppBackground,
+                        titleContentColor = Color.White,
+                        navigationIconContentColor = Color.White,
+                    ),
             )
-        }
+        },
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                color = AppBackground
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                color = AppBackground,
             ) {
                 when {
                     uiState.isLoading -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.Center,
                         ) {
                             CircularProgressIndicator()
                         }
@@ -139,21 +141,22 @@ fun DetailsScreenContent(
                     else -> {
                         uiState.movie?.let { movie ->
                             Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .verticalScroll(rememberScrollState())
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                verticalArrangement = Arrangement.Top
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .verticalScroll(rememberScrollState())
+                                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalArrangement = Arrangement.Top,
                             ) {
                                 // Title + Favorite button
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     TitleText(
                                         text = movie.title,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier.weight(1f),
                                     )
                                     FavoriteButton(
                                         movie = movie,
-                                        onFavoriteClick = onFavoriteClick
+                                        onFavoriteClick = onFavoriteClick,
                                     )
                                 }
 
@@ -162,23 +165,24 @@ fun DetailsScreenContent(
                                 // Rating + Year row
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.Star,
                                         contentDescription = null,
                                         tint = StarGold,
-                                        modifier = Modifier
-                                            .width(16.dp)
-                                            .height(16.dp)
+                                        modifier =
+                                            Modifier
+                                                .width(16.dp)
+                                                .height(16.dp),
                                     )
                                     BodyText(
                                         text = movie.rating,
-                                        color = StarGold
+                                        color = StarGold,
                                     )
                                     BodyText(
                                         text = movie.year,
-                                        color = Color.White.copy(alpha = 0.6f)
+                                        color = Color.White.copy(alpha = 0.6f),
                                     )
                                 }
 
@@ -199,9 +203,10 @@ fun DetailsScreenContent(
                                     DetailSection(label = stringResource(R.string.details_trailer)) {
                                         YouTubePlayer(
                                             videoUrl = it,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(220.dp)
+                                            modifier =
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .height(220.dp),
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
@@ -211,26 +216,30 @@ fun DetailsScreenContent(
                                 LazyRow {
                                     items(movie.images.size) { index ->
                                         Card(
-                                            modifier = Modifier
-                                                .padding(end = 8.dp)
-                                                .width(300.dp)
-                                                .height(200.dp),
+                                            modifier =
+                                                Modifier
+                                                    .padding(end = 8.dp)
+                                                    .width(300.dp)
+                                                    .height(200.dp),
                                             elevation = CardDefaults.cardElevation(),
-                                            onClick = { selectedImageUrl = movie.images[index] }
+                                            onClick = { selectedImageUrl = movie.images[index] },
                                         ) {
                                             SubcomposeAsyncImage(
-                                                model = ImageRequest.Builder(LocalContext.current)
-                                                    .data(movie.images[index])
-                                                    .crossfade(true)
-                                                    .build(),
-                                                contentDescription = stringResource(
-                                                    R.string.details_movie_image,
-                                                    index
-                                                ),
+                                                model =
+                                                    ImageRequest
+                                                        .Builder(LocalContext.current)
+                                                        .data(movie.images[index])
+                                                        .crossfade(true)
+                                                        .build(),
+                                                contentDescription =
+                                                    stringResource(
+                                                        R.string.details_movie_image,
+                                                        index,
+                                                    ),
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier.fillMaxSize(),
                                                 loading = { ImageSkeleton(modifier = Modifier.fillMaxSize()) },
-                                                error = { ImageSkeleton(modifier = Modifier.fillMaxSize()) }
+                                                error = { ImageSkeleton(modifier = Modifier.fillMaxSize()) },
                                             )
                                         }
                                     }
@@ -267,7 +276,7 @@ fun DetailsScreenContent(
                 ZoomableImage(
                     imageUrl = it,
                     modifier = Modifier.fillMaxSize(),
-                    onClose = { selectedImageUrl = null }
+                    onClose = { selectedImageUrl = null },
                 )
             }
         }
@@ -275,26 +284,28 @@ fun DetailsScreenContent(
 }
 
 @Composable
-fun DetailSection(label: String, content: @Composable () -> Unit) {
+fun DetailSection(
+    label: String,
+    content: @Composable () -> Unit,
+) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = Color.White.copy(alpha = 0.45f),
-            letterSpacing = 1.5.sp
+            letterSpacing = 1.5.sp,
         )
         content()
     }
 }
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun DetailsScreenPreview() {
     DetailsScreenContent(
-        uiState = DetailsUiState(
-            movie = getMoviesList().first()
-        )
+        uiState =
+            DetailsUiState(
+                movie = getMoviesList().first(),
+            ),
     )
 }

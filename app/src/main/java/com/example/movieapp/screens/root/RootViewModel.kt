@@ -7,9 +7,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class RootViewModel @Inject constructor(
-    sessionManager: SessionManager
-) : ViewModel() {
-
-    val logoutEvent: SharedFlow<Unit> = sessionManager.logoutEvent
-}
+class RootViewModel
+    @Inject
+    constructor(
+        sessionManager: SessionManager,
+    ) : ViewModel() {
+        val logoutEvent: SharedFlow<Unit> = sessionManager.logoutEvent
+    }

@@ -16,12 +16,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     // Token DB — destructive migration is acceptable since the token can be restored via login.
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "movieapp.db")
+    fun provideAppDatabase(
+        @ApplicationContext context: Context,
+    ): AppDatabase =
+        Room
+            .databaseBuilder(context, AppDatabase::class.java, "movieapp.db")
             .fallbackToDestructiveMigration(true)
             .build()
 
@@ -29,15 +31,16 @@ object DatabaseModule {
     // The schema never changes: losing saved credentials would be a bad user experience.
     @Provides
     @Singleton
-    fun provideCredentialsDatabase(@ApplicationContext context: Context): CredentialsDatabase =
-        Room.databaseBuilder(context, CredentialsDatabase::class.java, "credentials.db")
+    fun provideCredentialsDatabase(
+        @ApplicationContext context: Context,
+    ): CredentialsDatabase =
+        Room
+            .databaseBuilder(context, CredentialsDatabase::class.java, "credentials.db")
             .build()
 
     @Provides
-    fun provideTokenDao(database: AppDatabase): TokenDao =
-        database.tokenDao()
+    fun provideTokenDao(database: AppDatabase): TokenDao = database.tokenDao()
 
     @Provides
-    fun provideSavedCredentialsDao(database: CredentialsDatabase): SavedCredentialsDao =
-        database.savedCredentialsDao()
+    fun provideSavedCredentialsDao(database: CredentialsDatabase): SavedCredentialsDao = database.savedCredentialsDao()
 }

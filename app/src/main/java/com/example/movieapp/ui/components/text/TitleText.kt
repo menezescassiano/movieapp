@@ -22,7 +22,7 @@ fun TitleText(
         text = text,
         style = style,
         fontWeight = fontWeight,
-        color = color
+        color = color,
     )
 }
 

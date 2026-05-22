@@ -18,26 +18,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.movieapp.ui.theme.AppBackground
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.movieapp.model.Movie
 import com.example.movieapp.model.getMoviesList
 import com.example.movieapp.navigation.DetailsRoute
 import com.example.movieapp.ui.components.MovieRow
+import com.example.movieapp.ui.theme.AppBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
     navController: NavController,
-    viewModel: FavoritesViewModel = hiltViewModel()
+    viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -48,7 +48,7 @@ fun FavoritesScreen(
     FavoritesScreenContent(
         uiState = uiState,
         onMovieClick = { navController.navigate(DetailsRoute(it.id)) },
-        onRetry = { viewModel.loadFavorites() }
+        onRetry = { viewModel.loadFavorites() },
     )
 }
 
@@ -57,33 +57,35 @@ fun FavoritesScreen(
 fun FavoritesScreenContent(
     uiState: FavoritesUiState,
     onMovieClick: (Movie) -> Unit = {},
-    onRetry: () -> Unit = {}
+    onRetry: () -> Unit = {},
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppBackground)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(AppBackground),
     ) {
         CenterAlignedTopAppBar(
             title = { Text("Favorites", color = Color.White) },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                titleContentColor = Color.White
-            )
+            colors =
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.White,
+                ),
         )
 
         AnimatedContent(
             targetState = uiState,
             transitionSpec = { fadeIn() togetherWith fadeOut() },
             contentKey = { it.isLoading || it.errorMessage != null || it.movies.isEmpty() },
-            label = "FavoritesTransition"
+            label = "FavoritesTransition",
         ) { state ->
             Box(modifier = Modifier.fillMaxSize()) {
                 when {
                     state.errorMessage != null -> {
                         Column(
                             modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(state.errorMessage, color = Color.White)
                             Button(onClick = onRetry) { Text("Retry") }
@@ -94,7 +96,7 @@ fun FavoritesScreenContent(
                         Text(
                             text = "No favorites yet",
                             color = Color.White,
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
                         )
                     }
 
@@ -104,7 +106,7 @@ fun FavoritesScreenContent(
                                 MovieRow(
                                     movie = movie,
                                     onItemClick = { },
-                                    modifier = Modifier.animateItem()
+                                    modifier = Modifier.animateItem(),
                                 )
                             }
                         }
@@ -123,8 +125,9 @@ fun FavoritesScreenContent(
 @Composable
 fun FavoritesScreenPreview() {
     FavoritesScreenContent(
-        uiState = FavoritesUiState(
-            movies = getMoviesList().filter { it.favorite }
-        )
+        uiState =
+            FavoritesUiState(
+                movies = getMoviesList().filter { it.favorite },
+            ),
     )
 }

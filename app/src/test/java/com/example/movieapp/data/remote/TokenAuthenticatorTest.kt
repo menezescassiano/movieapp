@@ -20,7 +20,6 @@ import org.junit.Before
 import org.junit.Test
 
 class TokenAuthenticatorTest {
-
     // ── Doubles ──────────────────────────────────────────────────────────
 
     private lateinit var tokenLocalDataSource: TokenLocalDataSource
@@ -37,20 +36,24 @@ class TokenAuthenticatorTest {
     private val newAccessToken = "new.access.token"
     private val newRefreshToken = "new.refresh.token"
 
-    private val fakeLoginResponse = RefreshResponse(
-        accessToken = newAccessToken,
-        refreshToken = newRefreshToken,
-        expiresIn = 900
-    )
+    private val fakeLoginResponse =
+        RefreshResponse(
+            accessToken = newAccessToken,
+            refreshToken = newRefreshToken,
+            expiresIn = 900,
+        )
 
     /** Builds a fake 401 [Response] whose request carries the given Bearer token. */
     private fun fake401(bearerToken: String = expiredToken): Response {
-        val request = Request.Builder()
-            .url("https://api.example.com/movies")
-            .header("Authorization", "Bearer $bearerToken")
-            .build()
+        val request =
+            Request
+                .Builder()
+                .url("https://api.example.com/movies")
+                .header("Authorization", "Bearer $bearerToken")
+                .build()
 
-        return Response.Builder()
+        return Response
+            .Builder()
             .request(request)
             .protocol(Protocol.HTTP_1_1)
             .code(401)
@@ -65,12 +68,13 @@ class TokenAuthenticatorTest {
         sessionManager = mockk(relaxed = true)
         authApiService = mockk()
 
-        authenticator = TokenAuthenticator(
-            tokenLocalDataSource = tokenLocalDataSource,
-            tokenStore = tokenStore,
-            sessionManager = sessionManager,
-            authApiService = authApiService
-        )
+        authenticator =
+            TokenAuthenticator(
+                tokenLocalDataSource = tokenLocalDataSource,
+                tokenStore = tokenStore,
+                sessionManager = sessionManager,
+                authApiService = authApiService,
+            )
     }
 
     // ── Scenario 1: happy path — expired token → successful refresh ──────
@@ -89,22 +93,23 @@ class TokenAuthenticatorTest {
             assertNotNull("Should return a new Request for retry", newRequest)
             assertEquals(
                 "Bearer $newAccessToken",
-                newRequest!!.header("Authorization")
+                newRequest!!.header("Authorization"),
             )
         }
 
     @Test
-    fun `when access token is expired, new tokens are persisted after refresh`() = runTest {
-        every { tokenStore.get() } returns expiredToken
-        coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
-        coEvery { authApiService.refresh(any()) } returns fakeLoginResponse
+    fun `when access token is expired, new tokens are persisted after refresh`() =
+        runTest {
+            every { tokenStore.get() } returns expiredToken
+            coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
+            coEvery { authApiService.refresh(any()) } returns fakeLoginResponse
 
-        authenticator.authenticate(route = null, response = fake401())
+            authenticator.authenticate(route = null, response = fake401())
 
-        // Verifies that the new tokens were persisted in the database and in the in-memory store
-        coVerify { tokenLocalDataSource.save(newAccessToken, newRefreshToken) }
-        verify { tokenStore.save(newAccessToken) }
-    }
+            // Verifies that the new tokens were persisted in the database and in the in-memory store
+            coVerify { tokenLocalDataSource.save(newAccessToken, newRefreshToken) }
+            verify { tokenStore.save(newAccessToken) }
+        }
 
     @Test
     fun `when access token is expired, refresh request is sent with the stored refresh token`() =
@@ -133,40 +138,43 @@ class TokenAuthenticatorTest {
         }
 
     @Test
-    fun `when there is no refresh token, the api refresh endpoint is never called`() = runTest {
-        every { tokenStore.get() } returns expiredToken
-        coEvery { tokenLocalDataSource.getRefreshToken() } returns null
+    fun `when there is no refresh token, the api refresh endpoint is never called`() =
+        runTest {
+            every { tokenStore.get() } returns expiredToken
+            coEvery { tokenLocalDataSource.getRefreshToken() } returns null
 
-        authenticator.authenticate(route = null, response = fake401())
+            authenticator.authenticate(route = null, response = fake401())
 
-        coVerify(exactly = 0) { authApiService.refresh(any()) }
-    }
+            coVerify(exactly = 0) { authApiService.refresh(any()) }
+        }
 
     // ── Scenario 3: refresh token present but API returns an error ───────
 
     @Test
-    fun `when refresh api call throws, authenticate returns null and triggers logout`() = runTest {
-        every { tokenStore.get() } returns expiredToken
-        coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
-        coEvery { authApiService.refresh(any()) } throws RuntimeException("Network error")
+    fun `when refresh api call throws, authenticate returns null and triggers logout`() =
+        runTest {
+            every { tokenStore.get() } returns expiredToken
+            coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
+            coEvery { authApiService.refresh(any()) } throws RuntimeException("Network error")
 
-        val result = authenticator.authenticate(route = null, response = fake401())
+            val result = authenticator.authenticate(route = null, response = fake401())
 
-        assertNull("Refresh API error should return null", result)
-        verify { sessionManager.logout() }
-    }
+            assertNull("Refresh API error should return null", result)
+            verify { sessionManager.logout() }
+        }
 
     @Test
-    fun `when refresh api call throws, local tokens are cleared`() = runTest {
-        every { tokenStore.get() } returns expiredToken
-        coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
-        coEvery { authApiService.refresh(any()) } throws RuntimeException("Network error")
+    fun `when refresh api call throws, local tokens are cleared`() =
+        runTest {
+            every { tokenStore.get() } returns expiredToken
+            coEvery { tokenLocalDataSource.getRefreshToken() } returns refreshToken
+            coEvery { authApiService.refresh(any()) } throws RuntimeException("Network error")
 
-        authenticator.authenticate(route = null, response = fake401())
+            authenticator.authenticate(route = null, response = fake401())
 
-        coVerify { tokenLocalDataSource.clear() }
-        verify { tokenStore.clear() }
-    }
+            coVerify { tokenLocalDataSource.clear() }
+            verify { tokenStore.clear() }
+        }
 
     // ── Scenario 4: another thread already refreshed first ───────────────
 
@@ -199,15 +207,19 @@ class TokenAuthenticatorTest {
             coEvery { authApiService.refresh(any()) } returns fakeLoginResponse
 
             // Request with no Authorization header (process restarted, store is empty)
-            val requestWithNoToken = Request.Builder()
-                .url("https://api.example.com/movies")
-                .build()
-            val responseWithNoToken = Response.Builder()
-                .request(requestWithNoToken)
-                .protocol(Protocol.HTTP_1_1)
-                .code(401)
-                .message("Unauthorized")
-                .build()
+            val requestWithNoToken =
+                Request
+                    .Builder()
+                    .url("https://api.example.com/movies")
+                    .build()
+            val responseWithNoToken =
+                Response
+                    .Builder()
+                    .request(requestWithNoToken)
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(401)
+                    .message("Unauthorized")
+                    .build()
 
             val result = authenticator.authenticate(route = null, response = responseWithNoToken)
 

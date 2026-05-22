@@ -12,25 +12,26 @@ import androidx.navigation.toRoute
 import com.example.movieapp.screens.details.DetailsScreen
 import com.example.movieapp.screens.favorites.FavoritesScreen
 import com.example.movieapp.screens.home.HomeScreen
-import com.example.movieapp.screens.profile.ProfileScreen
 import com.example.movieapp.screens.login.LoginScreen
-import com.example.movieapp.screens.signup.SignUpScreen
-import com.example.movieapp.screens.splash.SplashScreen
+import com.example.movieapp.screens.profile.ProfileScreen
 import com.example.movieapp.screens.qrcode.QrCodeReaderScreen
 import com.example.movieapp.screens.settings.SettingsScreen
+import com.example.movieapp.screens.signup.SignUpScreen
+import com.example.movieapp.screens.splash.SplashScreen
 
 @Composable
-fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
-
+fun MovieNavigation(
+    navController: NavHostController,
+    modifier: Modifier,
+) {
     NavHost(
         navController = navController,
         startDestination = SplashRoute,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
-        popExitTransition = { ExitTransition.None }
+        popExitTransition = { ExitTransition.None },
     ) {
-
         composable<SplashRoute> {
             SplashScreen(
                 onNavigateToHome = {
@@ -42,7 +43,7 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
                     navController.navigate(LoginRoute) {
                         popUpTo(SplashRoute) { inclusive = true }
                     }
-                }
+                },
             )
         }
 
@@ -55,7 +56,7 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
                 },
                 onSignUpClick = {
                     navController.navigate(SignUpRoute)
-                }
+                },
             )
         }
 
@@ -68,7 +69,7 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
                 },
                 onLoginClick = {
                     navController.navigateUp()
-                }
+                },
             )
         }
 
@@ -88,7 +89,7 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
                     navController.navigate(DetailsRoute(qrData)) {
                         popUpTo(QrCodeRoute) { inclusive = true }
                     }
-                }
+                },
             )
         }
 
@@ -103,7 +104,7 @@ fun MovieNavigation(navController: NavHostController, modifier: Modifier) {
         composable<SettingsRoute> {
             SettingsScreen(
                 modifier = modifier.fillMaxSize(),
-                onBack = { navController.navigateUp() }
+                onBack = { navController.navigateUp() },
             )
         }
     }

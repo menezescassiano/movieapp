@@ -45,7 +45,7 @@ fun EditFieldSheet(
     title: String,
     currentValue: String,
     onConfirm: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val focusRequester = remember { FocusRequester() }
@@ -57,19 +57,20 @@ fun EditFieldSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = CardDark,
-        tonalElevation = 0.dp
+        tonalElevation = 0.dp,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .padding(bottom = 32.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 32.dp),
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White
+                color = Color.White,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -77,24 +78,27 @@ fun EditFieldSheet(
             OutlinedTextField(
                 value = value,
                 onValueChange = { value = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(
-                    onDone = { if (value.isNotBlank()) onConfirm(value.trim()) }
-                ),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedBorderColor = AccentPurple,
-                    unfocusedBorderColor = NavUnselected.copy(alpha = 0.4f),
-                    cursorColor = AccentPurple,
-                    focusedContainerColor = AppBackground.copy(alpha = 0.5f),
-                    unfocusedContainerColor = AppBackground.copy(alpha = 0.5f)
-                )
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = { if (value.isNotBlank()) onConfirm(value.trim()) },
+                    ),
+                colors =
+                    OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedBorderColor = AccentPurple,
+                        unfocusedBorderColor = NavUnselected.copy(alpha = 0.4f),
+                        cursorColor = AccentPurple,
+                        focusedContainerColor = AppBackground.copy(alpha = 0.5f),
+                        unfocusedContainerColor = AppBackground.copy(alpha = 0.5f),
+                    ),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -104,15 +108,16 @@ fun EditFieldSheet(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = value.isNotBlank() && value.trim() != currentValue,
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = AccentPurple,
-                    disabledContainerColor = AccentPurple.copy(alpha = 0.3f)
-                )
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = AccentPurple,
+                        disabledContainerColor = AccentPurple.copy(alpha = 0.3f),
+                    ),
             ) {
                 Text(
                     text = stringResource(R.string.edit_field_save),
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White
+                    color = Color.White,
                 )
             }
         }
@@ -127,7 +132,7 @@ private fun EditFieldSheetPreview() {
             title = "Edit Name",
             currentValue = "Cassiano Menezes",
             onConfirm = {},
-            onDismiss = {}
+            onDismiss = {},
         )
     }
 }

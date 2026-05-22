@@ -4,10 +4,10 @@ import com.example.movieapp.data.MovieRepository
 import com.example.movieapp.model.Movie
 import javax.inject.Inject
 
-class GetMovieByIdUseCase @Inject constructor(private val repository: MovieRepository) {
-
-    suspend operator fun invoke(movieId: String): Movie? {
-        return repository.getMovieById(movieId)
+class GetMovieByIdUseCase
+    @Inject
+    constructor(
+        private val repository: MovieRepository,
+    ) {
+        suspend operator fun invoke(movieId: String): Movie? = repository.getMovieById(movieId)
     }
-
-}

@@ -13,5 +13,5 @@ data class SignUpUiState(
     val passwordError: String? = null,
     val confirmPasswordError: String? = null,
     val signUpSuccess: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )

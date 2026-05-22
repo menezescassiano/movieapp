@@ -14,53 +14,61 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TokenAuthenticator @Inject constructor(
-    private val tokenLocalDataSource: TokenLocalDataSource,
-    private val tokenStore: TokenStore,
-    private val sessionManager: SessionManager,
-    @NoAuth private val authApiService: AuthApiService
-) : Authenticator {
+class TokenAuthenticator
+    @Inject
+    constructor(
+        private val tokenLocalDataSource: TokenLocalDataSource,
+        private val tokenStore: TokenStore,
+        private val sessionManager: SessionManager,
+        @NoAuth private val authApiService: AuthApiService,
+    ) : Authenticator {
+        // Synchronized to prevent multiple simultaneous refresh calls
+        // when parallel requests all get 401 at the same time.
+        override fun authenticate(
+            route: Route?,
+            response: Response,
+        ): Request? =
+            synchronized(this) {
+                val requestToken = response.request.header("Authorization")?.removePrefix("Bearer ")
+                val currentToken = tokenStore.get()
 
-    // Synchronized to prevent multiple simultaneous refresh calls
-    // when parallel requests all get 401 at the same time.
-    override fun authenticate(route: Route?, response: Response): Request? = synchronized(this) {
-        val requestToken = response.request.header("Authorization")?.removePrefix("Bearer ")
-        val currentToken = tokenStore.get()
+                // Another thread already refreshed while this request was in flight.
+                // Just retry with the new token.
+                if (currentToken != null && currentToken != requestToken) {
+                    return response.request
+                        .newBuilder()
+                        .header("Authorization", "Bearer $currentToken")
+                        .build()
+                }
 
-        // Another thread already refreshed while this request was in flight.
-        // Just retry with the new token.
-        if (currentToken != null && currentToken != requestToken) {
-            return response.request.newBuilder()
-                .header("Authorization", "Bearer $currentToken")
-                .build()
-        }
+                val refreshToken = runBlocking { tokenLocalDataSource.getRefreshToken() }
+                if (refreshToken == null) {
+                    sessionManager.logout()
+                    return null
+                }
 
-        val refreshToken = runBlocking { tokenLocalDataSource.getRefreshToken() }
-        if (refreshToken == null) {
-            sessionManager.logout()
-            return null
-        }
+                val newTokens =
+                    runBlocking {
+                        try {
+                            authApiService.refresh(RefreshRequest(refreshToken))
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }
 
-        val newTokens = runBlocking {
-            try {
-                authApiService.refresh(RefreshRequest(refreshToken))
-            } catch (e: Exception) {
-                null
+                if (newTokens == null) {
+                    runBlocking { tokenLocalDataSource.clear() }
+                    tokenStore.clear()
+                    sessionManager.logout()
+                    return null
+                }
+
+                runBlocking { tokenLocalDataSource.save(newTokens.accessToken, newTokens.refreshToken) }
+                tokenStore.save(newTokens.accessToken)
+
+                response.request
+                    .newBuilder()
+                    .header("Authorization", "Bearer ${newTokens.accessToken}")
+                    .build()
             }
-        }
-
-        if (newTokens == null) {
-            runBlocking { tokenLocalDataSource.clear() }
-            tokenStore.clear()
-            sessionManager.logout()
-            return null
-        }
-
-        runBlocking { tokenLocalDataSource.save(newTokens.accessToken, newTokens.refreshToken) }
-        tokenStore.save(newTokens.accessToken)
-
-        response.request.newBuilder()
-            .header("Authorization", "Bearer ${newTokens.accessToken}")
-            .build()
     }
-}

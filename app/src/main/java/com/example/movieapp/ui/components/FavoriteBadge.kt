@@ -24,22 +24,22 @@ fun FavoriteBadge(
     image: ImageVector = Icons.Filled.Star,
     contentDescription: String = stringResource(R.string.movie_row_favorited_description),
     tint: Color = StarGold,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Box(
-        modifier = modifier
-            .padding(8.dp)
-            .background(
-                color = color,
-                shape = RoundedCornerShape(6.dp)
-            )
-            .padding(4.dp)
+        modifier =
+            modifier
+                .padding(8.dp)
+                .background(
+                    color = color,
+                    shape = RoundedCornerShape(6.dp),
+                ).padding(4.dp),
     ) {
         Icon(
             imageVector = image,
             contentDescription = contentDescription,
             tint = tint,
-            modifier = Modifier.size(14.dp)
+            modifier = Modifier.size(14.dp),
         )
     }
 }

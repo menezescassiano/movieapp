@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,7 +19,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Info
@@ -34,7 +32,6 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
@@ -66,7 +63,7 @@ import com.example.movieapp.ui.theme.NavUnselected
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
 ) {
     var uiState by remember { mutableStateOf(SettingsUiState()) }
 
@@ -91,7 +88,7 @@ fun SettingsScreen(
         },
         onLanguageSelected = { language ->
             uiState = uiState.copy(contentLanguage = language)
-        }
+        },
     )
 }
 
@@ -112,23 +109,24 @@ private fun SettingsContent(
     val languageSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Column(
-        modifier = modifier
-            .background(AppBackground)
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .verticalScroll(rememberScrollState())
+        modifier =
+            modifier
+                .background(AppBackground)
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .verticalScroll(rememberScrollState()),
     ) {
-
         // ── Top bar ──────────────────────────────────────────────────────────
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             TitleText(
                 text = stringResource(R.string.settings_title),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
         }
 
@@ -143,7 +141,7 @@ private fun SettingsContent(
                 title = stringResource(R.string.settings_notifications_enable),
                 subtitle = stringResource(R.string.settings_notifications_enable_subtitle),
                 checked = uiState.notificationsEnabled,
-                onToggle = onToggleNotifications
+                onToggle = onToggleNotifications,
             )
             SettingsDivider()
             SettingsToggleRow(
@@ -152,7 +150,7 @@ private fun SettingsContent(
                 subtitle = stringResource(R.string.settings_notifications_new_releases_subtitle),
                 checked = uiState.newReleasesEnabled,
                 enabled = uiState.notificationsEnabled,
-                onToggle = onToggleNewReleases
+                onToggle = onToggleNewReleases,
             )
             SettingsDivider()
             SettingsToggleRow(
@@ -161,7 +159,7 @@ private fun SettingsContent(
                 subtitle = stringResource(R.string.settings_notifications_recommendations_subtitle),
                 checked = uiState.recommendationsEnabled,
                 enabled = uiState.notificationsEnabled,
-                onToggle = onToggleRecommendations
+                onToggle = onToggleRecommendations,
             )
         }
 
@@ -176,7 +174,7 @@ private fun SettingsContent(
                 title = stringResource(R.string.settings_biometric_enable),
                 subtitle = stringResource(R.string.settings_biometric_enable_subtitle),
                 checked = uiState.biometricEnabled,
-                onToggle = onToggleBiometric
+                onToggle = onToggleBiometric,
             )
         }
 
@@ -190,7 +188,7 @@ private fun SettingsContent(
                 icon = Icons.Filled.Language,
                 title = stringResource(R.string.settings_content_language),
                 value = uiState.contentLanguage.label,
-                onClick = { showLanguagePicker = true }
+                onClick = { showLanguagePicker = true },
             )
             SettingsDivider()
             SettingsToggleRow(
@@ -198,7 +196,7 @@ private fun SettingsContent(
                 title = stringResource(R.string.settings_content_hide_watched),
                 subtitle = stringResource(R.string.settings_content_hide_watched_subtitle),
                 checked = uiState.hideWatchedMovies,
-                onToggle = onToggleHideWatched
+                onToggle = onToggleHideWatched,
             )
         }
 
@@ -211,17 +209,17 @@ private fun SettingsContent(
             SettingsInfoRow(
                 icon = Icons.Filled.Info,
                 title = stringResource(R.string.settings_about_version),
-                value = "1.0.0"
+                value = "1.0.0",
             )
             SettingsDivider()
             SettingsLinkRow(
                 icon = Icons.Filled.Policy,
-                title = stringResource(R.string.settings_about_privacy)
+                title = stringResource(R.string.settings_about_privacy),
             )
             SettingsDivider()
             SettingsLinkRow(
                 icon = Icons.Filled.Star,
-                title = stringResource(R.string.settings_about_rate)
+                title = stringResource(R.string.settings_about_rate),
             )
         }
 
@@ -234,14 +232,14 @@ private fun SettingsContent(
             onDismissRequest = { showLanguagePicker = false },
             sheetState = languageSheetState,
             containerColor = CardDark,
-            tonalElevation = 0.dp
+            tonalElevation = 0.dp,
         ) {
             LanguagePickerSheet(
                 currentLanguage = uiState.contentLanguage,
                 onLanguageSelected = { language ->
                     onLanguageSelected(language)
                     showLanguagePicker = false
-                }
+                },
             )
         }
     }
@@ -256,7 +254,7 @@ private fun SettingsSectionHeader(title: String) {
         style = MaterialTheme.typography.labelSmall,
         color = NavUnselected,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
     )
 }
 
@@ -265,12 +263,13 @@ private fun SettingsSectionHeader(title: String) {
 @Composable
 private fun SettingsGroup(content: @Composable () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(CardDark)
-            .padding(vertical = 4.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(CardDark)
+                .padding(vertical = 4.dp),
     ) {
         content()
     }
@@ -282,7 +281,7 @@ private fun SettingsGroup(content: @Composable () -> Unit) {
 private fun SettingsDivider() {
     HorizontalDivider(
         modifier = Modifier.padding(horizontal = 16.dp),
-        color = Color.White.copy(alpha = 0.06f)
+        color = Color.White.copy(alpha = 0.06f),
     )
 }
 
@@ -295,14 +294,15 @@ private fun SettingsToggleRow(
     subtitle: String? = null,
     checked: Boolean,
     enabled: Boolean = true,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled) { onToggle() }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(enabled = enabled) { onToggle() }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         SettingsIcon(icon = icon, enabled = enabled)
         Spacer(modifier = Modifier.width(12.dp))
@@ -310,14 +310,14 @@ private fun SettingsToggleRow(
             BodyText(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium,
-                color = if (enabled) Color.White else NavUnselected
+                color = if (enabled) Color.White else NavUnselected,
             )
             if (subtitle != null) {
                 Spacer(modifier = Modifier.height(2.dp))
                 BodyText(
                     text = subtitle,
                     style = MaterialTheme.typography.labelSmall,
-                    color = NavUnselected.copy(alpha = if (enabled) 1f else 0.5f)
+                    color = NavUnselected.copy(alpha = if (enabled) 1f else 0.5f),
                 )
             }
         }
@@ -325,14 +325,15 @@ private fun SettingsToggleRow(
             checked = checked,
             onCheckedChange = { if (enabled) onToggle() },
             enabled = enabled,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = AccentPurple,
-                uncheckedThumbColor = NavUnselected,
-                uncheckedTrackColor = NavUnselected.copy(alpha = 0.3f),
-                disabledCheckedTrackColor = AccentPurple.copy(alpha = 0.3f),
-                disabledUncheckedTrackColor = NavUnselected.copy(alpha = 0.15f)
-            )
+            colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = AccentPurple,
+                    uncheckedThumbColor = NavUnselected,
+                    uncheckedTrackColor = NavUnselected.copy(alpha = 0.3f),
+                    disabledCheckedTrackColor = AccentPurple.copy(alpha = 0.3f),
+                    disabledUncheckedTrackColor = NavUnselected.copy(alpha = 0.15f),
+                ),
         )
     }
 }
@@ -342,14 +343,15 @@ private fun SettingsNavigationRow(
     icon: ImageVector,
     title: String,
     value: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         SettingsIcon(icon = icon)
         Spacer(modifier = Modifier.width(12.dp))
@@ -357,19 +359,19 @@ private fun SettingsNavigationRow(
             text = title,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         BodyText(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
-            color = AccentPurple
+            color = AccentPurple,
         )
         Spacer(modifier = Modifier.width(4.dp))
         Icon(
             imageVector = Icons.AutoMirrored.Filled.OpenInNew,
             contentDescription = null,
             tint = NavUnselected,
-            modifier = Modifier.size(14.dp)
+            modifier = Modifier.size(14.dp),
         )
     }
 }
@@ -378,13 +380,14 @@ private fun SettingsNavigationRow(
 private fun SettingsInfoRow(
     icon: ImageVector,
     title: String,
-    value: String
+    value: String,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         SettingsIcon(icon = icon)
         Spacer(modifier = Modifier.width(12.dp))
@@ -392,12 +395,12 @@ private fun SettingsInfoRow(
             text = title,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         BodyText(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
-            color = NavUnselected
+            color = NavUnselected,
         )
     }
 }
@@ -406,14 +409,15 @@ private fun SettingsInfoRow(
 private fun SettingsLinkRow(
     icon: ImageVector,
     title: String,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         SettingsIcon(icon = icon)
         Spacer(modifier = Modifier.width(12.dp))
@@ -421,13 +425,13 @@ private fun SettingsLinkRow(
             text = title,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         Icon(
             imageVector = Icons.AutoMirrored.Filled.OpenInNew,
             contentDescription = null,
             tint = NavUnselected,
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier.size(16.dp),
         )
     }
 }
@@ -437,20 +441,21 @@ private fun SettingsLinkRow(
 @Composable
 private fun SettingsIcon(
     icon: ImageVector,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Box(
-        modifier = Modifier
-            .size(36.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(AccentPurple.copy(alpha = if (enabled) 0.15f else 0.07f)),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .size(36.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(AccentPurple.copy(alpha = if (enabled) 0.15f else 0.07f)),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
             tint = AccentPurple.copy(alpha = if (enabled) 1f else 0.4f),
-            modifier = Modifier.size(18.dp)
+            modifier = Modifier.size(18.dp),
         )
     }
 }
@@ -460,42 +465,45 @@ private fun SettingsIcon(
 @Composable
 private fun LanguagePickerSheet(
     currentLanguage: ContentLanguage,
-    onLanguageSelected: (ContentLanguage) -> Unit
+    onLanguageSelected: (ContentLanguage) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .padding(bottom = 32.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp),
     ) {
         TitleText(
             text = stringResource(R.string.settings_language_picker_title),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
         Spacer(modifier = Modifier.height(16.dp))
         ContentLanguage.entries.forEach { language ->
             val isSelected = language == currentLanguage
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(if (isSelected) AccentPurple.copy(alpha = 0.12f) else Color.Transparent)
-                    .clickable { onLanguageSelected(language) }
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(if (isSelected) AccentPurple.copy(alpha = 0.12f) else Color.Transparent)
+                        .clickable { onLanguageSelected(language) }
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 BodyText(
                     text = language.label,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = if (isSelected) AccentPurple else Color.White
+                    color = if (isSelected) AccentPurple else Color.White,
                 )
                 if (isSelected) {
                     Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(AccentPurple)
+                        modifier =
+                            Modifier
+                                .size(8.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(AccentPurple),
                     )
                 }
             }
@@ -519,6 +527,6 @@ private fun SettingsScreenPreview() {
         onToggleRecommendations = {},
         onToggleBiometric = {},
         onToggleHideWatched = {},
-        onLanguageSelected = {}
+        onLanguageSelected = {},
     )
 }

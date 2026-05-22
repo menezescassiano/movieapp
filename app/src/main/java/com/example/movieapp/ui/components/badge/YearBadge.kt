@@ -17,20 +17,20 @@ import com.example.movieapp.ui.theme.YearBadgeBg
 fun YearBadge(
     year: String,
     color: Color = Color.White,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Text(
         text = year,
         fontSize = 10.sp,
         fontWeight = FontWeight.SemiBold,
         color = color,
-        modifier = modifier
-            .padding(8.dp)
-            .background(
-                color = YearBadgeBg.copy(alpha = 0.85f),
-                shape = RoundedCornerShape(6.dp)
-            )
-            .padding(horizontal = 6.dp, vertical = 2.dp)
+        modifier =
+            modifier
+                .padding(8.dp)
+                .background(
+                    color = YearBadgeBg.copy(alpha = 0.85f),
+                    shape = RoundedCornerShape(6.dp),
+                ).padding(horizontal = 6.dp, vertical = 2.dp),
     )
 }
 

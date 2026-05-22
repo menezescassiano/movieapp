@@ -7,14 +7,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ContentResolverUriReader @Inject constructor(
-    @ApplicationContext private val context: Context,
-) : UriReader {
+class ContentResolverUriReader
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+    ) : UriReader {
+        override fun getMimeType(uri: Uri): String = context.contentResolver.getType(uri) ?: "image/*"
 
-    override fun getMimeType(uri: Uri): String =
-        context.contentResolver.getType(uri) ?: "image/*"
-
-    override fun readBytes(uri: Uri): ByteArray =
-        context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-            ?: error("Could not open image stream")
-}
+        override fun readBytes(uri: Uri): ByteArray =
+            context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                ?: error("Could not open image stream")
+    }

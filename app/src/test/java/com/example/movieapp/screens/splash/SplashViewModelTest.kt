@@ -19,7 +19,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SplashViewModelTest {
-
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var checkSavedTokenUseCase: CheckSavedTokenUseCase
@@ -52,64 +51,69 @@ class SplashViewModelTest {
     // ── token salvo → Home ────────────────────────────────────────────────
 
     @Test
-    fun `when saved token exists, destination becomes Home`() = runTest {
-        coEvery { checkSavedTokenUseCase() } returns true
+    fun `when saved token exists, destination becomes Home`() =
+        runTest {
+            coEvery { checkSavedTokenUseCase() } returns true
 
-        viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
-        advanceUntilIdle()
+            viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
+            advanceUntilIdle()
 
-        assertEquals(SplashDestination.Home, viewModel.destination.value)
-    }
-
-    @Test
-    fun `when saved token exists, restoreToken is called to populate in-memory store`() = runTest {
-        // BUG FIX: without restoreToken(), the TokenStore is empty and AuthInterceptor
-        // sends all requests without an Authorization header, causing the refresh to
-        // happen "by accident" (only works if the backend returns 401 for requests
-        // without a header — behaviour that is not guaranteed).
-        coEvery { checkSavedTokenUseCase() } returns true
-
-        viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
-        advanceUntilIdle()
-
-        coVerify(exactly = 1) { restoreTokenUseCase() }
-    }
+            assertEquals(SplashDestination.Home, viewModel.destination.value)
+        }
 
     @Test
-    fun `when saved token exists, restoreToken is called before navigating to Home`() = runTest {
-        // Order matters: the token must be in the store BEFORE any request
-        // triggered by the screens that load after the splash.
-        val callOrder = mutableListOf<String>()
-        coEvery { checkSavedTokenUseCase() } returns true
-        coEvery { restoreTokenUseCase() } answers { callOrder.add("restore") }
+    fun `when saved token exists, restoreToken is called to populate in-memory store`() =
+        runTest {
+            // BUG FIX: without restoreToken(), the TokenStore is empty and AuthInterceptor
+            // sends all requests without an Authorization header, causing the refresh to
+            // happen "by accident" (only works if the backend returns 401 for requests
+            // without a header — behaviour that is not guaranteed).
+            coEvery { checkSavedTokenUseCase() } returns true
 
-        viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
-        advanceUntilIdle()
+            viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
+            advanceUntilIdle()
 
-        // restoreToken should have been called and the destination should be Home
-        assertEquals(listOf("restore"), callOrder)
-        assertEquals(SplashDestination.Home, viewModel.destination.value)
-    }
+            coVerify(exactly = 1) { restoreTokenUseCase() }
+        }
+
+    @Test
+    fun `when saved token exists, restoreToken is called before navigating to Home`() =
+        runTest {
+            // Order matters: the token must be in the store BEFORE any request
+            // triggered by the screens that load after the splash.
+            val callOrder = mutableListOf<String>()
+            coEvery { checkSavedTokenUseCase() } returns true
+            coEvery { restoreTokenUseCase() } answers { callOrder.add("restore") }
+
+            viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
+            advanceUntilIdle()
+
+            // restoreToken should have been called and the destination should be Home
+            assertEquals(listOf("restore"), callOrder)
+            assertEquals(SplashDestination.Home, viewModel.destination.value)
+        }
 
     // ── sem token salvo → Login ───────────────────────────────────────────
 
     @Test
-    fun `when no saved token exists, destination becomes Login`() = runTest {
-        coEvery { checkSavedTokenUseCase() } returns false
+    fun `when no saved token exists, destination becomes Login`() =
+        runTest {
+            coEvery { checkSavedTokenUseCase() } returns false
 
-        viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
-        advanceUntilIdle()
+            viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
+            advanceUntilIdle()
 
-        assertEquals(SplashDestination.Login, viewModel.destination.value)
-    }
+            assertEquals(SplashDestination.Login, viewModel.destination.value)
+        }
 
     @Test
-    fun `when no saved token exists, restoreToken is never called`() = runTest {
-        coEvery { checkSavedTokenUseCase() } returns false
+    fun `when no saved token exists, restoreToken is never called`() =
+        runTest {
+            coEvery { checkSavedTokenUseCase() } returns false
 
-        viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
-        advanceUntilIdle()
+            viewModel = SplashViewModel(checkSavedTokenUseCase, restoreTokenUseCase)
+            advanceUntilIdle()
 
-        coVerify(exactly = 0) { restoreTokenUseCase() }
-    }
+            coVerify(exactly = 0) { restoreTokenUseCase() }
+        }
 }

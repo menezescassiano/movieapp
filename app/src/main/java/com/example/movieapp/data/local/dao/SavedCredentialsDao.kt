@@ -8,7 +8,6 @@ import com.example.movieapp.data.local.entity.SavedCredentialsEntity
 
 @Dao
 interface SavedCredentialsDao {
-
     @Upsert
     suspend fun save(entity: SavedCredentialsEntity)
 

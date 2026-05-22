@@ -40,51 +40,58 @@ import com.example.movieapp.model.getMoviesList
 import com.example.movieapp.ui.theme.CardDark
 
 @Composable
-fun MovieRow(movie: Movie, onItemClick: () -> Unit, modifier: Modifier = Modifier) {
-
+fun MovieRow(
+    movie: Movie,
+    onItemClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var expanded by remember {
         mutableStateOf(false)
     }
     Card(
-        modifier = modifier
-            .padding(4.dp)
-            .fillMaxWidth()
-            .clickable { onItemClick() },
+        modifier =
+            modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .clickable { onItemClick() },
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
         colors = CardDefaults.cardColors(containerColor = CardDark),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.Start,
         ) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(movie.poster.replace("http://", "https://"))
-                    .crossfade(true)
-                    .build(),
+                model =
+                    ImageRequest
+                        .Builder(LocalContext.current)
+                        .data(movie.poster.replace("http://", "https://"))
+                        .crossfade(true)
+                        .build(),
                 contentDescription = stringResource(R.string.movie_row_poster_description),
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(12.dp)
-                    .size(width = 60.dp, height = 85.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                modifier =
+                    Modifier
+                        .padding(12.dp)
+                        .size(width = 60.dp, height = 85.dp)
+                        .clip(RoundedCornerShape(8.dp)),
             )
             Column(modifier = Modifier.padding(4.dp)) {
                 Text(
                     movie.title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White
+                    color = Color.White,
                 )
                 Text(
                     stringResource(R.string.movie_row_director, movie.director),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
+                    color = Color.White,
                 )
                 Text(
                     stringResource(R.string.movie_row_released, movie.year),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
+                    color = Color.White,
                 )
 
                 AnimatedVisibility(visible = expanded) {
@@ -92,7 +99,7 @@ fun MovieRow(movie: Movie, onItemClick: () -> Unit, modifier: Modifier = Modifie
                         Text(
                             movie.description,
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.White
+                            color = Color.White,
                         )
                     }
                 }
@@ -101,9 +108,10 @@ fun MovieRow(movie: Movie, onItemClick: () -> Unit, modifier: Modifier = Modifie
                     imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                     contentDescription = stringResource(R.string.movie_row_see_more),
                     tint = Color.White,
-                    modifier = Modifier
-                        .size(25.dp)
-                        .clickable { expanded = !expanded }
+                    modifier =
+                        Modifier
+                            .size(25.dp)
+                            .clickable { expanded = !expanded },
                 )
             }
         }
@@ -115,6 +123,6 @@ fun MovieRow(movie: Movie, onItemClick: () -> Unit, modifier: Modifier = Modifie
 fun MovieRowPreview() {
     MovieRow(
         movie = getMoviesList()[0],
-        onItemClick = {}
+        onItemClick = {},
     )
 }

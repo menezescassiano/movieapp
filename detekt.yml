@@ -1,0 +1,63 @@
+build:
+  maxIssues: 0
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+comments:
+  active: false
+
+complexity:
+  active: false
+
+coroutines:
+  active: false
+
+empty-blocks:
+  active: false
+
+exceptions:
+  active: false
+
+naming:
+  active: false
+
+performance:
+  active: false
+
+potential-bugs:
+  active: false
+
+style:
+  active: true
+
+  NewLineAtEndOfFile:
+    active: false
+
+  UnusedImports:
+    active: true
+
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated:
+      - 'Preview'
+      - 'androidx.compose.ui.tooling.preview.Preview'
+
+  UnusedParameter:
+    active: false
+
+  MagicNumber:
+    active: false
+
+  MaxLineLength:
+    active: false
+
+  WildcardImport:
+    active: false
+
+  ForbiddenComment:
+    active: false
+
+  ReturnCount:
+    active: false

@@ -28,7 +28,7 @@ fun MovieSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = stringResource(R.string.search_bar_placeholder)
+    placeholder: String = stringResource(R.string.search_bar_placeholder),
 ) {
     TextField(
         value = query,
@@ -38,14 +38,14 @@ fun MovieSearchBar(
             Text(
                 text = placeholder,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.4f)
+                color = Color.White.copy(alpha = 0.4f),
             )
         },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = Color.White.copy(alpha = 0.6f)
+                tint = Color.White.copy(alpha = 0.6f),
             )
         },
         trailingIcon = {
@@ -54,23 +54,24 @@ fun MovieSearchBar(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = stringResource(R.string.search_bar_clear),
-                        tint = Color.White.copy(alpha = 0.6f)
+                        tint = Color.White.copy(alpha = 0.6f),
                     )
                 }
             }
         },
         singleLine = true,
         shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.colors(
-            focusedTextColor = Color.White,
-            unfocusedTextColor = Color.White,
-            focusedContainerColor = Color.White.copy(alpha = 0.08f),
-            unfocusedContainerColor = Color.White.copy(alpha = 0.08f),
-            cursorColor = AccentPurple,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        textStyle = MaterialTheme.typography.bodyMedium
+        colors =
+            TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedContainerColor = Color.White.copy(alpha = 0.08f),
+                unfocusedContainerColor = Color.White.copy(alpha = 0.08f),
+                cursorColor = AccentPurple,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+        textStyle = MaterialTheme.typography.bodyMedium,
     )
 }
 
@@ -81,9 +82,10 @@ private fun MovieSearchBarEmptyPreview() {
         MovieSearchBar(
             query = "",
             onQueryChange = {},
-            modifier = Modifier
-                .background(AppBackground)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .background(AppBackground)
+                    .padding(16.dp),
         )
     }
 }
@@ -95,9 +97,10 @@ private fun MovieSearchBarWithTextPreview() {
         MovieSearchBar(
             query = "Inception",
             onQueryChange = {},
-            modifier = Modifier
-                .background(AppBackground)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .background(AppBackground)
+                    .padding(16.dp),
         )
     }
 }

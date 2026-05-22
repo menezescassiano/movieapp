@@ -46,7 +46,7 @@ fun CustomTextField(
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = NavUnselected
+            color = NavUnselected,
         )
         Spacer(modifier = Modifier.height(6.dp))
         OutlinedTextField(
@@ -56,45 +56,53 @@ fun CustomTextField(
             placeholder = {
                 Text(text = placeholder, color = NavUnselected)
             },
-            leadingIcon = leadingIcon?.let {
-                {
-                    Icon(
-                        imageVector = it,
-                        contentDescription = null,
-                        tint = if (errorMessage != null) MaterialTheme.colorScheme.error
-                        else AccentPurple
-                    )
-                }
-            },
-            trailingIcon = trailingIcon?.let {
-                {
-                    IconButton(onClick = { onTrailingIconClick?.invoke() }) {
+            leadingIcon =
+                leadingIcon?.let {
+                    {
                         Icon(
                             imageVector = it,
                             contentDescription = null,
-                            tint = NavUnselected
+                            tint =
+                                if (errorMessage != null) {
+                                    MaterialTheme.colorScheme.error
+                                } else {
+                                    AccentPurple
+                                },
                         )
                     }
-                }
-            },
+                },
+            trailingIcon =
+                trailingIcon?.let {
+                    {
+                        IconButton(onClick = { onTrailingIconClick?.invoke() }) {
+                            Icon(
+                                imageVector = it,
+                                contentDescription = null,
+                                tint = NavUnselected,
+                            )
+                        }
+                    }
+                },
             visualTransformation = visualTransformation,
             isError = errorMessage != null,
-            supportingText = errorMessage?.let { msg ->
-                { Text(text = msg, color = MaterialTheme.colorScheme.error) }
-            },
+            supportingText =
+                errorMessage?.let { msg ->
+                    { Text(text = msg, color = MaterialTheme.colorScheme.error) }
+                },
             singleLine = true,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = AccentPurple,
-                unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = AccentPurple,
-                focusedContainerColor = AppBackground.copy(alpha = 0.6f),
-                unfocusedContainerColor = AppBackground.copy(alpha = 0.6f)
-            )
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = AccentPurple,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = AccentPurple,
+                    focusedContainerColor = AppBackground.copy(alpha = 0.6f),
+                    unfocusedContainerColor = AppBackground.copy(alpha = 0.6f),
+                ),
         )
     }
 }
@@ -107,7 +115,7 @@ private fun CustomTextFieldPreview() {
         value = "",
         onValueChange = {},
         placeholder = "Enter your email",
-        leadingIcon = Icons.Default.Email
+        leadingIcon = Icons.Default.Email,
     )
 }
 
@@ -120,7 +128,7 @@ private fun CustomTextFieldErrorPreview() {
         onValueChange = {},
         placeholder = "Enter your email",
         leadingIcon = Icons.Default.Email,
-        errorMessage = "Enter a valid email"
+        errorMessage = "Enter a valid email",
     )
 }
 
@@ -133,6 +141,6 @@ private fun CustomTextFieldPasswordPreview() {
         onValueChange = {},
         placeholder = "Enter your password",
         trailingIcon = Icons.Default.Visibility,
-        onTrailingIconClick = {}
+        onTrailingIconClick = {},
     )
 }

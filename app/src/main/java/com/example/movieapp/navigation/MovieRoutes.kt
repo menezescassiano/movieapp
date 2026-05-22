@@ -9,7 +9,9 @@ object SplashRoute
 object HomeRoute
 
 @Serializable
-data class DetailsRoute(val movieId: String)
+data class DetailsRoute(
+    val movieId: String,
+)
 
 @Serializable
 object QrCodeRoute

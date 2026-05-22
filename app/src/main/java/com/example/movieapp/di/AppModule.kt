@@ -4,6 +4,7 @@ import android.content.Context
 import coil.ImageLoader
 import coil.request.CachePolicy
 import com.example.movieapp.BuildConfig
+import com.example.movieapp.data.MovieRepository
 import com.example.movieapp.data.remote.AuthApiService
 import com.example.movieapp.data.remote.AuthInterceptor
 import com.example.movieapp.data.remote.MovieApiService
@@ -11,7 +12,6 @@ import com.example.movieapp.data.remote.TokenAuthenticator
 import com.example.movieapp.data.remote.UserApiService
 import com.example.movieapp.domain.GetMovieByIdUseCase
 import com.example.movieapp.domain.GetMoviesUseCase
-import com.example.movieapp.data.MovieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +26,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor =
@@ -38,18 +37,20 @@ object AppModule {
     @Provides
     @Singleton
     @NoAuth
-    fun provideNoAuthOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor
-    ): OkHttpClient =
-        OkHttpClient.Builder()
+    fun provideNoAuthOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient
+            .Builder()
             .addInterceptor(loggingInterceptor)
             .build()
 
     @Provides
     @Singleton
     @NoAuth
-    fun provideNoAuthRetrofit(@NoAuth okHttpClient: OkHttpClient): Retrofit =
-        Retrofit.Builder()
+    fun provideNoAuthRetrofit(
+        @NoAuth okHttpClient: OkHttpClient,
+    ): Retrofit =
+        Retrofit
+            .Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
@@ -58,8 +59,9 @@ object AppModule {
     @Provides
     @Singleton
     @NoAuth
-    fun provideNoAuthApiService(@NoAuth retrofit: Retrofit): AuthApiService =
-        retrofit.create(AuthApiService::class.java)
+    fun provideNoAuthApiService(
+        @NoAuth retrofit: Retrofit,
+    ): AuthApiService = retrofit.create(AuthApiService::class.java)
 
     // ── Authenticated client — all other API calls ────────────────────────
     @Provides
@@ -67,9 +69,10 @@ object AppModule {
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         authInterceptor: AuthInterceptor,
-        tokenAuthenticator: TokenAuthenticator
+        tokenAuthenticator: TokenAuthenticator,
     ): OkHttpClient =
-        OkHttpClient.Builder()
+        OkHttpClient
+            .Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .authenticator(tokenAuthenticator)
@@ -78,7 +81,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
-        Retrofit.Builder()
+        Retrofit
+            .Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
@@ -86,32 +90,32 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMovieApiService(retrofit: Retrofit): MovieApiService =
-        retrofit.create(MovieApiService::class.java)
+    fun provideMovieApiService(retrofit: Retrofit): MovieApiService = retrofit.create(MovieApiService::class.java)
 
     @Provides
     @Singleton
-    fun provideUserApiService(retrofit: Retrofit): UserApiService =
-        retrofit.create(UserApiService::class.java)
+    fun provideUserApiService(retrofit: Retrofit): UserApiService = retrofit.create(UserApiService::class.java)
 
     @Provides
     @Singleton
-    fun provideAuthApiService(retrofit: Retrofit): AuthApiService =
-        retrofit.create(AuthApiService::class.java)
+    fun provideAuthApiService(retrofit: Retrofit): AuthApiService = retrofit.create(AuthApiService::class.java)
 
     @Provides
     @Singleton
     fun provideImageLoader(
         @ApplicationContext context: Context,
-        okHttpClient: OkHttpClient
+        okHttpClient: OkHttpClient,
     ): ImageLoader {
         // Dedicated OkHttpClient without disk cache for images so that
         // a newly uploaded profile picture is never served stale from
         // OkHttp's HTTP cache, regardless of the server's Cache-Control headers.
-        val imageOkHttpClient = okHttpClient.newBuilder()
-            .cache(null)
-            .build()
-        return ImageLoader.Builder(context)
+        val imageOkHttpClient =
+            okHttpClient
+                .newBuilder()
+                .cache(null)
+                .build()
+        return ImageLoader
+            .Builder(context)
             .okHttpClient(imageOkHttpClient)
             .diskCachePolicy(CachePolicy.DISABLED)
             .memoryCachePolicy(CachePolicy.DISABLED)
@@ -119,10 +123,8 @@ object AppModule {
     }
 
     @Provides
-    fun provideGetMoviesUseCase(repository: MovieRepository): GetMoviesUseCase =
-        GetMoviesUseCase(repository)
+    fun provideGetMoviesUseCase(repository: MovieRepository): GetMoviesUseCase = GetMoviesUseCase(repository)
 
     @Provides
-    fun provideGetMovieByIdUseCase(repository: MovieRepository): GetMovieByIdUseCase =
-        GetMovieByIdUseCase(repository)
+    fun provideGetMovieByIdUseCase(repository: MovieRepository): GetMovieByIdUseCase = GetMovieByIdUseCase(repository)
 }

@@ -9,10 +9,8 @@ data class TokenEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
     val id: Int = 0, // single-row table
-
     @ColumnInfo(name = "access_token")
     val accessToken: String,
-
     @ColumnInfo(name = "refresh_token")
-    val refreshToken: String
+    val refreshToken: String,
 )

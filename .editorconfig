@@ -1,0 +1,32 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+max_line_length = 160
+
+# ktlint rules
+ktlint_standard_no-unused-imports = enabled
+ktlint_standard_import-ordering = enabled
+ktlint_standard_indentation = enabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+
+# Compose: @Composable functions use PascalCase by convention
+ktlint_standard_function-naming = disabled
+
+# Compose: conditions mixing && and || are common and readable in context
+ktlint_standard_mixed-condition-operators = disabled
+
+# Compose: inline comments on parameters are used for grouping
+ktlint_standard_value-parameter-comment = disabled
+
+# Mock/hardcoded data files with long string values
+[**/model/Movie.kt]
+ktlint_standard_max-line-length = disabled

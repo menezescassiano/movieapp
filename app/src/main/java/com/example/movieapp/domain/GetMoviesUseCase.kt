@@ -5,8 +5,13 @@ import com.example.movieapp.model.Movie
 import com.example.movieapp.model.PagedResponse
 import javax.inject.Inject
 
-class GetMoviesUseCase @Inject constructor(private val repository: MovieRepository) {
-
-    suspend operator fun invoke(page: Int = 0, size: Int = 10): PagedResponse<Movie> =
-        repository.getMovies(page, size)
-}
+class GetMoviesUseCase
+    @Inject
+    constructor(
+        private val repository: MovieRepository,
+    ) {
+        suspend operator fun invoke(
+            page: Int = 0,
+            size: Int = 10,
+        ): PagedResponse<Movie> = repository.getMovies(page, size)
+    }

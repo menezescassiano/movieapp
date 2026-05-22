@@ -29,7 +29,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -42,19 +41,17 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.navigation.FavoritesRoute
 import com.example.movieapp.navigation.HomeRoute
 import com.example.movieapp.navigation.LoginRoute
-import com.example.movieapp.navigation.SignUpRoute
 import com.example.movieapp.navigation.MovieNavigation
 import com.example.movieapp.navigation.ProfileRoute
 import com.example.movieapp.navigation.SettingsRoute
+import com.example.movieapp.navigation.SignUpRoute
 import com.example.movieapp.navigation.SplashRoute
 import com.example.movieapp.ui.theme.AccentPurple
 import com.example.movieapp.ui.theme.AppBackground
 import com.example.movieapp.ui.theme.NavUnselected
 
 @Composable
-fun MovieAppRoot(
-    viewModel: RootViewModel = hiltViewModel()
-) {
+fun MovieAppRoot(viewModel: RootViewModel = hiltViewModel()) {
     val navController = rememberNavController()
 
     // Logout triggered by TokenAuthenticator when refresh fails
@@ -70,84 +67,90 @@ fun MovieAppRoot(
         val route: Any,
         val label: String,
         val selectedIcon: ImageVector,
-        val unselectedIcon: ImageVector
+        val unselectedIcon: ImageVector,
     )
 
-    val bottomItems = listOf(
-        BottomNavItem(HomeRoute, "Home", Icons.Filled.Home, Icons.Outlined.Home),
-        BottomNavItem(FavoritesRoute, "Favorites", Icons.Filled.Favorite, Icons.Outlined.FavoriteBorder),
-        BottomNavItem(ProfileRoute, "Profile", Icons.Filled.Person, Icons.Outlined.Person),
-        BottomNavItem(SettingsRoute, "Settings", Icons.Filled.Settings, Icons.Outlined.Settings)
-    )
+    val bottomItems =
+        listOf(
+            BottomNavItem(HomeRoute, "Home", Icons.Filled.Home, Icons.Outlined.Home),
+            BottomNavItem(FavoritesRoute, "Favorites", Icons.Filled.Favorite, Icons.Outlined.FavoriteBorder),
+            BottomNavItem(ProfileRoute, "Profile", Icons.Filled.Person, Icons.Outlined.Person),
+            BottomNavItem(SettingsRoute, "Settings", Icons.Filled.Settings, Icons.Outlined.Settings),
+        )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val showBottomBar = currentDestination?.hierarchy?.none {
-        it.hasRoute(LoginRoute::class) || it.hasRoute(SplashRoute::class) || it.hasRoute(SignUpRoute::class)
-    } == true
+    val showBottomBar =
+        currentDestination?.hierarchy?.none {
+            it.hasRoute(LoginRoute::class) || it.hasRoute(SplashRoute::class) || it.hasRoute(SignUpRoute::class)
+        } == true
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             bottomBar = {
-                if (showBottomBar) NavigationBar(
-                    modifier = Modifier.height(100.dp),
-                    containerColor = AppBackground,
-                    tonalElevation = 0.dp
-                ) {
-                    bottomItems.forEach { item ->
-                        val selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick = {
-                                if (!selected) {
-                                    navController.navigate(item.route) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
+                if (showBottomBar) {
+                    NavigationBar(
+                        modifier = Modifier.height(100.dp),
+                        containerColor = AppBackground,
+                        tonalElevation = 0.dp,
+                    ) {
+                        bottomItems.forEach { item ->
+                            val selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
+                            NavigationBarItem(
+                                selected = selected,
+                                onClick = {
+                                    if (!selected) {
+                                        navController.navigate(item.route) {
+                                            popUpTo(navController.graph.startDestinationId) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
                                         }
-                                        launchSingleTop = true
-                                        restoreState = true
                                     }
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
-                                    contentDescription = item.label,
-                                    modifier = Modifier.height(22.dp)
-                                )
-                            },
-                            label = {
-                                Text(
-                                    text = item.label,
-                                    fontSize = 11.sp,
-                                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
-                                )
-                            },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = AccentPurple,
-                                selectedTextColor = AccentPurple,
-                                unselectedIconColor = NavUnselected,
-                                unselectedTextColor = NavUnselected,
-                                indicatorColor = AccentPurple.copy(alpha = 0.15f)
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
+                                        contentDescription = item.label,
+                                        modifier = Modifier.height(22.dp),
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        text = item.label,
+                                        fontSize = 11.sp,
+                                        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                                    )
+                                },
+                                colors =
+                                    NavigationBarItemDefaults.colors(
+                                        selectedIconColor = AccentPurple,
+                                        selectedTextColor = AccentPurple,
+                                        unselectedIconColor = NavUnselected,
+                                        unselectedTextColor = NavUnselected,
+                                        indicatorColor = AccentPurple.copy(alpha = 0.15f),
+                                    ),
                             )
-                        )
+                        }
                     }
                 }
-            }
+            },
         ) { innerPadding ->
             MovieNavigation(
                 navController = navController,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
             )
         }
 
         // Status bar overlay
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsTopHeight(WindowInsets.statusBars)
-                .background(AppBackground)
-                .align(Alignment.TopCenter)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .windowInsetsTopHeight(WindowInsets.statusBars)
+                    .background(AppBackground)
+                    .align(Alignment.TopCenter),
         )
     }
 }

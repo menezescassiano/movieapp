@@ -22,19 +22,21 @@ fun ImageSkeleton(modifier: Modifier = Modifier) {
     val translateAnim by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1000f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "shimmer_translate"
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Restart,
+            ),
+        label = "shimmer_translate",
     )
     Box(
-        modifier = modifier.background(
-            Brush.linearGradient(
-                colors = listOf(ShimmerBase, ShimmerHighlight, ShimmerBase),
-                start = Offset(translateAnim - 600f, 0f),
-                end = Offset(translateAnim, 0f)
-            )
-        )
+        modifier =
+            modifier.background(
+                Brush.linearGradient(
+                    colors = listOf(ShimmerBase, ShimmerHighlight, ShimmerBase),
+                    start = Offset(translateAnim - 600f, 0f),
+                    end = Offset(translateAnim, 0f),
+                ),
+            ),
     )
 }

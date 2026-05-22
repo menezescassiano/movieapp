@@ -11,5 +11,5 @@ data class HomeUiState(
     val currentPage: Int = 0,
     val totalPages: Int = 1,
     val totalElements: Int = 0,
-    val pageSize: Int = 10
+    val pageSize: Int = 10,
 )

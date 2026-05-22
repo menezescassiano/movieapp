@@ -13,7 +13,6 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class MovieApp : Application() {
-
     @Inject
     lateinit var authRepository: AuthRepository
 

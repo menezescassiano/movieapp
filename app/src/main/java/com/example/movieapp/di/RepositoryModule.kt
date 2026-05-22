@@ -17,28 +17,19 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindMovieRepository(impl: MovieRepositoryImpl): MovieRepository
 
     @Binds
     @Singleton
-    abstract fun bindMovieRepository(
-        impl: MovieRepositoryImpl
-    ): MovieRepository
+    abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
 
     @Binds
     @Singleton
-    abstract fun bindUserRepository(
-        impl: UserRepositoryImpl
-    ): UserRepository
+    abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 
     @Binds
     @Singleton
-    abstract fun bindAuthRepository(
-        impl: AuthRepositoryImpl
-    ): AuthRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindUriReader(
-        impl: ContentResolverUriReader
-    ): UriReader
+    abstract fun bindUriReader(impl: ContentResolverUriReader): UriReader
 }

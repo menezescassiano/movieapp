@@ -15,118 +15,128 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
-    private val getUserUseCase: GetUserUseCase,
-    private val updateUserUseCase: UpdateUserUseCase,
-    private val uploadProfilePictureUseCase: UploadProfilePictureUseCase,
-    private val logoutUseCase: LogoutUseCase,
-) : ViewModel() {
+class ProfileViewModel
+    @Inject
+    constructor(
+        private val getUserUseCase: GetUserUseCase,
+        private val updateUserUseCase: UpdateUserUseCase,
+        private val uploadProfilePictureUseCase: UploadProfilePictureUseCase,
+        private val logoutUseCase: LogoutUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow(ProfileUiState())
+        val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    private val _uiState = MutableStateFlow(ProfileUiState())
-    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+        fun loadProfile() {
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+                try {
+                    val user = getUserUseCase()
+                    // Clear the local URI so the remote URL is used after a reload
+                    _uiState.value = _uiState.value.copy(isLoading = false, user = user, avatarUri = null)
+                } catch (e: Exception) {
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isLoading = false,
+                            errorMessage = e.message ?: "Failed to load profile",
+                        )
+                }
+            }
+        }
 
-    fun loadProfile() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            try {
-                val user = getUserUseCase()
-                // Clear the local URI so the remote URL is used after a reload
-                _uiState.value = _uiState.value.copy(isLoading = false, user = user, avatarUri = null)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = e.message ?: "Failed to load profile"
-                )
+        // Avatar
+        fun onAvatarClick() {
+            _uiState.value = _uiState.value.copy(showAvatarPicker = true)
+        }
+
+        fun onAvatarPickerDismiss() {
+            _uiState.value = _uiState.value.copy(showAvatarPicker = false)
+        }
+
+        fun onPhotoTaken(uri: Uri) {
+            _uiState.value = _uiState.value.copy(showAvatarPicker = false)
+            uploadAvatar(uri)
+        }
+
+        fun onImagePicked(uri: Uri) {
+            _uiState.value = _uiState.value.copy(showAvatarPicker = false)
+            uploadAvatar(uri)
+        }
+
+        private fun uploadAvatar(uri: Uri) {
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
+                try {
+                    val updatedUser = uploadProfilePictureUseCase(uri)
+                    // Keep the local URI for immediate display while the remote URL is in updatedUser.
+                    // No cache-busting needed: the ImageLoader has all caches disabled.
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isSaving = false,
+                            avatarUri = uri,
+                            user = updatedUser,
+                        )
+                } catch (e: Exception) {
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isSaving = false,
+                            errorMessage = e.message ?: "Failed to upload picture",
+                        )
+                }
+            }
+        }
+
+        // Edit field
+        fun onEditField(field: EditableField) {
+            _uiState.value = _uiState.value.copy(editingField = field)
+        }
+
+        fun onEditFieldDismiss() {
+            _uiState.value = _uiState.value.copy(editingField = null)
+        }
+
+        fun onEditFieldConfirm(
+            field: EditableField,
+            newValue: String,
+        ) {
+            val current = _uiState.value.user ?: return
+            val updated =
+                when (field) {
+                    EditableField.NAME -> current.copy(name = newValue)
+                    EditableField.EMAIL -> current.copy(email = newValue)
+                    EditableField.CITY -> current.copy(city = newValue)
+                }
+            _uiState.value = _uiState.value.copy(user = updated, editingField = null)
+            saveProfile(updated.name, updated.email, updated.city, updated.profilePictureUrl)
+        }
+
+        fun logout() {
+            viewModelScope.launch { logoutUseCase() }
+        }
+
+        private fun saveProfile(
+            name: String,
+            email: String,
+            city: String,
+            profilePictureUrl: String,
+        ) {
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
+                try {
+                    val updated =
+                        updateUserUseCase(
+                            name = name,
+                            email = email,
+                            city = city,
+                            profilePictureUrl = profilePictureUrl,
+                        )
+                    _uiState.value = _uiState.value.copy(isSaving = false, user = updated)
+                } catch (e: Exception) {
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isSaving = false,
+                            errorMessage = e.message ?: "Failed to save profile",
+                        )
+                }
             }
         }
     }
-
-    // Avatar
-    fun onAvatarClick() {
-        _uiState.value = _uiState.value.copy(showAvatarPicker = true)
-    }
-
-    fun onAvatarPickerDismiss() {
-        _uiState.value = _uiState.value.copy(showAvatarPicker = false)
-    }
-
-    fun onPhotoTaken(uri: Uri) {
-        _uiState.value = _uiState.value.copy(showAvatarPicker = false)
-        uploadAvatar(uri)
-    }
-
-    fun onImagePicked(uri: Uri) {
-        _uiState.value = _uiState.value.copy(showAvatarPicker = false)
-        uploadAvatar(uri)
-    }
-
-    private fun uploadAvatar(uri: Uri) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
-            try {
-                val updatedUser = uploadProfilePictureUseCase(uri)
-                // Keep the local URI for immediate display while the remote URL is in updatedUser.
-                // No cache-busting needed: the ImageLoader has all caches disabled.
-                _uiState.value = _uiState.value.copy(
-                    isSaving = false,
-                    avatarUri = uri,
-                    user = updatedUser
-                )
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isSaving = false,
-                    errorMessage = e.message ?: "Failed to upload picture"
-                )
-            }
-        }
-    }
-
-    // Edit field
-    fun onEditField(field: EditableField) {
-        _uiState.value = _uiState.value.copy(editingField = field)
-    }
-
-    fun onEditFieldDismiss() {
-        _uiState.value = _uiState.value.copy(editingField = null)
-    }
-
-    fun onEditFieldConfirm(field: EditableField, newValue: String) {
-        val current = _uiState.value.user ?: return
-        val updated = when (field) {
-            EditableField.NAME  -> current.copy(name = newValue)
-            EditableField.EMAIL -> current.copy(email = newValue)
-            EditableField.CITY  -> current.copy(city = newValue)
-        }
-        _uiState.value = _uiState.value.copy(user = updated, editingField = null)
-        saveProfile(updated.name, updated.email, updated.city, updated.profilePictureUrl)
-    }
-
-    fun logout() {
-        viewModelScope.launch { logoutUseCase() }
-    }
-
-    private fun saveProfile(
-        name: String,
-        email: String,
-        city: String,
-        profilePictureUrl: String,
-    ) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
-            try {
-                val updated = updateUserUseCase(
-                    name = name,
-                    email = email,
-                    city = city,
-                    profilePictureUrl = profilePictureUrl,
-                )
-                _uiState.value = _uiState.value.copy(isSaving = false, user = updated)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isSaving = false,
-                    errorMessage = e.message ?: "Failed to save profile"
-                )
-            }
-        }
-    }
-}

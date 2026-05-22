@@ -20,30 +20,31 @@ fun StatusBubble(
     backgroundColor: Color,
     icon: ImageVector,
     contentDescription: String,
-    message: String
+    message: String,
 ) {
     Box(
-        modifier = Modifier
-            .size(140.dp)
-            .background(
-                color = backgroundColor,
-                shape = CircleShape
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .size(140.dp)
+                .background(
+                    color = backgroundColor,
+                    shape = CircleShape,
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = contentDescription,
                 tint = Color(0xFFF7F8F7),
-                modifier = Modifier.size(72.dp)
+                modifier = Modifier.size(72.dp),
             )
             Text(
                 text = message,
-                color = Color(0xFFF7F8F7)
+                color = Color(0xFFF7F8F7),
             )
         }
     }

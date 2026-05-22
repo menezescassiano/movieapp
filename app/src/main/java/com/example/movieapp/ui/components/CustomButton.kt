@@ -30,23 +30,24 @@ fun CustomButton(
         onClick = onClick,
         modifier = modifier.height(52.dp),
         shape = shape,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor,
-            disabledContainerColor = containerColor.copy(alpha = 0.3f)
-        ),
-        enabled = enabled && !isLoading
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = containerColor,
+                disabledContainerColor = containerColor.copy(alpha = 0.3f),
+            ),
+        enabled = enabled && !isLoading,
     ) {
         if (isLoading) {
             CircularProgressIndicator(
                 color = Color.White,
                 strokeWidth = 2.dp,
-                modifier = Modifier.height(22.dp)
+                modifier = Modifier.height(22.dp),
             )
         } else {
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
         }
     }
