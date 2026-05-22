@@ -8,54 +8,87 @@
     <!-- Background -->
     <path android:fillColor="#1E1E2E" android:pathData="M0,0h280v280H0z" />
 
-    <!-- Film reel circle -->
+    <!-- ══ CLAPPERBOARD ══ -->
+
+    <!-- Body -->
     <path
         android:fillColor="#2A2A3C"
-        android:pathData="M140,60 m-70,0 a70,70 0 1,0 140,0 a70,70 0 1,0 -140,0" />
+        android:pathData="M24,82 H186 V178 Q186,186 178,186 H32 Q24,186 24,178 Z" />
 
-    <!-- Projector beam -->
+    <!-- Top arm (dark background for stripes) -->
+    <path
+        android:fillColor="#12121A"
+        android:pathData="M24,40 H186 V82 H24 Z" />
+
+    <!-- Diagonal stripes — each parallelogram carefully within the arm bounds -->
+    <!-- arm: x=24..186, y=40..82  slant=42  stripe-width=20 -->
+    <!-- formula: M(x0,40) L(x0+20,40) L(x0-22,82) L(x0-42,82) Z -->
+    <!-- x0=66 → bottom-left at 24 (flush left) -->
+    <path android:fillColor="#7C6AF7" android:pathData="M66,40 L86,40 L44,82 L24,82 Z" />
+    <path android:fillColor="#7C6AF7" android:pathData="M106,40 L126,40 L84,82 L64,82 Z" />
+    <path android:fillColor="#7C6AF7" android:pathData="M146,40 L166,40 L124,82 L104,82 Z" />
+    <!-- last stripe: clamp top-right to 186 -->
+    <path android:fillColor="#7C6AF7" android:pathData="M180,40 L186,40 L164,82 L144,82 Z" />
+
+    <!-- Hinge tabs (sit above the arm joint) -->
+    <path android:fillColor="#7C6AF7" android:pathData="M56,32 h16 v12 H56 Z" />
+    <path android:fillColor="#7C6AF7" android:pathData="M148,32 h16 v12 H148 Z" />
+
+    <!-- Scene label inside body -->
     <path
         android:fillColor="#7C6AF7"
-        android:fillAlpha="0.15"
-        android:pathData="M140,130 L200,200 L80,200 Z" />
+        android:fillAlpha="0.9"
+        android:pathData="M36,92 h70 v8 H36 Z" />
 
-    <!-- Star 1 -->
+    <!-- Divider -->
+    <path android:fillColor="#12121A" android:pathData="M24,110 H186 V114 H24 Z" />
+
+    <!-- Info lines -->
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.18" android:pathData="M36,122 h106 v5 H36 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.18" android:pathData="M36,135 h84 v5 H36 Z" />
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.18" android:pathData="M36,148 h96 v5 H36 Z" />
+
+    <!-- Scene / Take / Roll tags -->
+    <path android:fillColor="#7C6AF7" android:fillAlpha="0.35" android:pathData="M36,164 h36 v6 H36 Z" />
+    <path android:fillColor="#7C6AF7" android:fillAlpha="0.35" android:pathData="M80,164 h36 v6 H80 Z" />
+    <path android:fillColor="#7C6AF7" android:fillAlpha="0.35" android:pathData="M124,164 h36 v6 H124 Z" />
+
+    <!-- ══ MAGNIFYING GLASS ══ -->
+
+    <!-- Glass circle — transparent interior, just the purple ring -->
+    <path
+        android:strokeColor="#7C6AF7"
+        android:strokeWidth="9"
+        android:fillColor="#00000000"
+        android:pathData="M212,196 m-36,0 a36,36 0 1,0 72,0 a36,36 0 1,0 -72,0" />
+
+    <!-- Subtle inner tint so glass feels like glass -->
+    <path
+        android:fillColor="#7C6AF7"
+        android:fillAlpha="0.07"
+        android:pathData="M212,196 m-36,0 a36,36 0 1,0 72,0 a36,36 0 1,0 -72,0" />
+
+    <!-- Inner shine -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeAlpha="0.25"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M194,178 Q188,187 187,197" />
+
+    <!-- Handle -->
+    <path
+        android:strokeColor="#7C6AF7"
+        android:strokeWidth="9"
+        android:strokeLineCap="round"
+        android:pathData="M237,221 L255,239" />
+
+    <!-- ══ ACCENT ══ -->
+
+    <!-- Star -->
     <path
         android:fillColor="#FFC940"
-        android:pathData="M140,75 L144,88 L158,88 L147,96 L151,109 L140,101 L129,109 L133,96 L122,88 L136,88 Z" />
+        android:fillAlpha="0.9"
+        android:pathData="M240,54 L242,61 L249,61 L244,65 L246,72 L240,68 L234,72 L236,65 L231,61 L238,61 Z" />
 
-    <!-- Film strip left -->
-    <path
-        android:fillColor="#7C6AF7"
-        android:pathData="M60,160 h160 v8 H60 Z" />
-    <path
-        android:fillColor="#7C6AF7"
-        android:pathData="M60,172 h160 v8 H60 Z" />
-
-    <!-- Sprocket holes -->
-    <path android:fillColor="#12121A" android:pathData="M68,158 h8 v12 H68 Z" />
-    <path android:fillColor="#12121A" android:pathData="M88,158 h8 v12 H88 Z" />
-    <path android:fillColor="#12121A" android:pathData="M108,158 h8 v12 H108 Z" />
-    <path android:fillColor="#12121A" android:pathData="M128,158 h8 v12 H128 Z" />
-    <path android:fillColor="#12121A" android:pathData="M148,158 h8 v12 H148 Z" />
-    <path android:fillColor="#12121A" android:pathData="M168,158 h8 v12 H168 Z" />
-    <path android:fillColor="#12121A" android:pathData="M188,158 h8 v12 H188 Z" />
-    <path android:fillColor="#12121A" android:pathData="M208,158 h8 v12 H208 Z" />
-
-    <!-- Magnifying glass -->
-    <path
-        android:strokeColor="#7C6AF7"
-        android:strokeWidth="6"
-        android:fillColor="#00000000"
-        android:pathData="M155,195 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0" />
-    <path
-        android:strokeColor="#7C6AF7"
-        android:strokeWidth="6"
-        android:pathData="M168,208 L180,220" />
-
-    <!-- Small stars scattered -->
-    <path android:fillColor="#7C6AF7" android:fillAlpha="0.5"
-        android:pathData="M80,100 L82,106 L88,106 L83,110 L85,116 L80,112 L75,116 L77,110 L72,106 L78,106 Z" />
-    <path android:fillColor="#FFC940" android:fillAlpha="0.4"
-        android:pathData="M200,90 L201,94 L205,94 L202,97 L203,101 L200,98 L197,101 L198,97 L195,94 L199,94 Z" />
 </vector>
