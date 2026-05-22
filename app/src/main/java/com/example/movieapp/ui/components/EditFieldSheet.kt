@@ -33,11 +33,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.movieapp.R
-import com.example.movieapp.ui.theme.AccentPurple
-import com.example.movieapp.ui.theme.AppBackground
-import com.example.movieapp.ui.theme.CardDark
-import com.example.movieapp.ui.theme.MovieAppTheme
-import com.example.movieapp.ui.theme.NavUnselected
+import com.example.movieapp.core.ui.theme.AccentPurple
+import com.example.movieapp.core.ui.theme.AppBackground
+import com.example.movieapp.core.ui.theme.CardDark
+import com.example.movieapp.core.ui.theme.MovieAppTheme
+import com.example.movieapp.core.ui.theme.NavUnselected
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

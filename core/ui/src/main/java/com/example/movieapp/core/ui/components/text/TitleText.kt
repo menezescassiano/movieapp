@@ -1,0 +1,33 @@
+package com.example.movieapp.core.ui.components.text
+
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+
+@Composable
+fun TitleText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.headlineMedium,
+    fontWeight: FontWeight? = null,
+    color: Color = Color.White,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = style,
+        fontWeight = fontWeight,
+        color = color,
+    )
+}
+
+@Preview
+@Composable
+fun TitleTextPreview() {
+    TitleText(text = "Breaking Bad")
+}

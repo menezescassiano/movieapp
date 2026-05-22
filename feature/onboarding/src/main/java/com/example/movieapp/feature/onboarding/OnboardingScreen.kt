@@ -1,4 +1,4 @@
-package com.example.movieapp.screens.onboarding
+package com.example.movieapp.feature.onboarding
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColorAsState
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import com.example.movieapp.ui.components.OnboardingCard
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -34,14 +33,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.movieapp.R
-import com.example.movieapp.ui.components.CustomButton
-import com.example.movieapp.ui.components.LinkButton
-import com.example.movieapp.ui.components.text.BodyText
-import com.example.movieapp.ui.components.text.TitleText
-import com.example.movieapp.ui.invisible
-import com.example.movieapp.ui.theme.AccentPurple
-import com.example.movieapp.ui.theme.AppBackground
+import com.example.movieapp.core.ui.components.CustomButton
+import com.example.movieapp.core.ui.components.LinkButton
+import com.example.movieapp.core.ui.components.text.BodyText
+import com.example.movieapp.core.ui.components.text.TitleText
+import com.example.movieapp.core.ui.invisible
+import com.example.movieapp.core.ui.theme.AccentPurple
+import com.example.movieapp.core.ui.theme.AppBackground
+import com.example.movieapp.feature.onboarding.R
 import kotlinx.coroutines.launch
 
 data class OnboardingPage(
@@ -197,11 +196,12 @@ private fun PagerIndicator(
                 label = "IndicatorWidth",
             )
             Box(
-                modifier = Modifier
-                    .height(8.dp)
-                    .size(width, 8.dp)
-                    .clip(CircleShape)
-                    .background(color),
+                modifier =
+                    Modifier
+                        .height(8.dp)
+                        .size(width, 8.dp)
+                        .clip(CircleShape)
+                        .background(color),
             )
         }
     }

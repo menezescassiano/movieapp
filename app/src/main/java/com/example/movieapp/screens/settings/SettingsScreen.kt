@@ -53,12 +53,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.movieapp.R
-import com.example.movieapp.ui.components.text.BodyText
-import com.example.movieapp.ui.components.text.TitleText
-import com.example.movieapp.ui.theme.AccentPurple
-import com.example.movieapp.ui.theme.AppBackground
-import com.example.movieapp.ui.theme.CardDark
-import com.example.movieapp.ui.theme.NavUnselected
+import com.example.movieapp.core.ui.components.text.BodyText
+import com.example.movieapp.core.ui.components.text.TitleText
+import com.example.movieapp.core.ui.theme.AccentPurple
+import com.example.movieapp.core.ui.theme.AppBackground
+import com.example.movieapp.core.ui.theme.CardDark
+import com.example.movieapp.core.ui.theme.NavUnselected
 
 @Composable
 fun SettingsScreen(

@@ -1,4 +1,4 @@
-package com.example.movieapp.ui.components
+package com.example.movieapp.feature.onboarding
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -13,11 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.movieapp.R
-import com.example.movieapp.ui.theme.CardDark
+import com.example.movieapp.core.ui.theme.CardDark
 
 @Composable
 fun OnboardingCard(
@@ -27,10 +25,11 @@ fun OnboardingCard(
     size: Dp = 280.dp,
 ) {
     Box(
-        modifier = modifier
-            .size(size)
-            .clip(MaterialTheme.shapes.extraLarge)
-            .background(CardDark),
+        modifier =
+            modifier
+                .size(size)
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(CardDark),
         contentAlignment = Alignment.Center,
     ) {
         Image(
@@ -40,13 +39,4 @@ fun OnboardingCard(
             modifier = Modifier.fillMaxSize(),
         )
     }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF12121A)
-@Composable
-private fun OnboardingCardPreview() {
-    OnboardingCard(
-        imageRes = R.drawable.onboarding_discover,
-        contentDescription = "Discover",
-    )
 }

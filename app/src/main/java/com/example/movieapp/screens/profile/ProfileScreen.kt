@@ -65,12 +65,12 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.movieapp.R
+import com.example.movieapp.core.ui.theme.AccentPurple
+import com.example.movieapp.core.ui.theme.AppBackground
+import com.example.movieapp.core.ui.theme.CardDark
+import com.example.movieapp.core.ui.theme.NavUnselected
 import com.example.movieapp.model.User
 import com.example.movieapp.ui.components.EditFieldSheet
-import com.example.movieapp.ui.theme.AccentPurple
-import com.example.movieapp.ui.theme.AppBackground
-import com.example.movieapp.ui.theme.CardDark
-import com.example.movieapp.ui.theme.NavUnselected
 import java.io.File
 
 @Composable

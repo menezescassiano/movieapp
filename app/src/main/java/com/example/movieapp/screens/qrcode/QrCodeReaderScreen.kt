@@ -51,8 +51,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.movieapp.ui.theme.AccentPurple
-import com.example.movieapp.ui.theme.AppBackground
+import com.example.movieapp.core.ui.theme.AccentPurple
+import com.example.movieapp.core.ui.theme.AppBackground
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning

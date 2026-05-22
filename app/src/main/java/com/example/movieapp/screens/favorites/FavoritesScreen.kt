@@ -27,11 +27,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.movieapp.core.ui.theme.AppBackground
 import com.example.movieapp.model.Movie
 import com.example.movieapp.model.getMoviesList
 import com.example.movieapp.navigation.DetailsRoute
 import com.example.movieapp.ui.components.MovieRow
-import com.example.movieapp.ui.theme.AppBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

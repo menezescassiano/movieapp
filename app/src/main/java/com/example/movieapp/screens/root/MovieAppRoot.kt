@@ -38,6 +38,9 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.movieapp.core.ui.theme.AccentPurple
+import com.example.movieapp.core.ui.theme.AppBackground
+import com.example.movieapp.core.ui.theme.NavUnselected
 import com.example.movieapp.navigation.FavoritesRoute
 import com.example.movieapp.navigation.HomeRoute
 import com.example.movieapp.navigation.LoginRoute
@@ -47,9 +50,6 @@ import com.example.movieapp.navigation.ProfileRoute
 import com.example.movieapp.navigation.SettingsRoute
 import com.example.movieapp.navigation.SignUpRoute
 import com.example.movieapp.navigation.SplashRoute
-import com.example.movieapp.ui.theme.AccentPurple
-import com.example.movieapp.ui.theme.AppBackground
-import com.example.movieapp.ui.theme.NavUnselected
 
 @Composable
 fun MovieAppRoot(viewModel: RootViewModel = hiltViewModel()) {

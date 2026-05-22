@@ -18,8 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.movieapp.R
+import com.example.movieapp.core.ui.theme.StarGold
 import com.example.movieapp.model.Movie
-import com.example.movieapp.ui.theme.StarGold
 
 @Composable
 fun FavoriteButton(

@@ -50,15 +50,15 @@ import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.movieapp.R
+import com.example.movieapp.core.ui.components.badge.GenreChip
+import com.example.movieapp.core.ui.components.text.BodyText
+import com.example.movieapp.core.ui.components.text.TitleText
+import com.example.movieapp.core.ui.theme.AppBackground
+import com.example.movieapp.core.ui.theme.StarGold
 import com.example.movieapp.model.getMoviesList
 import com.example.movieapp.ui.components.FavoriteButton
 import com.example.movieapp.ui.components.ImageSkeleton
 import com.example.movieapp.ui.components.YouTubePlayer
-import com.example.movieapp.ui.components.badge.GenreChip
-import com.example.movieapp.ui.components.text.BodyText
-import com.example.movieapp.ui.components.text.TitleText
-import com.example.movieapp.ui.theme.AppBackground
-import com.example.movieapp.ui.theme.StarGold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

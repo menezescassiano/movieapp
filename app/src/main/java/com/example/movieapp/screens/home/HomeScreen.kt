@@ -45,14 +45,14 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.movieapp.R
+import com.example.movieapp.core.ui.components.text.BodyText
+import com.example.movieapp.core.ui.components.text.TitleText
+import com.example.movieapp.core.ui.theme.AccentPurple
+import com.example.movieapp.core.ui.theme.AppBackground
 import com.example.movieapp.navigation.DetailsRoute
 import com.example.movieapp.navigation.QrCodeRoute
 import com.example.movieapp.ui.components.MovieCard
 import com.example.movieapp.ui.components.MovieSearchBar
-import com.example.movieapp.ui.components.text.BodyText
-import com.example.movieapp.ui.components.text.TitleText
-import com.example.movieapp.ui.theme.AccentPurple
-import com.example.movieapp.ui.theme.AppBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

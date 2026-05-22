@@ -47,16 +47,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.movieapp.R
+import com.example.movieapp.core.ui.components.CustomButton
+import com.example.movieapp.core.ui.components.LinkButton
+import com.example.movieapp.core.ui.components.text.BodyText
+import com.example.movieapp.core.ui.components.text.TitleText
+import com.example.movieapp.core.ui.theme.AccentPurple
+import com.example.movieapp.core.ui.theme.AppBackground
+import com.example.movieapp.core.ui.theme.CardDark
+import com.example.movieapp.core.ui.theme.NavUnselected
 import com.example.movieapp.data.AuthException
-import com.example.movieapp.ui.components.CustomButton
 import com.example.movieapp.ui.components.CustomTextField
-import com.example.movieapp.ui.components.LinkButton
-import com.example.movieapp.ui.components.text.BodyText
-import com.example.movieapp.ui.components.text.TitleText
-import com.example.movieapp.ui.theme.AccentPurple
-import com.example.movieapp.ui.theme.AppBackground
-import com.example.movieapp.ui.theme.CardDark
-import com.example.movieapp.ui.theme.NavUnselected
 
 @Composable
 fun LoginScreen(

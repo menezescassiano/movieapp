@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.movieapp.R
+import com.example.movieapp.core.ui.components.badge.YearBadge
+import com.example.movieapp.core.ui.components.text.MovieCardTitle
+import com.example.movieapp.core.ui.theme.CardDark
 import com.example.movieapp.model.Movie
-import com.example.movieapp.ui.components.badge.YearBadge
-import com.example.movieapp.ui.components.text.MovieCardTitle
-import com.example.movieapp.ui.theme.CardDark
 
 @Composable
 fun MovieCard(

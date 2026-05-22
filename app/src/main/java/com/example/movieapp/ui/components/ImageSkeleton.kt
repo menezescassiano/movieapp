@@ -13,8 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import com.example.movieapp.ui.theme.ShimmerBase
-import com.example.movieapp.ui.theme.ShimmerHighlight
+import com.example.movieapp.core.ui.theme.ShimmerBase
+import com.example.movieapp.core.ui.theme.ShimmerHighlight
 
 @Composable
 fun ImageSkeleton(modifier: Modifier = Modifier) {
