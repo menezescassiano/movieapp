@@ -54,18 +54,16 @@ class SignUpViewModel
             val state = _uiState.value
 
             val nameError = if (state.name.isBlank()) emptyNameMessage else null
+            val emailPattern = Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
             val emailError =
-                if (!android.util.Patterns.EMAIL_ADDRESS
-                        .matcher(state.email)
-                        .matches()
-                ) {
+                if (!emailPattern.matches(state.email)) {
                     invalidEmailMessage
                 } else {
                     null
                 }
             val passwordError = if (state.password.length < 6) shortPasswordMessage else null
             val confirmPasswordError =
-                if (state.password != state.confirmPassword) {
+                if (state.confirmPassword.isBlank() || state.password != state.confirmPassword) {
                     passwordMismatchMessage
                 } else {
                     null

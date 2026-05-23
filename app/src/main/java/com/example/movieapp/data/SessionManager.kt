@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class SessionManager
     @Inject
     constructor() {
-        private val _logoutEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+        private val _logoutEvent = MutableSharedFlow<Unit>(replay = 1, extraBufferCapacity = 63)
         val logoutEvent: SharedFlow<Unit> = _logoutEvent.asSharedFlow()
 
         fun logout() {

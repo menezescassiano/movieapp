@@ -3,6 +3,7 @@ package com.example.movieapp.screens.home
 import com.example.movieapp.domain.GetMoviesUseCase
 import com.example.movieapp.domain.SearchMoviesUseCase
 import com.example.movieapp.model.Movie
+import com.example.movieapp.model.PagedResponse
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -57,6 +58,18 @@ class HomeViewModelTest {
             ),
         )
 
+    private fun pagedOf(
+        movies: List<Movie>,
+        page: Int = 0,
+        totalPages: Int = 1,
+    ) = PagedResponse(
+        content = movies,
+        page = page,
+        size = movies.size,
+        totalElements = movies.size,
+        totalPages = totalPages,
+    )
+
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
@@ -76,7 +89,7 @@ class HomeViewModelTest {
     @Test
     fun `init loads movies and sets correct state`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -92,7 +105,7 @@ class HomeViewModelTest {
     @Test
     fun `loadMovies sets error message on failure`() =
         runTest {
-            coEvery { getMoviesUseCase() } throws RuntimeException("Network error")
+            coEvery { getMoviesUseCase(any(), any()) } throws RuntimeException("Network error")
 
             viewModel = createViewModel()
             viewModel.loadMovies()
@@ -107,14 +120,14 @@ class HomeViewModelTest {
     @Test
     fun `successful fetch clears previous error message`() =
         runTest {
-            coEvery { getMoviesUseCase() } throws RuntimeException("Initial error")
+            coEvery { getMoviesUseCase(any(), any()) } throws RuntimeException("Initial error")
 
             viewModel = createViewModel()
             advanceUntilIdle()
 
             assertEquals("Initial error", viewModel.uiState.value.errorMessage)
 
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.loadMovies()
             advanceUntilIdle()
@@ -127,7 +140,7 @@ class HomeViewModelTest {
     @Test
     fun `exception without message sets null errorMessage`() =
         runTest {
-            coEvery { getMoviesUseCase() } throws RuntimeException()
+            coEvery { getMoviesUseCase(any(), any()) } throws RuntimeException()
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -140,7 +153,7 @@ class HomeViewModelTest {
     @Test
     fun `getMoviesUseCase returning empty list results in empty movies`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns emptyList()
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(emptyList())
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -156,7 +169,7 @@ class HomeViewModelTest {
     @Test
     fun `refresh fetches movies without changing isLoading`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -174,14 +187,14 @@ class HomeViewModelTest {
     @Test
     fun `refresh failure preserves existing movies and sets error`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel = createViewModel()
             advanceUntilIdle()
 
             assertEquals(fakeMovies, viewModel.uiState.value.movies)
 
-            coEvery { getMoviesUseCase() } throws RuntimeException("Refresh error")
+            coEvery { getMoviesUseCase(any(), any()) } throws RuntimeException("Refresh error")
 
             viewModel.refresh()
             advanceUntilIdle()
@@ -197,8 +210,8 @@ class HomeViewModelTest {
     @Test
     fun `onSearchQueryChange updates search query`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
-            coEvery { searchMoviesUseCase(any()) } returns emptyList()
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
+            coEvery { searchMoviesUseCase(any(), any(), any()) } returns pagedOf(emptyList())
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -212,8 +225,8 @@ class HomeViewModelTest {
     fun `search query triggers searchMoviesUseCase`() =
         runTest {
             val searchResults = listOf(fakeMovies[0])
-            coEvery { getMoviesUseCase() } returns fakeMovies
-            coEvery { searchMoviesUseCase("batman") } returns searchResults
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
+            coEvery { searchMoviesUseCase("batman", any(), any()) } returns pagedOf(searchResults)
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -223,14 +236,14 @@ class HomeViewModelTest {
 
             val state = viewModel.uiState.value
             assertEquals(searchResults, state.movies)
-            coVerify { searchMoviesUseCase("batman") }
+            coVerify { searchMoviesUseCase("batman", any(), any()) }
         }
 
     @Test
     fun `blank search query uses getMoviesUseCase`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
-            coEvery { searchMoviesUseCase(any()) } returns emptyList()
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
+            coEvery { searchMoviesUseCase(any(), any(), any()) } returns pagedOf(emptyList())
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -248,8 +261,8 @@ class HomeViewModelTest {
     @Test
     fun `search query failure sets error message`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
-            coEvery { searchMoviesUseCase("fail") } throws RuntimeException("Search failed")
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
+            coEvery { searchMoviesUseCase("fail", any(), any()) } throws RuntimeException("Search failed")
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -264,8 +277,8 @@ class HomeViewModelTest {
     @Test
     fun `search returns empty list`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
-            coEvery { searchMoviesUseCase("xyz") } returns emptyList()
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
+            coEvery { searchMoviesUseCase("xyz", any(), any()) } returns pagedOf(emptyList())
 
             viewModel = createViewModel()
             advanceUntilIdle()
@@ -276,5 +289,39 @@ class HomeViewModelTest {
             val state = viewModel.uiState.value
             assertTrue(state.movies.isEmpty())
             assertNull(state.errorMessage)
+        }
+
+    // ── loadNextPage ─────────────────────────────────────────────────────
+
+    @Test
+    fun `loadNextPage appends movies when more pages exist`() =
+        runTest {
+            val page0 = pagedOf(listOf(fakeMovies[0]), page = 0, totalPages = 2)
+            val page1 = pagedOf(listOf(fakeMovies[1]), page = 1, totalPages = 2)
+            coEvery { getMoviesUseCase(page = 0, size = any()) } returns page0
+            coEvery { getMoviesUseCase(page = 1, size = any()) } returns page1
+
+            viewModel = createViewModel()
+            advanceUntilIdle()
+
+            viewModel.loadNextPage()
+            advanceUntilIdle()
+
+            assertEquals(fakeMovies, viewModel.uiState.value.movies)
+        }
+
+    @Test
+    fun `loadNextPage does nothing when already on last page`() =
+        runTest {
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies, page = 0, totalPages = 1)
+
+            viewModel = createViewModel()
+            advanceUntilIdle()
+
+            viewModel.loadNextPage()
+            advanceUntilIdle()
+
+            // getMoviesUseCase called only once (from init), never for page 1
+            coVerify(exactly = 1) { getMoviesUseCase(any(), any()) }
         }
 }

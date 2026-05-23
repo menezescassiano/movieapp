@@ -2,6 +2,7 @@ package com.example.movieapp.screens.qrcode
 
 import com.example.movieapp.domain.GetMoviesUseCase
 import com.example.movieapp.model.Movie
+import com.example.movieapp.model.PagedResponse
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -54,6 +55,15 @@ class QrCodeReaderViewModelTest {
             ),
         )
 
+    private fun pagedOf(movies: List<Movie>) =
+        PagedResponse(
+            content = movies,
+            page = 0,
+            size = movies.size,
+            totalElements = movies.size,
+            totalPages = 1,
+        )
+
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
@@ -80,7 +90,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `onQrDecoded sets Success and showCheck when movie id is found`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt1234")
             advanceUntilIdle()
@@ -93,7 +103,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `onQrDecoded finds movie by id regardless of position in list`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt5678")
             advanceUntilIdle()
@@ -108,7 +118,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `onQrDecoded sets NotFound and showError when movie id is not found`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt9999")
             advanceUntilIdle()
@@ -121,7 +131,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `onQrDecoded with empty movie list always sets NotFound`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns emptyList()
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(emptyList())
 
             viewModel.onQrDecoded("tt1234")
             advanceUntilIdle()
@@ -136,7 +146,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `onQrDecoded while Loading is ignored and useCase is called only once`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             // first call sets Loading and starts the coroutine
             viewModel.onQrDecoded("tt1234")
@@ -144,7 +154,7 @@ class QrCodeReaderViewModelTest {
             viewModel.onQrDecoded("tt1234")
             advanceUntilIdle()
 
-            coVerify(exactly = 1) { getMoviesUseCase() }
+            coVerify(exactly = 1) { getMoviesUseCase(any(), any()) }
         }
 
     // ── reset ────────────────────────────────────────────────────────────
@@ -152,7 +162,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `reset returns state to Idle and clears showCheck and showError`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt1234")
             advanceUntilIdle()
@@ -169,7 +179,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `reset after NotFound clears showError`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt9999")
             advanceUntilIdle()
@@ -196,7 +206,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `onCameraPermissionChanged false resets state`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt1234")
             advanceUntilIdle()
@@ -212,7 +222,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `onCameraPermissionChanged true does not reset state`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt1234")
             advanceUntilIdle()
@@ -228,7 +238,7 @@ class QrCodeReaderViewModelTest {
     @Test
     fun `scan success followed by reset allows a new scan`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt1234")
             advanceUntilIdle()
@@ -240,13 +250,13 @@ class QrCodeReaderViewModelTest {
             viewModel.onQrDecoded("tt5678")
             advanceUntilIdle()
             assertEquals(QrCodeReaderUiState.Success("tt5678"), viewModel.scanResult.value)
-            coVerify(exactly = 2) { getMoviesUseCase() }
+            coVerify(exactly = 2) { getMoviesUseCase(any(), any()) }
         }
 
     @Test
     fun `scan notFound followed by reset allows a new scan`() =
         runTest {
-            coEvery { getMoviesUseCase() } returns fakeMovies
+            coEvery { getMoviesUseCase(any(), any()) } returns pagedOf(fakeMovies)
 
             viewModel.onQrDecoded("tt9999")
             advanceUntilIdle()

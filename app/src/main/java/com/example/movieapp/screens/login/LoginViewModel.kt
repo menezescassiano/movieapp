@@ -56,11 +56,9 @@ class LoginViewModel
         ) {
             val state = _uiState.value
 
+            val emailPattern = Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
             val emailError =
-                if (!android.util.Patterns.EMAIL_ADDRESS
-                        .matcher(state.email)
-                        .matches()
-                ) {
+                if (!emailPattern.matches(state.email)) {
                     invalidEmailMessage
                 } else {
                     null
