@@ -20,3 +20,6 @@ val YearBadgeBg = Color(0xFF2A2A3C) // year badge background
 val StarGold = Color(0xFFFFC940) // favorite star
 val ShimmerBase = Color(0xFF2A2A2A) // skeleton shimmer base
 val ShimmerHighlight = Color(0xFF3D3D3D) // skeleton shimmer highlight
+
+val OnSurfaceMuted = Color(0x99FFFFFF) // 60% white — secondary text on dark
+val IndicatorInactive = Color(0x40FFFFFF) // 25% white — inactive pager dot
