@@ -1,9 +1,12 @@
 package com.example.movieapp.feature.onboarding
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,13 +26,16 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,11 +43,13 @@ import com.example.movieapp.core.ui.components.CustomButton
 import com.example.movieapp.core.ui.components.LinkButton
 import com.example.movieapp.core.ui.components.text.BodyText
 import com.example.movieapp.core.ui.components.text.TitleText
-import com.example.movieapp.core.ui.invisible
 import com.example.movieapp.core.ui.theme.AccentPurple
 import com.example.movieapp.core.ui.theme.AppBackground
-import com.example.movieapp.feature.onboarding.R
+import com.example.movieapp.core.ui.theme.IndicatorInactive
+import com.example.movieapp.core.ui.theme.OnSurfaceMuted
 import kotlinx.coroutines.launch
+
+private val HorizontalGutter = 24.dp
 
 data class OnboardingPage(
     val title: String,
@@ -54,30 +62,29 @@ fun OnboardingScreen(
     onFinish: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val page1Title = stringResource(R.string.onboarding_page1_title)
+    val page1Desc = stringResource(R.string.onboarding_page1_description)
+    val page2Title = stringResource(R.string.onboarding_page2_title)
+    val page2Desc = stringResource(R.string.onboarding_page2_description)
+    val page3Title = stringResource(R.string.onboarding_page3_title)
+    val page3Desc = stringResource(R.string.onboarding_page3_description)
+
     val pages =
-        listOf(
-            OnboardingPage(
-                title = stringResource(R.string.onboarding_page1_title),
-                description = stringResource(R.string.onboarding_page1_description),
-                imageRes = R.drawable.onboarding_discover,
-            ),
-            OnboardingPage(
-                title = stringResource(R.string.onboarding_page2_title),
-                description = stringResource(R.string.onboarding_page2_description),
-                imageRes = R.drawable.onboarding_details,
-            ),
-            OnboardingPage(
-                title = stringResource(R.string.onboarding_page3_title),
-                description = stringResource(R.string.onboarding_page3_description),
-                imageRes = R.drawable.onboarding_favorites,
-            ),
-        )
+        remember(page1Title, page1Desc, page2Title, page2Desc, page3Title, page3Desc) {
+            listOf(
+                OnboardingPage(page1Title, page1Desc, R.drawable.onboarding_discover),
+                OnboardingPage(page2Title, page2Desc, R.drawable.onboarding_details),
+                OnboardingPage(page3Title, page3Desc, R.drawable.onboarding_favorites),
+            )
+        }
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
-    val isLastPage = pagerState.currentPage == pages.lastIndex
+    val isLastPage by remember {
+        derivedStateOf { pagerState.settledPage == pages.lastIndex }
+    }
 
-    Box(
+    Column(
         modifier =
             modifier
                 .fillMaxSize()
@@ -85,7 +92,10 @@ fun OnboardingScreen(
     ) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
         ) { pageIndex ->
             OnboardingPageContent(page = pages[pageIndex])
         }
@@ -93,19 +103,16 @@ fun OnboardingScreen(
         Column(
             modifier =
                 Modifier
-                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
-                    .padding(horizontal = 24.dp, vertical = 40.dp),
+                    .padding(horizontal = HorizontalGutter, vertical = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             PagerIndicator(
                 pageCount = pages.size,
                 currentPage = pagerState.currentPage,
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             CustomButton(
                 text =
@@ -126,11 +133,16 @@ fun OnboardingScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            LinkButton(
-                text = stringResource(R.string.onboarding_button_skip),
-                onClick = { if (!isLastPage) onFinish() },
-                modifier = if (isLastPage) Modifier.invisible() else Modifier,
-            )
+            AnimatedVisibility(
+                visible = !isLastPage,
+                enter = fadeIn(tween(durationMillis = 200)),
+                exit = fadeOut(tween(durationMillis = 200)),
+            ) {
+                LinkButton(
+                    text = stringResource(R.string.onboarding_button_skip),
+                    onClick = onFinish,
+                )
+            }
         }
     }
 }
@@ -144,13 +156,13 @@ private fun OnboardingPageContent(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = HorizontalGutter),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         OnboardingCard(
             imageRes = page.imageRes,
-            contentDescription = page.title,
+            contentDescription = null,
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -166,7 +178,7 @@ private fun OnboardingPageContent(
 
         BodyText(
             text = page.description,
-            color = Color.White.copy(alpha = 0.6f),
+            color = OnSurfaceMuted,
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -178,15 +190,19 @@ private fun PagerIndicator(
     currentPage: Int,
     modifier: Modifier = Modifier,
 ) {
+    val a11y = stringResource(R.string.onboarding_indicator_a11y, currentPage + 1, pageCount)
     Row(
-        modifier = modifier,
+        modifier =
+            modifier.semantics {
+                contentDescription = a11y
+            },
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         repeat(pageCount) { index ->
             val isSelected = index == currentPage
             val color by animateColorAsState(
-                targetValue = if (isSelected) AccentPurple else Color.White.copy(alpha = 0.25f),
+                targetValue = if (isSelected) AccentPurple else IndicatorInactive,
                 animationSpec = tween(durationMillis = 300),
                 label = "IndicatorColor",
             )
@@ -198,8 +214,7 @@ private fun PagerIndicator(
             Box(
                 modifier =
                     Modifier
-                        .height(8.dp)
-                        .size(width, 8.dp)
+                        .size(width = width, height = 8.dp)
                         .clip(CircleShape)
                         .background(color),
             )

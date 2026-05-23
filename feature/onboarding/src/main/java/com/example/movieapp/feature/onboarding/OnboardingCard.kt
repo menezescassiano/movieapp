@@ -20,8 +20,8 @@ import com.example.movieapp.core.ui.theme.CardDark
 @Composable
 fun OnboardingCard(
     @DrawableRes imageRes: Int,
-    contentDescription: String,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
     size: Dp = 280.dp,
 ) {
     Box(
@@ -35,7 +35,7 @@ fun OnboardingCard(
         Image(
             painter = painterResource(id = imageRes),
             contentDescription = contentDescription,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize(),
         )
     }
