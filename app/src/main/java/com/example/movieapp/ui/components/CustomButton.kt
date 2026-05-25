@@ -25,6 +25,7 @@ fun CustomButton(
     isLoading: Boolean = false,
     containerColor: Color = AccentPurple,
     shape: Shape = RoundedCornerShape(14.dp),
+    textColor: Color = Color.White
 ) {
     Button(
         onClick = onClick,
@@ -48,6 +49,7 @@ fun CustomButton(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
+                color = textColor
             )
         }
     }

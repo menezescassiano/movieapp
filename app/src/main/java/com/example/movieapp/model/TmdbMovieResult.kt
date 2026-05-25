@@ -6,4 +6,5 @@ data class TmdbMovieResult(
     val year: String,
     val overview: String,
     val poster: String,
+    val alreadyAdded: Boolean
 )

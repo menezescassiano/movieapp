@@ -9,6 +9,7 @@ data class TmdbMovieDto(
     @SerializedName("year") val year: String,
     @SerializedName("overview") val overview: String,
     @SerializedName("poster") val poster: String,
+    @SerializedName("alreadyAdded") val alreadyAdded: Boolean,
 )
 
 fun TmdbMovieDto.toDomain() =
@@ -18,4 +19,5 @@ fun TmdbMovieDto.toDomain() =
         year = year,
         overview = overview,
         poster = poster,
+        alreadyAdded = alreadyAdded
     )
