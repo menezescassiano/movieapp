@@ -75,7 +75,6 @@ fun AddMovieScreen(
         onAddMovie = viewModel::addMovie,
         modifier = modifier,
     )
-
 }
 
 @Composable
@@ -259,23 +258,25 @@ private fun TmdbMovieItem(
     }
 }
 
-private val previewMovie = TmdbMovieResult(
-    tmdbId = 1L,
-    title = "Interstellar",
-    year = "2014",
-    overview = "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-    poster = "",
-    alreadyAdded = false
-)
+private val previewMovie =
+    TmdbMovieResult(
+        tmdbId = 1L,
+        title = "Interstellar",
+        year = "2014",
+        overview = "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+        poster = "",
+        alreadyAdded = false
+    )
 
-private val previewMovie2 = TmdbMovieResult(
-    tmdbId = 1L,
-    title = "Interstellar",
-    year = "2014",
-    overview = "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-    poster = "",
-    alreadyAdded = true
-)
+private val previewMovie2 =
+    TmdbMovieResult(
+        tmdbId = 1L,
+        title = "Interstellar",
+        year = "2014",
+        overview = "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+        poster = "",
+        alreadyAdded = true
+    )
 
 @Preview(showBackground = true, backgroundColor = 0xFF12121A)
 @Composable
@@ -290,10 +291,11 @@ private fun AddMovieScreenPreview() {
 private fun AddMovieScreenWithAddableMoviePreview() {
     MovieAppTheme {
         AddMovieScreenContent(
-            uiState = AddMovieUiState(
-                searchQuery = "Interstellar",
-                results = listOf(previewMovie),
-            )
+            uiState =
+                AddMovieUiState(
+                    searchQuery = "Interstellar",
+                    results = listOf(previewMovie),
+                )
         )
     }
 }
@@ -303,26 +305,27 @@ private fun AddMovieScreenWithAddableMoviePreview() {
 private fun AddMovieScreenWithAddedMoviePreview() {
     MovieAppTheme {
         AddMovieScreenContent(
-            uiState = AddMovieUiState(
-                searchQuery = "Interstellar",
-                results = listOf(previewMovie),
-                addedTmdbIds = setOf(previewMovie.tmdbId),
-            ),
+            uiState =
+                AddMovieUiState(
+                    searchQuery = "Interstellar",
+                    results = listOf(previewMovie),
+                    addedTmdbIds = setOf(previewMovie.tmdbId),
+                ),
         )
     }
 }
-
 
 @Preview(showBackground = true, backgroundColor = 0xFF12121A)
 @Composable
 private fun AddMovieScreenWithAddedMovie2Preview() {
     MovieAppTheme {
         AddMovieScreenContent(
-            uiState = AddMovieUiState(
-                searchQuery = "Interstellar",
-                results = listOf(previewMovie2),
-                addedTmdbIds = setOf(previewMovie.tmdbId),
-            ),
+            uiState =
+                AddMovieUiState(
+                    searchQuery = "Interstellar",
+                    results = listOf(previewMovie2),
+                    addedTmdbIds = setOf(previewMovie.tmdbId),
+                ),
         )
     }
 }

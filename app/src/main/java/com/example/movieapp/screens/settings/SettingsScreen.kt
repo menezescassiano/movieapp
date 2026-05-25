@@ -113,9 +113,10 @@ private fun SettingsContent(
     ) {
         TitleText(
             text = stringResource(R.string.settings_title),
-            modifier = Modifier
-                .padding(top = 40.dp)
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .padding(top = 40.dp)
+                    .padding(horizontal = 16.dp),
         )
 
         Spacer(modifier = Modifier.height(24.dp))

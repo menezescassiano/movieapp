@@ -21,6 +21,8 @@ interface MovieRepository {
 
     suspend fun unfavoriteMovie(movieId: String)
 
+    suspend fun deleteMovie(movieId: String)
+
     suspend fun getFavoriteMovies(
         page: Int = 0,
         size: Int = 10,

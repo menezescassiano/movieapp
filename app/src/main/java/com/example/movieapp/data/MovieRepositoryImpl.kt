@@ -33,6 +33,10 @@ class MovieRepositoryImpl
             apiService.unfavoriteMovie(movieId)
         }
 
+        override suspend fun deleteMovie(movieId: String) {
+            apiService.deleteMovie(movieId)
+        }
+
         override suspend fun getFavoriteMovies(
             page: Int,
             size: Int,

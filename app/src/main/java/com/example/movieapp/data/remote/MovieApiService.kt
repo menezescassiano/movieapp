@@ -42,4 +42,9 @@ interface MovieApiService {
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 10,
     ): PagedResponse<Movie>
+
+    @DELETE("movies/{id}")
+    suspend fun deleteMovie(
+        @Path("id") movieId: String,
+    )
 }

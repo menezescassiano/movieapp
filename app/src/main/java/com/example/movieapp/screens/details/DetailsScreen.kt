@@ -17,13 +17,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -74,11 +78,16 @@ fun DetailsScreen(
         movieId?.let { viewModel.loadMovie(it) }
     }
 
+    LaunchedEffect(uiState.isDeleted) {
+        if (uiState.isDeleted) navController.popBackStack()
+    }
+
     DetailsScreenContent(
         uiState = uiState,
         modifier = modifier,
         onBackClick = { navController.popBackStack() },
         onFavoriteClick = { movieId?.let { viewModel.toggleFavorite(it) } },
+        onMenuClick = { movieId?.let { viewModel.deleteMovie(it) } }
     )
 }
 
@@ -89,8 +98,10 @@ fun DetailsScreenContent(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     onFavoriteClick: () -> Unit = {},
+    onMenuClick: () -> Unit = {},
 ) {
     var selectedImageUrl by remember { mutableStateOf<String?>(null) }
+    var menuExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -113,6 +124,29 @@ fun DetailsScreenContent(
                         titleContentColor = Color.White,
                         navigationIconContentColor = Color.White,
                     ),
+                actions = {
+                    Box {
+                        IconButton(onClick = { menuExpanded = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "bla",
+                                tint = Color.White,
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.details_delete_movie)) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onMenuClick()
+                                }
+                            )
+                        }
+                    }
+                }
             )
         },
     ) { innerPadding ->

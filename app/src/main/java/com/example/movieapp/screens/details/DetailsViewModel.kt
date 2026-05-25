@@ -2,6 +2,7 @@ package com.example.movieapp.screens.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movieapp.domain.DeleteMovieUseCase
 import com.example.movieapp.domain.GetFavoriteMovieUseCase
 import com.example.movieapp.domain.GetMovieByIdUseCase
 import com.example.movieapp.domain.UnfavoriteMovieUseCase
@@ -19,6 +20,7 @@ class DetailsViewModel
         private val getMovieByIdUseCase: GetMovieByIdUseCase,
         private val favoriteMovieUseCase: GetFavoriteMovieUseCase,
         private val unfavoriteMovieUseCase: UnfavoriteMovieUseCase,
+        private val deleteMovieUseCase: DeleteMovieUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(DetailsUiState(isLoading = false))
         val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
@@ -55,6 +57,18 @@ class DetailsViewModel
                             movie = _uiState.value.movie?.copy(favorite = isFavorite),
                             errorMessage = e.message,
                         )
+                }
+            }
+        }
+
+        fun deleteMovie(movieId: String) {
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+                try {
+                    deleteMovieUseCase(movieId)
+                    _uiState.value = _uiState.value.copy(isLoading = false, isDeleted = true, errorMessage = null)
+                } catch (e: Exception) {
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
                 }
             }
         }
