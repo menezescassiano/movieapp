@@ -7,6 +7,8 @@ import com.example.movieapp.data.MovieRepository
 import com.example.movieapp.data.MovieRepositoryImpl
 import com.example.movieapp.data.OnboardingRepository
 import com.example.movieapp.data.OnboardingRepositoryImpl
+import com.example.movieapp.data.TmdbRepository
+import com.example.movieapp.data.TmdbRepositoryImpl
 import com.example.movieapp.data.UriReader
 import com.example.movieapp.data.UserRepository
 import com.example.movieapp.data.UserRepositoryImpl
@@ -38,4 +40,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTmdbRepository(impl: TmdbRepositoryImpl): TmdbRepository
 }

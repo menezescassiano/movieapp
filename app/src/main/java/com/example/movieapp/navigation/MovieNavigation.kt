@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.movieapp.feature.onboarding.OnboardingScreen
+import com.example.movieapp.screens.addmovie.AddMovieScreen
 import com.example.movieapp.screens.details.DetailsScreen
 import com.example.movieapp.screens.favorites.FavoritesScreen
 import com.example.movieapp.screens.home.HomeScreen
@@ -125,6 +126,12 @@ fun MovieNavigation(
             SettingsScreen(
                 modifier = modifier.fillMaxSize(),
                 onBack = { navController.navigateUp() },
+            )
+        }
+
+        composable<AddMovieRoute> {
+            AddMovieScreen(
+                modifier = modifier.fillMaxSize()
             )
         }
     }

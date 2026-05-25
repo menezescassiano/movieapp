@@ -109,6 +109,17 @@
     <string name="onboarding_button_get_started">Get started</string>
     <string name="onboarding_button_skip">Skip</string>
 
+    <!-- Add Movie Screen -->
+    <string name="add_movie_title">Add Movie</string>
+    <string name="add_movie_back">Back</string>
+    <string name="add_movie_headline">Add a new movie.</string>
+    <string name="add_movie_subtitle">Search the TMDB catalogue and add movies to the library.</string>
+    <string name="add_movie_search_placeholder">Search by title…</string>
+    <string name="add_movie_no_results">No results for \"%1$s\"</string>
+    <string name="add_movie_empty_hint">Start typing to search for a movie.</string>
+    <string name="add_movie_button_add">Add to library</string>
+    <string name="add_movie_button_added">Added ✓</string>
+
     <!-- Details Screen -->
     <string name="details_title">Movie\'s details</string>
     <string name="details_back">Back</string>

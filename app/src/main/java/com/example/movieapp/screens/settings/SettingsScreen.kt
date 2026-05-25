@@ -7,14 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -112,25 +109,16 @@ private fun SettingsContent(
         modifier =
             modifier
                 .background(AppBackground)
-                .windowInsetsPadding(WindowInsets.statusBars)
                 .verticalScroll(rememberScrollState()),
     ) {
-        // ── Top bar ──────────────────────────────────────────────────────────
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            TitleText(
-                text = stringResource(R.string.settings_title),
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
+        TitleText(
+            text = stringResource(R.string.settings_title),
+            modifier = Modifier
+                .padding(top = 40.dp)
+                .padding(horizontal = 16.dp),
+        )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // ── Notifications ────────────────────────────────────────────────────
         SettingsSectionHeader(title = stringResource(R.string.settings_section_notifications))

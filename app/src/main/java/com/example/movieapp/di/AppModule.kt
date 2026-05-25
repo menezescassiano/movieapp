@@ -8,6 +8,7 @@ import com.example.movieapp.data.MovieRepository
 import com.example.movieapp.data.remote.AuthApiService
 import com.example.movieapp.data.remote.AuthInterceptor
 import com.example.movieapp.data.remote.MovieApiService
+import com.example.movieapp.data.remote.TmdbApiService
 import com.example.movieapp.data.remote.TokenAuthenticator
 import com.example.movieapp.data.remote.UserApiService
 import com.example.movieapp.domain.GetMovieByIdUseCase
@@ -99,6 +100,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthApiService(retrofit: Retrofit): AuthApiService = retrofit.create(AuthApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTmdbApiService(retrofit: Retrofit): TmdbApiService = retrofit.create(TmdbApiService::class.java)
 
     @Provides
     @Singleton

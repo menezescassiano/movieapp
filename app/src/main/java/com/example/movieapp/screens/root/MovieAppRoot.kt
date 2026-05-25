@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -41,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.core.ui.theme.AccentPurple
 import com.example.movieapp.core.ui.theme.AppBackground
 import com.example.movieapp.core.ui.theme.NavUnselected
+import com.example.movieapp.navigation.AddMovieRoute
 import com.example.movieapp.navigation.FavoritesRoute
 import com.example.movieapp.navigation.HomeRoute
 import com.example.movieapp.navigation.LoginRoute
@@ -75,6 +78,7 @@ fun MovieAppRoot(viewModel: RootViewModel = hiltViewModel()) {
         listOf(
             BottomNavItem(HomeRoute, "Home", Icons.Filled.Home, Icons.Outlined.Home),
             BottomNavItem(FavoritesRoute, "Favorites", Icons.Filled.Favorite, Icons.Outlined.FavoriteBorder),
+            BottomNavItem(AddMovieRoute, "Add", Icons.Filled.AddCircle, Icons.Outlined.AddCircleOutline),
             BottomNavItem(ProfileRoute, "Profile", Icons.Filled.Person, Icons.Outlined.Person),
             BottomNavItem(SettingsRoute, "Settings", Icons.Filled.Settings, Icons.Outlined.Settings),
         )

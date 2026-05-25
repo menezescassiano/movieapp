@@ -33,3 +33,6 @@ object SettingsRoute
 
 @Serializable
 object OnboardingRoute
+
+@Serializable
+object AddMovieRoute
