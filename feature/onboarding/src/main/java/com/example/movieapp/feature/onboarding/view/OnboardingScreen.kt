@@ -1,4 +1,4 @@
-package com.example.movieapp.feature.onboarding
+package com.example.movieapp.feature.onboarding.view
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColorAsState
@@ -38,6 +38,7 @@ import com.example.movieapp.core.ui.components.LinkButton
 import com.example.movieapp.core.ui.components.text.BodyText
 import com.example.movieapp.core.ui.components.text.TitleText
 import com.example.movieapp.core.ui.invisible
+import com.example.movieapp.core.ui.testId
 import com.example.movieapp.core.ui.theme.AccentPurple
 import com.example.movieapp.core.ui.theme.AppBackground
 import com.example.movieapp.feature.onboarding.R
@@ -129,7 +130,7 @@ fun OnboardingScreen(
             LinkButton(
                 text = stringResource(R.string.onboarding_button_skip),
                 onClick = { if (!isLastPage) onFinish() },
-                modifier = if (isLastPage) Modifier.invisible() else Modifier,
+                modifier = if (isLastPage) Modifier.invisible() else Modifier.testId(OnboardingTestIds.SKIP_BUTTON),
             )
         }
     }

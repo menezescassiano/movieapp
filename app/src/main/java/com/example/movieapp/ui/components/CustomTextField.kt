@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.movieapp.core.ui.testId
 import com.example.movieapp.core.ui.theme.AccentPurple
 import com.example.movieapp.core.ui.theme.AppBackground
 import com.example.movieapp.core.ui.theme.NavUnselected
@@ -41,6 +42,7 @@ fun CustomTextField(
     errorMessage: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    testId: String = "",
 ) {
     Column(modifier = modifier) {
         Text(
@@ -52,7 +54,7 @@ fun CustomTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testId(testId),
             placeholder = {
                 Text(text = placeholder, color = NavUnselected)
             },

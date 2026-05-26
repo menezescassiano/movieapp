@@ -1,6 +1,7 @@
-package com.example.movieapp.screens.onboarding
+package com.example.movieapp.feature.onboarding
 
-import com.example.movieapp.domain.MarkOnboardingCompletedUseCase
+import com.example.movieapp.feature.onboarding.domain.MarkOnboardingCompletedUseCase
+import com.example.movieapp.feature.onboarding.view.OnboardingViewModel
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Before

@@ -51,6 +51,8 @@ import com.example.movieapp.core.ui.components.CustomButton
 import com.example.movieapp.core.ui.components.LinkButton
 import com.example.movieapp.core.ui.components.text.BodyText
 import com.example.movieapp.core.ui.components.text.TitleText
+import com.example.movieapp.core.ui.enableTestIds
+import com.example.movieapp.core.ui.testId
 import com.example.movieapp.core.ui.theme.AccentPurple
 import com.example.movieapp.core.ui.theme.AppBackground
 import com.example.movieapp.core.ui.theme.CardDark
@@ -126,7 +128,8 @@ private fun LoginContent(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(AppBackground),
+                .background(AppBackground)
+                .enableTestIds(),
     ) {
         Column(
             modifier =
@@ -179,6 +182,7 @@ private fun LoginContent(
                         KeyboardActions(
                             onNext = { focusManager.moveFocus(FocusDirection.Down) },
                         ),
+                    testId = LoginTestIds.EMAIL_FIELD,
                 )
 
                 // Password
@@ -214,6 +218,7 @@ private fun LoginContent(
                                 onContinueClick()
                             },
                         ),
+                    testId = LoginTestIds.PASSWORD_FIELD,
                 )
             }
 
@@ -223,7 +228,7 @@ private fun LoginContent(
             CustomButton(
                 text = stringResource(R.string.login_button_continue),
                 onClick = onContinueClick,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testId(LoginTestIds.CONTINUE_BUTTON),
                 isLoading = uiState.isLoading,
             )
 

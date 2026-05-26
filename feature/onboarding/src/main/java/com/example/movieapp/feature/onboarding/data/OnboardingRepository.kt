@@ -1,4 +1,4 @@
-package com.example.movieapp.data
+package com.example.movieapp.feature.onboarding.data
 
 interface OnboardingRepository {
     fun isCompleted(): Boolean

@@ -1,6 +1,6 @@
-package com.example.movieapp.domain
+package com.example.movieapp.feature.onboarding.domain
 
-import com.example.movieapp.data.OnboardingRepository
+import com.example.movieapp.feature.onboarding.data.OnboardingRepository
 import javax.inject.Inject
 
 class MarkOnboardingCompletedUseCase

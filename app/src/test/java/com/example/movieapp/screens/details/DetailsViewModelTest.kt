@@ -1,5 +1,6 @@
 package com.example.movieapp.screens.details
 
+import com.example.movieapp.domain.DeleteMovieUseCase
 import com.example.movieapp.domain.GetFavoriteMovieUseCase
 import com.example.movieapp.domain.GetMovieByIdUseCase
 import com.example.movieapp.domain.UnfavoriteMovieUseCase
@@ -29,6 +30,8 @@ class DetailsViewModelTest {
     private lateinit var getMovieByIdUseCase: GetMovieByIdUseCase
     private lateinit var favoriteMovieUseCase: GetFavoriteMovieUseCase
     private lateinit var unfavoriteMovieUseCase: UnfavoriteMovieUseCase
+
+    private lateinit var deleteMovieUseCase: DeleteMovieUseCase
     private lateinit var viewModel: DetailsViewModel
 
     private val fakeMovie =
@@ -52,7 +55,8 @@ class DetailsViewModelTest {
         getMovieByIdUseCase = mockk()
         favoriteMovieUseCase = mockk()
         unfavoriteMovieUseCase = mockk()
-        viewModel = DetailsViewModel(getMovieByIdUseCase, favoriteMovieUseCase, unfavoriteMovieUseCase)
+        deleteMovieUseCase = mockk()
+        viewModel = DetailsViewModel(getMovieByIdUseCase, favoriteMovieUseCase, unfavoriteMovieUseCase, deleteMovieUseCase)
     }
 
     @After

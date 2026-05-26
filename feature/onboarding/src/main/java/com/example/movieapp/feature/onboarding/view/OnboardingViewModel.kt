@@ -1,7 +1,7 @@
-package com.example.movieapp.screens.onboarding
+package com.example.movieapp.feature.onboarding.view
 
 import androidx.lifecycle.ViewModel
-import com.example.movieapp.domain.MarkOnboardingCompletedUseCase
+import com.example.movieapp.feature.onboarding.domain.MarkOnboardingCompletedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -5,8 +5,6 @@ import com.example.movieapp.data.AuthRepositoryImpl
 import com.example.movieapp.data.ContentResolverUriReader
 import com.example.movieapp.data.MovieRepository
 import com.example.movieapp.data.MovieRepositoryImpl
-import com.example.movieapp.data.OnboardingRepository
-import com.example.movieapp.data.OnboardingRepositoryImpl
 import com.example.movieapp.data.TmdbRepository
 import com.example.movieapp.data.TmdbRepositoryImpl
 import com.example.movieapp.data.UriReader
@@ -36,10 +34,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUriReader(impl: ContentResolverUriReader): UriReader
-
-    @Binds
-    @Singleton
-    abstract fun bindOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
 
     @Binds
     @Singleton

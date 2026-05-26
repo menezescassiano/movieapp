@@ -10,13 +10,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.example.movieapp.feature.onboarding.OnboardingScreen
+import com.example.movieapp.feature.onboarding.view.OnboardingScreen
+import com.example.movieapp.feature.onboarding.view.OnboardingViewModel
 import com.example.movieapp.screens.addmovie.AddMovieScreen
 import com.example.movieapp.screens.details.DetailsScreen
 import com.example.movieapp.screens.favorites.FavoritesScreen
 import com.example.movieapp.screens.home.HomeScreen
 import com.example.movieapp.screens.login.LoginScreen
-import com.example.movieapp.screens.onboarding.OnboardingViewModel
 import com.example.movieapp.screens.profile.ProfileScreen
 import com.example.movieapp.screens.qrcode.QrCodeReaderScreen
 import com.example.movieapp.screens.settings.SettingsScreen

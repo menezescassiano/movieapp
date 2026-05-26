@@ -1,4 +1,4 @@
-package com.example.movieapp.feature.onboarding
+package com.example.movieapp.feature.onboarding.view
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
