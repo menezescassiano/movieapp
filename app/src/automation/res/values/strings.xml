@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Overrides the launcher label for the automation build so it's clearly
+         distinguishable from the regular app on the device home screen. -->
+    <string name="app_name">Movie App 🤖</string>
+</resources>

@@ -149,6 +149,7 @@ android {
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"http://192.168.0.212:8080/\"")
+            buildConfigField("Boolean", "IS_AUTOMATION", "false")
         }
         release {
             isMinifyEnabled = false
@@ -157,6 +158,17 @@ android {
                 "proguard-rules.pro",
             )
             buildConfigField("String", "BASE_URL", "\"https://your-production-url.com/\"")
+            buildConfigField("Boolean", "IS_AUTOMATION", "false")
+        }
+        create("automation") {
+            initWith(getByName("debug"))
+            buildConfigField("String", "BASE_URL", "\"http://192.168.0.212:8080/\"")
+            buildConfigField("Boolean", "IS_AUTOMATION", "true")
+            applicationIdSuffix = ".automation"
+            versionNameSuffix = "-automation"
+            // Libraries (:core:ui, :feature:onboarding) don't have an "automation"
+            // build type — fall back to their "debug" variant.
+            matchingFallbacks += listOf("debug")
         }
     }
     compileOptions {
@@ -220,4 +232,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    "automationImplementation"(libs.androidx.compose.ui.tooling)
+    "automationImplementation"(libs.androidx.compose.ui.test.manifest)
 }

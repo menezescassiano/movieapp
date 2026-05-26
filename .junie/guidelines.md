@@ -35,3 +35,48 @@ If a test reveals a bug in the ViewModel (e.g. errorMessage not cleared on succe
 - Use `UnconfinedTestDispatcher` + `advanceUntilIdle()`
 - Always call `Dispatchers.setMain` in `@Before` and `Dispatchers.resetMain` in `@After`
 - Use `mockk()` for dependencies and `coEvery` for suspend functions
+
+## Test IDs
+
+Whenever test IDs are requested for a screen, follow the same pattern already established for `LoginScreen`:
+
+### 1. Create a dedicated `<Screen>TestIds` object
+Create a file named `<Screen>TestIds.kt` co-located with the screen (same package/folder), containing a Kotlin `object` with `const val` string constants:
+
+```kotlin
+object LoginTestIds {
+    const val EMAIL_FIELD = "login_email_field"
+    const val PASSWORD_FIELD = "login_password_field"
+    const val CONTINUE_BUTTON = "login_continue_button"
+}
+```
+
+- Name constants in `UPPER_SNAKE_CASE`.
+- Value strings follow the pattern `<screen_name>_<element_description>` (all lowercase, underscore-separated).
+
+### 2. Apply `Modifier.testId(...)` on each tagged element
+Import and apply the `testId` extension from `com.example.movieapp.core.ui`:
+
+```kotlin
+CustomTextField(
+    ...
+    testId = LoginTestIds.EMAIL_FIELD,
+)
+
+CustomButton(
+    ...
+    modifier = Modifier.fillMaxWidth().testId(LoginTestIds.CONTINUE_BUTTON),
+)
+```
+
+### 3. Enable test ID propagation on the root container
+Add `.enableTestIds()` (from `com.example.movieapp.core.ui`) to the outermost container of the screen so that every `testTag` is exposed as `resource-id` for Appium/UIAutomator2:
+
+```kotlin
+Box(
+    modifier = Modifier
+        .fillMaxSize()
+        .background(AppBackground)
+        .enableTestIds(),
+) { ... }
+```
